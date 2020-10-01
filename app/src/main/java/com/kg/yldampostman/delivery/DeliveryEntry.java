@@ -1,0 +1,895 @@
+package com.kg.yldampostman.delivery;
+
+
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.kg.yldampostman.R;
+import com.kg.yldampostman.app.AppConfig;
+import com.kg.yldampostman.app.AppController;
+import com.kg.yldampostman.customer.CorporateSelectionList;
+import com.kg.yldampostman.customer.CustomerHelper;
+import com.kg.yldampostman.helper.CustomJsonArrayRequest;
+import com.kg.yldampostman.helper.HelperConstants;
+import com.kg.yldampostman.helper.SessionManager;
+import com.kg.yldampostman.helper.Signature;
+import com.kg.yldampostman.helper.StringData;
+import com.kg.yldampostman.orders.Orders;
+import com.kg.yldampostman.users.LoginActivity;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
+public class DeliveryEntry extends AppCompatActivity {
+
+    private static final String TAG = DeliveryEntry.class.getSimpleName();
+    public static final int SIGNATURE_ACTIVITY = 1;
+    public static final int SENDER_COMPANY_LIST = 2;
+    public static final int RECEIVER_COMPANY_LIST = 3;
+    private String signatureString = "";
+    private Button btn_takeSignature;
+    private Button btn_saveData;
+    private LinearLayout mContent;
+    private ProgressDialog pDialog;
+
+    private Spinner sCity, rCity, delType, sProvince, rProvince;
+    private EditText sName, sAdres;
+    private EditText rName, rAdres;
+    private CardView signatureCard, signatureCardLabel;
+    AutoCompleteTextView sPhone;
+    AutoCompleteTextView rPhone;
+    AutoCompleteTextView sComp;
+    AutoCompleteTextView rComp;
+
+    ArrayAdapter<String> myAdapterS;
+    ArrayAdapter<String> myAdapterR;
+
+    ArrayAdapter<String> myAdapterSC;
+    ArrayAdapter<String> myAdapterRC;
+
+    private EditText delCount, delPrice, delItemPrice, delExpl, paidAmount;
+    private RadioGroup rg_payment, rg_buying;
+    private RadioButton rb_payment_senderbank, rb_payment_receiverbank, rb_payment_sendercash;
+    private Orders orderData;
+    private String userName;
+    private String usersCity;
+    private String token;
+    String[] item = {""};
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_delivery_entry);
+
+        btn_takeSignature = findViewById(R.id.btn_takesignature);
+        btn_saveData = findViewById(R.id.btn_save_data);
+        mContent = findViewById(R.id.linearLayout);
+
+        signatureCard = findViewById(R.id.card_view_signature);
+        signatureCardLabel = findViewById(R.id.card_view_signature_label);
+        signatureCard.setVisibility(View.GONE);
+        signatureCardLabel.setVisibility(View.GONE);
+
+        // Progress dialog
+        pDialog = new ProgressDialog(this);
+        pDialog.setCancelable(false);
+
+        initializeItems();
+
+        ArrayAdapter<String> provinceAdapter = new ArrayAdapter<String>(
+                DeliveryEntry.this,
+                android.R.layout.simple_spinner_dropdown_item,
+                StringData.getProvinceList()
+        );
+
+        sProvince.setAdapter(provinceAdapter);
+        rProvince.setAdapter(provinceAdapter);
+
+        SessionManager session = new SessionManager(getApplicationContext());
+
+        usersCity = session.getCity();
+        userName = session.getLogin();
+        token = session.getToken();
+
+        sProvince.setSelection(getIndex(sProvince, StringData.getProvince(usersCity)));
+
+        sProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
+                ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
+                        DeliveryEntry.this,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        StringData.getCityList(sProvince.getSelectedItem().toString())
+                );
+
+                sCity.setAdapter(cityAdapter);
+                sCity.setSelection(getIndex(sCity, usersCity));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+        });
+
+        rProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
+                ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
+                        DeliveryEntry.this,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        StringData.getCityList(rProvince.getSelectedItem().toString())
+                );
+
+                rCity.setAdapter(cityAdapter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+        });
+
+
+        Intent orderIntent = getIntent();
+        Bundle extras = orderIntent.getExtras();
+        if (extras != null) {
+            orderData = (Orders) orderIntent.getSerializableExtra("order");
+            putIncomingData(orderData);
+        }
+
+        btn_takeSignature.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DeliveryEntry.this, Signature.class);
+                intent.putExtra("OPERATION", "entry");
+                startActivityForResult(intent, SIGNATURE_ACTIVITY);
+            }
+        });
+
+        btn_saveData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (deliveryDataCheck()) {
+                    try {
+                        saveDelivery(sName.getText().toString(), sPhone.getText().toString(), sComp.getText().toString(), sCity.getSelectedItem().toString(), sAdres.getText().toString(),
+                                rName.getText().toString(), rPhone.getText().toString(), rComp.getText().toString(), rCity.getSelectedItem().toString(), rAdres.getText().toString(),
+                                delType.getSelectedItem().toString(), delCount.getText().toString(), delPrice.getText().toString(), paidAmount.getText().toString(), delItemPrice.getText().toString(),
+                                getPaymentRadioGroupValue(), delExpl.getText().toString(), signatureString, userName, getBuyingRadioGroupValue());
+                    } catch (Exception e) {
+                        throw e;
+                    }
+                }
+
+            }
+        });
+
+
+        myAdapterS = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, item);
+        sPhone.setAdapter(myAdapterS);
+        sPhone.setThreshold(3);
+
+        myAdapterR = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, item);
+        rPhone.setAdapter(myAdapterR);
+        rPhone.setThreshold(3);
+
+        myAdapterSC = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, item);
+        sComp.setAdapter(myAdapterSC);
+        sComp.setThreshold(3);
+
+        myAdapterRC = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, item);
+        rComp.setAdapter(myAdapterRC);
+        rComp.setThreshold(3);
+
+        // autocompletetextview is in activity_main.xml
+        sPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (s.length() > 3) {
+                    getSenderCustomers(s.toString(), "");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 3) {
+                    String[] parts = s.toString().split("__");
+                    if (parts.length > 1) {
+                        sName.setText(parts[1]);
+                        sPhone.setText(parts[0]);
+
+                        String sCityString = parts[3];
+                        String sProvinceString = StringData.getProvince(sCityString);
+                        sProvince.setSelection(getIndex(sProvince, sProvinceString));
+                        sCity.setSelection(getIndex(sCity, parts[3]));
+
+                        sAdres.setText(parts[2]);
+                        if (parts.length > 4)
+                            sComp.setText(parts[4]);
+                    }
+                }
+            }
+        });
+
+        rPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (s.length() > 3) {
+                    getReceiverCustomers(s.toString(), "");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 3) {
+                    String[] parts = s.toString().split("__");
+                    if (parts.length > 1) {
+                        rName.setText(parts[1]);
+                        rPhone.setText(parts[0]);
+
+                        String rCityString = parts[3];
+                        String rProvinceString = StringData.getProvince(rCityString);
+                        rProvince.setSelection(getIndex(sProvince, rProvinceString));
+                        rCity.setSelection(getIndex(sCity, parts[3]));
+
+                        rAdres.setText(parts[2]);
+                        if (parts.length > 4)
+                            rComp.setText(parts[4]);
+                    }
+                }
+            }
+        });
+
+
+        sComp.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (s.length() > 3) {
+                    getSenderCustomers("", s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 3) {
+                    String[] parts = s.toString().split("__");
+                    if (parts.length > 1) {
+                        sName.setText(parts[1]);
+                        sPhone.setText(parts[0]);
+
+                        String sCityString = parts[3];
+                        String sProvinceString = StringData.getProvince(sCityString);
+                        sProvince.setSelection(getIndex(sProvince, sProvinceString));
+                        sCity.setSelection(getIndex(sCity, parts[3]));
+
+                        sAdres.setText(parts[2]);
+                        sComp.setText(parts[4]);
+                    }
+                }
+            }
+        });
+
+        rComp.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (s.length() > 3) {
+                    getReceiverCustomers("", s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 3) {
+                    String[] parts = s.toString().split("__");
+                    if (parts.length > 1) {
+                        rName.setText(parts[1]);
+                        rPhone.setText(parts[0]);
+
+                        String sCityString = parts[3];
+                        String sProvinceString = StringData.getProvince(sCityString);
+                        sProvince.setSelection(getIndex(sProvince, sProvinceString));
+                        sCity.setSelection(getIndex(sCity, parts[3]));
+
+                        rAdres.setText(parts[2]);
+                        rComp.setText(parts[4]);
+                    }
+                }
+            }
+        });
+
+
+        rg_payment.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
+                // This puts the value (true/false) into the variable
+
+                if (checkedRadioButton.equals(rb_payment_receiverbank)) {
+                    Intent intent = new Intent(DeliveryEntry.this, CorporateSelectionList.class);
+
+                    if (rCity.getSelectedItem() != null && rCity.getSelectedItem().toString().length() > 0) {
+                        intent.putExtra("city", rCity.getSelectedItem().toString());
+                        startActivityForResult(intent, RECEIVER_COMPANY_LIST);
+                    } else {
+                        rb_payment_receiverbank.setChecked(false);
+                        rAdres.setEnabled(true);
+                        rComp.setEnabled(true);
+                        Toast.makeText(getApplicationContext(), "Биринчи кайсыл шаарга кетишин тандаңыз.", Toast.LENGTH_LONG).show();
+                    }
+
+
+                } else if (checkedRadioButton.equals(rb_payment_senderbank)) {
+                    Intent intent = new Intent(DeliveryEntry.this, CorporateSelectionList.class);
+
+                    if (sCity.getSelectedItem() != null && sCity.getSelectedItem().toString().length() > 0) {
+                        intent.putExtra("city", sCity.getSelectedItem().toString());
+                        startActivityForResult(intent, SENDER_COMPANY_LIST);
+                    } else {
+                        rb_payment_senderbank.setChecked(false);
+                        sAdres.setEnabled(true);
+                        sComp.setEnabled(true);
+                        Toast.makeText(getApplicationContext(), "Биринчи кайсыл шаарга кетишин тандаңыз.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
+    }
+
+
+    private String getPaymentRadioGroupValue() {
+
+        String selected = "";
+
+        int selectedValue = rg_payment.getCheckedRadioButtonId();
+        if (selectedValue == R.id.rb_rb)
+            selected = "RB";
+        else if (selectedValue == R.id.rb_sb)
+            selected = "SB";
+        else if (selectedValue == R.id.rb_rc)
+            selected = "RC";
+        else if (selectedValue == R.id.rb_sc)
+            selected = "SC";
+        return selected;
+    }
+
+    private String getBuyingRadioGroupValue() {
+
+        String selected = "";
+
+        int selectedValue = rg_buying.getCheckedRadioButtonId();
+        if (selectedValue == R.id.rb_buy_cash)
+            selected = "C";
+        else if (selectedValue == R.id.rb_buy_debt)
+            selected = "D";
+        else if (selectedValue == R.id.rb_buy_transfer)
+            selected = "T";
+        return selected;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SIGNATURE_ACTIVITY) {
+            if (resultCode == RESULT_OK) {
+                Bundle bundle = data.getExtras();
+                signatureString = bundle.getString("signature");
+                byte[] a = Base64.decode(signatureString, Base64.DEFAULT);
+                Bitmap image = BitmapFactory.decodeByteArray(a, 0, a.length);
+                BitmapDrawable background = new BitmapDrawable(this.getResources(), image);
+                mContent.setBackground(background);
+            }
+        } else if (requestCode == SENDER_COMPANY_LIST) {
+            if (resultCode == RESULT_OK) {
+
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    sAdres.setText(extras.getString("address"));
+                    sComp.setText(extras.getString("company"));
+
+                    sAdres.setEnabled(false);
+                    sComp.setEnabled(false);
+                    Toast.makeText(getApplicationContext(), "Жөнөтүүчү фирма аты жана адреси өзгөрдү!", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                rb_payment_senderbank.setChecked(false);
+                sAdres.setEnabled(true);
+                sComp.setEnabled(true);
+                Toast.makeText(getApplicationContext(), "Төлөм түрү өзгөртүлдү!", Toast.LENGTH_LONG).show();
+            }
+        } else if (requestCode == RECEIVER_COMPANY_LIST) {
+            if (resultCode == RESULT_OK) {
+
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    rAdres.setText(extras.getString("address"));
+                    rComp.setText(extras.getString("company"));
+
+                    rAdres.setEnabled(false);
+                    rComp.setEnabled(false);
+
+                    Toast.makeText(getApplicationContext(), "Алуучу фирма аты жана адреси өзгөрдү!", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                rb_payment_receiverbank.setChecked(false);
+
+                rAdres.setEnabled(true);
+                rComp.setEnabled(true);
+
+                Toast.makeText(getApplicationContext(), "Төлөм түрү өзгөртүлдү!", Toast.LENGTH_LONG).show();
+
+            }
+        }
+    }
+
+
+    private void saveDelivery(final String sName, final String sPhone, final String sComp, final String sCity, final String sAddress,
+                              final String rName, final String rPhone, final String rComp, final String rCity, final String rAddress,
+                              final String delType, final String delCount, final String delCost, final String paidAmount, final String deliCost,
+                              final String paymentType, final String delExpl, final String signature, final String acceptedUser, final String buyingType) {
+        // Tag used to cancel the request
+        String tag_string_req = "req_save_delivery";
+
+        pDialog.setMessage("Saving Data ...");
+        btn_saveData.setEnabled(false);
+        showDialog();
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("senderName", sName);
+            jsonObject.put("senderPhone", sPhone);
+            jsonObject.put("senderAddress", sAddress);
+            jsonObject.put("senderCity", sCity);
+            jsonObject.put("senderCompany", sComp);
+            jsonObject.put("receiverName", rName);
+            jsonObject.put("receiverPhone", rPhone);
+            jsonObject.put("receiverAddress", rAddress);
+            jsonObject.put("receiverCity", rCity);
+            jsonObject.put("receiverCompany", rComp);
+            jsonObject.put("deliveryType", delType);
+            jsonObject.put("deliveryCount", delCount);
+            jsonObject.put("deliveryCost", delCost);
+            jsonObject.put("paidAmount", paidAmount);
+            jsonObject.put("deliveryiCost", deliCost);
+            jsonObject.put("deliveryExplanation", delExpl);
+            jsonObject.put("signature", signature);
+            jsonObject.put("paymentType", paymentType);
+            jsonObject.put("acceptedPerson", acceptedUser);
+            jsonObject.put("buyType", buyingType);
+            jsonObject.put("assignedSector", "");
+            jsonObject.put("deliveredPerson", "");
+            jsonObject.put("receiver", "");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest req = new JsonObjectRequest(AppConfig.URL_DELIVERY_ENTRY, jsonObject,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "Save delivery Response: " + response);
+                        hideDialog();
+                        btn_saveData.setEnabled(true);
+                        try {
+                            if (response.getString("deliveryId").length() > 0) {
+
+                                Toast.makeText(getApplicationContext(),
+                                        "Маалыматтар системага киргизилди!", Toast.LENGTH_LONG).show();
+
+                                // Bul jer buyuk ihtimal order uzerinden delivery kirilgende kerek bolso kerek. Esimde jok.
+                                Bundle b = new Bundle();
+                                b.putString("STATUS", HelperConstants.DELIVERYACCEPTED);
+                                Intent intent = new Intent();
+                                intent.putExtras(b);
+                                setResult(RESULT_OK, intent);
+                                // ---------------
+
+                                finish();
+                            } else {
+                                // Error in login. Get the error message
+                                Toast.makeText(getApplicationContext(),
+                                        "Кандайдыр бир ката пайда болду.", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error instanceof AuthFailureError) {
+                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(DeliveryEntry.this, LoginActivity.class);
+                    startActivity(loginIntent);
+                } else {
+                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                hideDialog();
+                btn_saveData.setEnabled(true);
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", token);
+                return headers;
+            }
+
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(req, tag_string_req);
+    }
+
+
+    private void showDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hideDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
+    }
+
+
+    public void initializeItems() {
+        rg_payment = findViewById(R.id.rg_payment);
+        rg_buying = findViewById(R.id.rg_buying);
+
+        rb_payment_senderbank = findViewById(R.id.rb_sb);
+        rb_payment_receiverbank = findViewById(R.id.rb_rb);
+        rb_payment_sendercash = findViewById(R.id.rb_sc);
+
+        sName = findViewById(R.id.senderName);
+        sPhone = findViewById(R.id.senderPhone);
+        sAdres = findViewById(R.id.senderAddress);
+        sComp = findViewById(R.id.senderCompany);
+        rName = findViewById(R.id.receiverName);
+        rPhone = findViewById(R.id.receiverPhone);
+        rAdres = findViewById(R.id.receiverAddress);
+        rComp = findViewById(R.id.receiverCompany);
+
+        delExpl = findViewById(R.id.deliveryExplanation);
+        delCount = findViewById(R.id.deliveryCount);
+        delPrice = findViewById(R.id.deliveryCost);
+        delItemPrice = findViewById(R.id.deliveryItemCost);
+
+        paidAmount = findViewById(R.id.deliveryPaidAmount);
+
+        sCity = findViewById(R.id.spinner_senderCity);
+        rCity = findViewById(R.id.spinner_receiverCity);
+        delType = findViewById(R.id.spinner_deliveryType);
+        sProvince = findViewById(R.id.spinner_senderProvince);
+        rProvince = findViewById(R.id.spinner_receiverProvince);
+    }
+
+
+    public void putIncomingData(Orders order) {
+        sName.setText(order.senderName);
+        sPhone.setText(order.senderPhone);
+        sAdres.setText(order.senderAddress);
+        sComp.setText(order.senderCompany);
+        rName.setText(order.receiverName);
+        rPhone.setText(order.receiverPhone);
+        rAdres.setText(order.receiverAddress);
+        rComp.setText(order.receiverCompany);
+
+        sProvince.setSelection(getIndex(sProvince, StringData.getProvince(order.senderCity)));
+        rProvince.setSelection(getIndex(rProvince, StringData.getProvince(order.receiverCity)));
+
+        sCity.setSelection(getIndex(sCity, order.senderCity));
+        rCity.setSelection(getIndex(rCity, order.receiverCity));
+    }
+
+    private int getIndex(Spinner spinner, String myString) {
+
+        int index = 0;
+
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).equals(myString)) {
+                index = i;
+            }
+        }
+        return index;
+    }
+
+    private ShapeDrawable getShape(int color) {
+
+        ShapeDrawable shape = new ShapeDrawable(new RectShape());
+        shape.getPaint().setColor(color);
+        shape.getPaint().setStyle(Paint.Style.STROKE);
+        shape.getPaint().setStrokeWidth(3);
+
+        return shape;
+    }
+
+    private boolean deliveryDataCheck() {
+
+        boolean ok = true;
+
+        if (delItemPrice.getText().toString().length() == 0) {
+            delItemPrice.setText("0");
+        } else if (Long.parseLong(delItemPrice.getText().toString()) > 0) {
+            if (rg_buying.getCheckedRadioButtonId() == -1) {
+                ok = false;
+                String message = "Выкуп түрүн тандабадыңыз.";
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            }
+        }
+
+        if (rg_payment.getCheckedRadioButtonId() == -1) {
+            ok = false;
+            String message = "Төлөм түрүн тандабадыңыз.";
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        }
+
+        if (sCity.getSelectedItem().toString().length() < 1) {
+            sCity.setBackground(getShape(Color.MAGENTA));
+            ok = false;
+        } else {
+            sCity.setBackgroundColor(Color.WHITE);
+        }
+        if (sName.length() < 1) {
+            sName.setBackground(getShape(Color.MAGENTA));
+            ok = false;
+        } else {
+            sName.setBackgroundColor(Color.WHITE);
+        }
+        if (sAdres.length() < 1) {
+            sAdres.setBackground(getShape(Color.MAGENTA));
+            ok = false;
+        } else {
+            sAdres.setBackgroundColor(Color.WHITE);
+        }
+        if (sPhone.length() != 10) {
+            sPhone.setBackground(getShape(Color.MAGENTA));
+            ok = false;
+        } else {
+            sPhone.setBackgroundColor(Color.WHITE);
+        }
+
+        if (rName.length() < 1) {
+            rName.setBackground(getShape(Color.MAGENTA));
+            ok = false;
+        } else {
+            rName.setBackgroundColor(Color.WHITE);
+        }
+        if (rPhone.length() != 10) {
+            rPhone.setBackground(getShape(Color.MAGENTA));
+            ok = false;
+        } else {
+            rPhone.setBackgroundColor(Color.WHITE);
+        }
+
+        if (rCity.getSelectedItem().toString().length() < 1) {
+            rCity.setBackground(getShape(Color.MAGENTA));
+            ok = false;
+        } else {
+            rCity.setBackgroundColor(Color.WHITE);
+        }
+        if (delCount.length() < 1) {
+            delCount.setBackground(getShape(Color.MAGENTA));
+            ok = false;
+        } else {
+            delCount.setBackgroundColor(Color.WHITE);
+        }
+
+        if (delPrice.length() < 1) {
+            delPrice.setBackground(getShape(Color.MAGENTA));
+            ok = false;
+        } else {
+            delPrice.setBackgroundColor(Color.WHITE);
+        }
+
+        if (!ok) {
+            String message = getResources().getString(R.string.FillAllDataCorrectly);
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        }
+
+        return ok;
+    }
+
+
+    public void getSenderCustomers(final String phone, final String company) {
+
+        String tag_string_req = "req_get_customers";
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("phone", phone);
+            jsonObject.put("company", company);
+            jsonObject.put("city", "");
+            jsonObject.put("address", "");
+            jsonObject.put("responsiblePerson", "");
+            jsonObject.put("customerId", "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_CUSTOMER_GET, jsonObject,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d(TAG, "List customers Response: " + response);
+                        try {
+                            if (response.length() > 0) {
+
+                                String[] custs = new String[response.length()];
+                                for (int i = 0; i < response.length(); i++) {
+                                    JSONObject c = response.getJSONObject(i);
+                                    custs[i] = c.getString("phone") + "__" + c.getString("responsiblePerson") + "__" + c.getString("address") + "__" + c.getString("city") + "__" + c.getString("company");
+                                }
+                                // update the adapater
+                                myAdapterS = new ArrayAdapter<String>(DeliveryEntry.this, android.R.layout.simple_dropdown_item_1line, custs);
+                                myAdapterSC = new ArrayAdapter<String>(DeliveryEntry.this, android.R.layout.simple_dropdown_item_1line, custs);
+                                sPhone.setAdapter(myAdapterS);
+                                sComp.setAdapter(myAdapterSC);
+                                myAdapterS.notifyDataSetChanged();
+                                myAdapterSC.notifyDataSetChanged();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error instanceof AuthFailureError) {
+                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(DeliveryEntry.this, LoginActivity.class);
+                    startActivity(loginIntent);
+                } else {
+                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                hideDialog();
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", token);
+                return headers;
+            }
+        };
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(req, tag_string_req);
+    }
+
+
+    public void getReceiverCustomers(final String phone, final String company) {
+
+        String tag_string_req = "req_get_customers";
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("phone", phone);
+            jsonObject.put("company", company);
+            jsonObject.put("city", "");
+            jsonObject.put("address", "");
+            jsonObject.put("responsiblePerson", "");
+            jsonObject.put("customerId", "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_CUSTOMER_GET, jsonObject,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d(TAG, "List customers Response: " + response);
+
+                        try {
+                            if (response.length() > 0) {
+
+                                String[] custs = new String[response.length()];
+                                for (int i = 0; i < response.length(); i++) {
+                                    JSONObject c = response.getJSONObject(i);
+                                    custs[i] = c.getString("phone") + "__" + c.getString("responsiblePerson") + "__" + c.getString("address") + "__" + c.getString("city") + "__" + c.getString("company");
+                                }
+                                myAdapterR = new ArrayAdapter<String>(DeliveryEntry.this, android.R.layout.simple_dropdown_item_1line, custs);
+                                rPhone.setAdapter(myAdapterR);
+                                myAdapterR.notifyDataSetChanged();
+                                myAdapterRC = new ArrayAdapter<String>(DeliveryEntry.this, android.R.layout.simple_dropdown_item_1line, custs);
+                                rComp.setAdapter(myAdapterRC);
+                                myAdapterRC.notifyDataSetChanged();
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error instanceof AuthFailureError) {
+                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(DeliveryEntry.this, LoginActivity.class);
+                    startActivity(loginIntent);
+                } else {
+                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                hideDialog();
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", token);
+                return headers;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(req, tag_string_req);
+    }
+}

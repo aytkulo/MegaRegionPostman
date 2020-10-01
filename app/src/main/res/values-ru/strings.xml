@@ -1,0 +1,220 @@
+<resources>
+    <string name="app_name">Курьер</string>
+    <string name="hint_email">Кыска аты (Username)</string>
+    <string name="hint_password">Пароль</string>
+    <string name="hint_new_password">Новый Пароль</string>
+    <string name="hint_name">Полная имя</string>
+    <string name="btn_login">ВОЙТИ</string>
+    <string name="btn_register">РЕГИСТРАЦИЯ</string>
+    <string name="btn_update">ОБНОВИТь</string>
+
+    <string name="Postman">Курьер</string>
+
+    <string name="senderLabel">Информация об отправителе</string>
+    <string name="receiverLabel">Информация о получателя</string>
+    <string name="deliveryLabel">Информация о посылке</string>
+    <string name="newDelivery">Новый заказ</string>
+    <string name="orderInformation">Информация о заказе</string>
+
+    <string name="saveInformation">Сохранить данные</string>
+
+    <string name="InformationWillBeDeleted">Информация будет удалена!</string>
+
+    <string name="Sender">Отправитель</string>
+    <string name="Receiver">Получатель</string>
+
+    <string name="Name">Имя</string>
+
+    <string name="Origin">Откуда:</string>
+    <string name="Destination">Куда:</string>
+    <string name="Province">Область</string>
+    <string name="City">Город</string>
+    <string name="Company">Фирма:</string>
+    <string name="FullName">Имя-фамилия</string>
+    <string name="PhoneNo">Тел:</string>
+    <string name="Address">Адрес</string>
+    <string name="Client">Клиент</string>
+    <string name="DeliveryType">Тип</string>
+    <string name="DeliveryCount">Кол.:</string>
+    <string name="ServiceCost">Стоимость</string>
+    <string name="PaidAmount">Оплачено</string>
+    <string name="ItemCost">Купил</string>
+    <string name="senderPaid">Оплата наличными за счет отправителя</string>
+    <string name="ItemPaid">Нерсе акысы төлөнөт.</string>
+    <string name="Attention">Примечание!!!</string>
+    <string name="AcceptRules">Согласeн с условиями.</string>
+    <string name="Clear">Очистить</string>
+    <string name="SaveSignature">Сохранить</string>
+    <string name="TakeSendersSignature">Подпись отправителя</string>
+    <string name="TakeReceiversSignature">Подпись получателя</string>
+    <string name="SaveDeliveryInformation">Сохранить данные об отправке</string>
+    <string name="DeliverDelivery">Доставить</string>
+    <string name="DeliverUpdate">Изменить данные</string>
+    <string name="AssignedPostman">Ответственный курьер</string>
+    <string name="AssignedSector">Участок</string>
+    <string name="SectorAndInfo">Учас+Инфо</string>
+    <string name="OrderSector">Участок</string>
+    <string name="DeliveredPostman">Доставил</string>
+    <string name="AcceptedPostman">Получил</string>
+    <string name="AddCustomerToDB">Добавить клиента в базу.</string>
+    <string name="CustomerInformation">Информация о клиенте</string>
+    <string name="SenderBankTransfer">Отправитель оплачивает через банк</string>
+    <string name="ReceiverBankTransfer">Получатель оплачивает через банк</string>
+    <string name="ReceiverPays">Оплата наличными за счет получателя</string>
+
+    <string name="BuyingDebt">Выкуп в долг.</string>
+    <string name="BuyingTransfer">Перечисление.</string>
+    <string name="BuyingCash">Оплата наличными.</string>
+
+    <string name="Date">Дата:</string>
+    <string name="Amount">Сумма</string>
+    <string name="Explanation">Информация</string>
+
+    <string name="Save">Сохранить</string>
+    <string name="Update">Обновить</string>
+    <string name="List">Список</string>
+    <string name="Search">Искать</string>
+    <string name="Delete">Удалить</string>
+
+
+    <string name="Close">Закрыть.</string>
+    <string name="NewExpense">Новый запись</string>
+
+    <string name="NewPayment">Жаңы подотчёт</string>
+    <string name="PodOtchet">Подотчёт</string>
+
+    <string name="TitleAttention">Внимание!!!</string>
+    <string name="UserWillBeDeleted">полностью удаляется из системы!</string>
+    <string name="UserDeleted">Пользователь полностью удалён из системы!</string>
+
+    <string name="DeliveryDelivered">Посылка доставлена.</string>
+    <string name="DeliveryAccepted">Курьер получил посылку.</string>
+
+    <string name="FillAllDataCorrectly">Заполнить все нужные поля.</string>
+
+    <string name="SendersSignature">Подпись отправителя</string>
+    <string name="ReceiversSignature">Подпись получателя</string>
+
+    <string name="AcceptMessage">Ваша отправка принята.</string>
+    <string name="DeliveryMessage">Ваша отправка доставлена.</string>
+    <string name="DeliveryNumber">Номер заказа:</string>
+
+    <string name="NotAcceptedYet">Не полученные заказы</string>
+
+
+    <string name="AcceptDelivery">Получение</string>
+    <string name="AssignedOrders">Заказы</string>
+    <string name="DeliveryDelivery">Доставка</string>
+    <string name="AssignDelivery">Бөлүштүрүү</string>
+    <string name="UpdateDelivery">Изменить данные</string>
+
+    <!-- Menu -->
+    <string name="DeliveryWho">ОТПРАВКИ КЛИЕНТА</string>
+    <string name="NewOrder">НОВЫЙ ЗАКАЗ</string>
+    <string name="OrderList">СПИСОК ЗАКАЗОВ</string>
+    <string name="DeliveryList">СПИСОК ПОСЫЛОК</string>
+    <string name="DeliveryDelete">УДАЛИТЬ ПОСЫЛКУ</string>
+    <string name="DeliveryStatus">НЕ ЗАКРЫТЫЕ</string>
+
+    <string name="CropClientList">КОРП. КЛИЕНТЫ</string>
+
+    <string name="ClientList">СПИСОК КЛИЕНТОВ</string>
+    <string name="ClientNew">НОВЫЙ КЛИЕНТ</string>
+    <string name="Reports">ОТЧЁТЫ</string>
+    <string name="Expenses">РАСХОДЫ</string>
+    <string name="Transactons">СПИСОК ПОДОТЧЁТ</string>
+    <string name="Collections">ОТЧЁТ КУРЬЕРА</string>
+    <string name="PostmanNew">НОВЫЙ КУРЬЕР</string>
+    <string name="PostmanDelete">УДАЛЕНИЕ КУРЬЕРА</string>
+    <string name="PostmanPositions">МЕСТО КУРЬЕРА</string>
+    <string name="smsSending">СМС РАССЫЛКА</string>
+    <string name="ChangePassword">Изменить пароль</string>
+    <string name="Logout">Выход</string>
+    <string name="Russian">Русский</string>
+    <string name="Kyrgyz">Кыргызча</string>
+
+    <string name="SEND">ОТПРАВИТЬ</string>
+    <string name="SMS">CMC</string>
+
+    <string name="LanguageChanged">Вы изменили язык программы!</string>
+
+
+    <string name="ifDifferentReceiver">ФИО фактического получателья.</string>
+
+    <string-array name="delivery_status">
+        <item>....</item>
+        <item>Отправка доставлена в офис курьерской фирмы.</item>
+        <item>Отправка отправлена в место назначение.</item>
+        <item>Курьер выехал на доставку.</item>
+        <item>Опоздание из за непредвиденных обстоятельств.</item>
+    </string-array>
+
+    <string name="CityBishkek">Бишкек</string>
+    <string name="CityOsh">Ош</string>
+    <string name="CityJalalAbad">Жалал-Абад</string>
+    <string name="CityTalas">Талас</string>
+    <string name="CityNaryn">Нарын</string>
+    <string name="CityBatken">Баткен</string>
+    <string name="CityKarakol">Каракол</string>
+
+    <string name="GenerateInvoice">Акт и счёт-фактура</string>
+    <string name="GenerateExpenseReport">Расход отчёту</string>
+
+    <string name="GenerateDeliveryBoughts">Список купленных</string>
+    <string name="GenerateDeliveryList">Список посылок</string>
+    <string name="GenerateFinancialReport">Финасовый отчёт</string>
+    <string name="BankPaidDeliveries">Список банковских переводов</string>
+
+
+    <string name="CashPayments">Наличный расчёт</string>
+    <string name="BankPayments">Банковские переводы</string>
+
+    <string name="FillTheReceiverData">Вы должны получить подпись получателя или указать имя фамилию!</string>
+
+
+    <string-array name="cities">
+
+        <item></item>
+        <item>Бишкек</item>
+        <item>Жалал-Абад</item>
+        <item>Ош</item>
+        <item>Нарын</item>
+        <item>Каракол</item>
+        <item>Талас</item>
+        <item>Баткен</item>
+        <item>Чуй</item>
+        <item>Токмок</item>
+        <item>Кара-Балта</item>
+        <item>Кочкор-Ата</item>
+        <item>Чолпон-Ата</item>
+        <item>Алма-Ата</item>
+        <item>Өзгөн</item>
+        <item>Москва</item>
+
+    </string-array>
+
+    <string-array name="roles">
+        <item>ADMIN</item>
+        <item>POSTMAN</item>
+        <item>OPERATOR</item>
+    </string-array>
+
+    <string-array name="deliveriTypes">
+        <item>ДОКУМЕНТ</item>
+        <item>КОНВЕРТ</item>
+        <item>КОРОБКА</item>
+        <item>ПАКЕТ</item>
+        <item>ДРУГОЕ</item>
+    </string-array>
+    <string name="title_activity_home">ЫЛДАМ EXPRESS</string>
+
+    <string name="google_maps_key">AIzaSyAA0GSr8VLEuKL6r0srOhYOH6Ojg4KCsgk</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_show_location">Map</string>
+    <string name="DeliveryAssign"/>
+
+</resources>

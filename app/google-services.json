@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "537235330714",
+    "firebase_url": "https://yldampostman.firebaseio.com",
+    "project_id": "yldampostman",
+    "storage_bucket": "yldampostman.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537235330714:android:d0828e37ea38456331b123",
+        "android_client_info": {
+          "package_name": "com.kg.yldampostman"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "537235330714-91f73u13kp8sh4utp4mhgmcsl9c88f9g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeswpBFiDDUAOXfCMdImIkc_pJNuB8BYQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "537235330714-91f73u13kp8sh4utp4mhgmcsl9c88f9g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

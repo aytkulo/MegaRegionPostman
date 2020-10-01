@@ -1,0 +1,2 @@
+rootProject.name='YldamPostman'
+include ':app'
