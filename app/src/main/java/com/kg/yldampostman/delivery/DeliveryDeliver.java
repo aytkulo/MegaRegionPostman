@@ -34,10 +34,13 @@ import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.helper.Signature;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.LoginActivity;
+import com.kg.yldampostman.utils.MyDialog;
+import com.kg.yldampostman.utils.NetworkUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -114,8 +117,12 @@ public class DeliveryDeliver extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (differentReceiver.length() > 0) {
-                    deliverDelivery(deliveryData.id, signatureString, deliveryData.ed_sPhone, currentUser, differentReceiver);
-                    CustomerHelper.saveCustomer(rName.getText().toString(), rPhone.getText().toString(), rComp.getText().toString(), rCity.getSelectedItem().toString(), rAdres.getText().toString(), token);
+                    try {
+                        deliverDelivery(deliveryData.id, signatureString, deliveryData.ed_sPhone, currentUser, differentReceiver);
+                        CustomerHelper.saveCustomer(rName.getText().toString(), rPhone.getText().toString(), rComp.getText().toString(), rCity.getSelectedItem().toString(), rAdres.getText().toString(), token);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 } else
                     Toast.makeText(getApplicationContext(), getString(R.string.FillTheReceiverData), Toast.LENGTH_LONG).show();// Set your own toast  message
             }
@@ -131,6 +138,7 @@ public class DeliveryDeliver extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case SIGNATURE_ACTIVITY:
                 if (resultCode == RESULT_OK) {
@@ -146,81 +154,86 @@ public class DeliveryDeliver extends AppCompatActivity {
         }
     }
 
-    private void deliverDelivery(final String id, final String signature, final String sPhone, final String currentUser, final String differentReceiver) {
-        // Tag used to cancel the request
-        String tag_string_req = "req_deliver_delivery";
+    private void deliverDelivery(final String id, final String signature, final String sPhone, final String currentUser, final String differentReceiver) throws ParseException {
 
-        pDialog.setMessage("Saving Data ...");
-        showDialog();
+        if (!NetworkUtil.isNetworkConnected(DeliveryDeliver.this)) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryDeliver.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryDeliver.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
+            // Tag used to cancel the request
+            String tag_string_req = "req_deliver_delivery";
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("deliveryId", id);
-            jsonObject.put("signature", signature);
-            jsonObject.put("user", currentUser);
-            jsonObject.put("receiverName", differentReceiver);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            pDialog.setMessage("Saving Data ...");
+            showDialog();
 
-        JsonObjectRequest req = new JsonObjectRequest(AppConfig.URL_DELIVERY_DELIVER, jsonObject,
-                new Response.Listener<JSONObject>() {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("deliveryId", id);
+                jsonObject.put("signature", signature);
+                jsonObject.put("user", currentUser);
+                jsonObject.put("receiverName", differentReceiver);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "Data Saving Response: " + response);
-                        hideDialog();
-                        try {
+            JsonObjectRequest req = new JsonObjectRequest(AppConfig.URL_DELIVERY_DELIVER, jsonObject,
+                    new Response.Listener<JSONObject>() {
 
-                            if (response.getString("deliveryId").length() > 0) {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "Data Saving Response: " + response);
+                            hideDialog();
+                            try {
 
-                                String expl = getResources().getString(R.string.DeliveryDelivered);
-                                expl = getResources().getString(R.string.DeliveryMessage) + " ЫЛДАМ Express.";
-                                if (differentReceiver.length() > 0)
-                                    expl = expl + "(" + differentReceiver + ")";
-                                SMSManager.sendAcceptanceSMS(sPhone, expl);
+                                if (response.getString("deliveryId").length() > 0) {
 
-                                Bundle b = new Bundle();
-                                b.putString("STATUS", HelperConstants.DELIVERYDELIVERED);
-                                Intent intent = new Intent();
-                                intent.putExtras(b);
-                                setResult(RESULT_OK, intent);
-                                finish();
+                                    String expl = getResources().getString(R.string.DeliveryDelivered);
+                                    expl = getResources().getString(R.string.DeliveryMessage) + " ЫЛДАМ Express.";
+                                    if (differentReceiver.length() > 0)
+                                        expl = expl + "(" + differentReceiver + ")";
+                                    SMSManager.sendAcceptanceSMS(sPhone, expl);
 
-                            } else {
-                                // Error in login. Get the error message
-                                Toast.makeText(getApplicationContext(),
-                                        "Error on saving dalivery data.", Toast.LENGTH_LONG).show();
+                                    Bundle b = new Bundle();
+                                    b.putString("STATUS", HelperConstants.DELIVERYDELIVERED);
+                                    Intent intent = new Intent();
+                                    intent.putExtras(b);
+                                    setResult(RESULT_OK, intent);
+                                    finish();
+
+                                } else {
+                                    MyDialog.createSimpleOkErrorDialog(DeliveryDeliver.this,
+                                            getApplicationContext().getString(R.string.dialog_error_title),
+                                            getApplicationContext().getString(R.string.NoData)).show();
+                                }
+                            } catch (JSONException e) {
+                                MyDialog.createSimpleOkErrorDialog(DeliveryDeliver.this,
+                                        getApplicationContext().getString(R.string.dialog_error_title),
+                                        getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
                             }
-                        } catch (JSONException e) {
-                            // JSON error
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
-                    }
-                }, new Response.ErrorListener() {
+                    }, new Response.ErrorListener() {
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error instanceof AuthFailureError) {
-                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
-                    Intent loginIntent = new Intent(DeliveryDeliver.this, LoginActivity.class);
-                    startActivity(loginIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(DeliveryDeliver.this, error);
+                    hideDialog();
                 }
-                hideDialog();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", token);
-                return headers;
-            }
-        };
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(req, tag_string_req);
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", token);
+                    return headers;
+                }
+            };
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
     }
 
     private void showDialog() {

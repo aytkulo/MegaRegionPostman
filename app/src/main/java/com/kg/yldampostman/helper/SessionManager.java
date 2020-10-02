@@ -29,6 +29,7 @@ public class SessionManager {
     private static final String KEY_CITY = "CITY";
     private static final String KEY_USERNAME = "USERNAME";
     private static final String KEY_NAMESURNAME = "NAMESURNAME";
+    private static final String KEY_TILLDATE = "TILLDATE";
 
     public SessionManager(Context context) {
         this._context = context;
@@ -43,13 +44,14 @@ public class SessionManager {
         Log.d(TAG, "User login session modified!");
     }
 
-    public void setUser(String token, String role, String city, String username, String name) {
+    public void setUser(String token, String role, String city, String username, String name, String tillDate) {
 
         editor.putString(KEY_TOKEN, token);
         editor.putString(KEY_CITY, city);
         editor.putString(KEY_ROLE, role);
         editor.putString(KEY_USERNAME, username);
         editor.putString(KEY_NAMESURNAME, name);
+        editor.putString(KEY_TILLDATE, tillDate);
         editor.commit();
         Log.d(TAG, "User login session modified!");
     }
@@ -80,5 +82,9 @@ public class SessionManager {
 
     public String getToken() {
         return pref.getString(KEY_TOKEN, "Bearer ");
+    }
+
+    public String getTillDate() {
+        return pref.getString(KEY_TILLDATE, "");
     }
 }

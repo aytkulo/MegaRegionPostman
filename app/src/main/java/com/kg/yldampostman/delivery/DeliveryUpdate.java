@@ -38,10 +38,13 @@ import com.kg.yldampostman.helper.SQLiteHandler;
 import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.LoginActivity;
+import com.kg.yldampostman.utils.MyDialog;
+import com.kg.yldampostman.utils.NetworkUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -150,7 +153,7 @@ public class DeliveryUpdate extends AppCompatActivity {
                                 delType.getSelectedItem().toString(), delCount.getText().toString(), delPrice.getText().toString(), paidAmount.getText().toString(), delItemPrice.getText().toString(),
                                 getRadioGroupValue(), delExpl.getText().toString(), deliveryData.id, currentUser, getBuyingRadioGroupValue());
                     } catch (Exception e) {
-                        throw e;
+                        e.printStackTrace();
                     }
                 }
 
@@ -177,101 +180,94 @@ public class DeliveryUpdate extends AppCompatActivity {
     private void updateDelivery(final String sName, final String sPhone, final String sComp, final String sCity, final String sAddress,
                                 final String rName, final String rPhone, final String rComp, final String rCity, final String rAddress,
                                 final String delType, final String delCount, final String delCost, final String paidAmount, final String deliCost,
-                                final String paymentType, final String delExpl, final String id, final String user, final String buyType) {
-        // Tag used to cancel the request
-        String tag_string_req = "req_update_delivery";
+                                final String paymentType, final String delExpl, final String id, final String user, final String buyType) throws ParseException {
 
-        pDialog.setMessage("Saving Data ...");
-        showDialog();
+        if (!NetworkUtil.isNetworkConnected(DeliveryUpdate.this)) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryUpdate.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryUpdate.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
+            // Tag used to cancel the request
+            String tag_string_req = "req_update_delivery";
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("senderName", sName);
-            jsonObject.put("senderPhone", sPhone);
-            jsonObject.put("senderAddress", sAddress);
-            jsonObject.put("senderCity", sCity);
-            jsonObject.put("senderCompany", sComp);
-            jsonObject.put("receiverName", rName);
-            jsonObject.put("receiverPhone", rPhone);
-            jsonObject.put("receiverAddress", rAddress);
-            jsonObject.put("receiverCity", rCity);
-            jsonObject.put("receiverCompany", rComp);
-            jsonObject.put("deliveryType", delType);
-            jsonObject.put("deliveryCount", delCount);
-            jsonObject.put("deliveryCost", delCost);
-            jsonObject.put("paidAmount", paidAmount);
-            jsonObject.put("deliveryiCost", deliCost);
-            jsonObject.put("deliveryExplanation", delExpl);
-            jsonObject.put("paymentType", paymentType);
-            jsonObject.put("buyType", buyType);
-            jsonObject.put("deliveryId", id);
-            jsonObject.put("user", user);
+            pDialog.setMessage("Saving Data ...");
+            showDialog();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("senderName", sName);
+                jsonObject.put("senderPhone", sPhone);
+                jsonObject.put("senderAddress", sAddress);
+                jsonObject.put("senderCity", sCity);
+                jsonObject.put("senderCompany", sComp);
+                jsonObject.put("receiverName", rName);
+                jsonObject.put("receiverPhone", rPhone);
+                jsonObject.put("receiverAddress", rAddress);
+                jsonObject.put("receiverCity", rCity);
+                jsonObject.put("receiverCompany", rComp);
+                jsonObject.put("deliveryType", delType);
+                jsonObject.put("deliveryCount", delCount);
+                jsonObject.put("deliveryCost", delCost);
+                jsonObject.put("paidAmount", paidAmount);
+                jsonObject.put("deliveryiCost", deliCost);
+                jsonObject.put("deliveryExplanation", delExpl);
+                jsonObject.put("paymentType", paymentType);
+                jsonObject.put("buyType", buyType);
+                jsonObject.put("deliveryId", id);
+                jsonObject.put("user", user);
 
-        JsonObjectRequest strReq = new JsonObjectRequest(AppConfig.URL_DELIVERY_UPDATE, jsonObject,
-                new Response.Listener<JSONObject>() {
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "Data Saving Response: " + response);
-                        hideDialog();
+            JsonObjectRequest strReq = new JsonObjectRequest(AppConfig.URL_DELIVERY_UPDATE, jsonObject,
+                    new Response.Listener<JSONObject>() {
 
-                        if (response != null) {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "Data Saving Response: " + response);
+                            hideDialog();
 
-                            Bundle b = new Bundle();
-                            b.putString("STATUS", HelperConstants.DELIVERYACCEPTED);
-                            Intent intent = new Intent();
-                            intent.putExtras(b);
-                            setResult(RESULT_OK, intent);
-                            finish();
+                            if (response != null) {
 
-                        } else {
-                            // Error in login. Get the error message
-                            Toast.makeText(getApplicationContext(),
-                                    "Error on saving dalivery data.", Toast.LENGTH_LONG).show();
+                                Bundle b = new Bundle();
+                                b.putString("STATUS", HelperConstants.DELIVERYACCEPTED);
+                                Intent intent = new Intent();
+                                intent.putExtras(b);
+                                setResult(RESULT_OK, intent);
+                                finish();
+
+                            } else {
+                                MyDialog.createSimpleOkErrorDialog(DeliveryUpdate.this,
+                                        getApplicationContext().getString(R.string.dialog_error_title),
+                                        getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
+                            }
+
                         }
+                    }, new Response.ErrorListener() {
 
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                    Toast.makeText(getApplicationContext(), "Timeout же интернет жок",Toast.LENGTH_LONG).show();
-                } else if (error instanceof AuthFailureError) {
-                    if(error.networkResponse.statusCode == 403)
-                    {
-                        Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!",Toast.LENGTH_LONG).show();
-                        Intent loginIntent = new Intent(DeliveryUpdate.this, LoginActivity.class);
-                        startActivity(loginIntent);
-                    }
-                    else if(error.networkResponse.statusCode == 401)
-                    {
-                        Toast.makeText(getApplicationContext(), "Өзгөртүү үчүн уруксат жок. Администратор тарабынан жабылган!",Toast.LENGTH_LONG).show();
-                    }
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(DeliveryUpdate.this, error);
+                    hideDialog();
                 }
-                else
-                {
-                    Toast.makeText(getApplicationContext(), error.getMessage(),Toast.LENGTH_LONG).show();
+            }) {
+
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", token);
+                    return headers;
                 }
-                hideDialog();
-            }
-        }) {
+            };
 
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", token);
-                return headers;
-            }
-        };
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+        }
     }
 
 

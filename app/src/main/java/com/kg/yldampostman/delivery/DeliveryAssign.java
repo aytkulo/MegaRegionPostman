@@ -27,11 +27,14 @@ import com.kg.yldampostman.helper.HelperConstants;
 import com.kg.yldampostman.helper.SQLiteHandler;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.LoginActivity;
+import com.kg.yldampostman.utils.MyDialog;
+import com.kg.yldampostman.utils.NetworkUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,61 +85,79 @@ public class DeliveryAssign extends AppCompatActivity {
 
         btn_assign.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                updateDelivery(spn_users.getSelectedItem().toString(), delivery.id);
+                try {
+                    updateDelivery(spn_users.getSelectedItem().toString(), delivery.id);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
-    private void updateDelivery(final String assignedSector, final String id) {
-        // Tag used to cancel the request
-        String tag_string_req = "req_assign_delivery";
+    private void updateDelivery(final String assignedSector, final String id) throws ParseException {
 
-        pDialog.setMessage("Saving Data ...");
-        showDialog();
+        if (!NetworkUtil.isNetworkConnected(DeliveryAssign.this)) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryAssign.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryAssign.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("deliveryId", id);
-            jsonObject.put("assignedSector", assignedSector);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        JsonObjectRequest req = new JsonObjectRequest(AppConfig.URL_DELIVERY_ASSIGN, jsonObject,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        hideDialog();
+            // Tag used to cancel the request
+            String tag_string_req = "req_assign_delivery";
 
-                        if (response != null) {
-                            Bundle b = new Bundle();
-                            b.putString("STATUS", HelperConstants.DELIVERYASSIGNED);
-                            Intent intent = new Intent();
-                            intent.putExtras(b);
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        } else {
-                            Toast.makeText(getApplicationContext(),
-                                    "Error on assigning responsible.", Toast.LENGTH_LONG).show();
+            pDialog.setMessage("Saving Data ...");
+            showDialog();
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("deliveryId", id);
+                jsonObject.put("assignedSector", assignedSector);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JsonObjectRequest req = new JsonObjectRequest(AppConfig.URL_DELIVERY_ASSIGN, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            hideDialog();
+
+                            if (response != null) {
+                                Bundle b = new Bundle();
+                                b.putString("STATUS", HelperConstants.DELIVERYASSIGNED);
+                                Intent intent = new Intent();
+                                intent.putExtras(b);
+                                setResult(RESULT_OK, intent);
+                                finish();
+                            } else {
+                                MyDialog.createSimpleOkErrorDialog(DeliveryAssign.this,
+                                        getApplicationContext().getString(R.string.dialog_error_title),
+                                        getApplicationContext().getString(R.string.NoData)).show();
+                            }
+
                         }
+                    }, new Response.ErrorListener() {
 
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                hideDialog();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", HomeActivity.token);
-                return headers;
-            }
-        };
-        AppController.getInstance().addToRequestQueue(req, tag_string_req);
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(DeliveryAssign.this, error);
+                    hideDialog();
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", HomeActivity.token);
+                    return headers;
+                }
+            };
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
     }
 
 

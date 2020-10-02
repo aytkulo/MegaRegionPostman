@@ -34,11 +34,14 @@ import com.kg.yldampostman.helper.HelperConstants;
 import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.LoginActivity;
+import com.kg.yldampostman.utils.MyDialog;
+import com.kg.yldampostman.utils.NetworkUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -128,7 +131,11 @@ public class DeliveryList extends AppCompatActivity {
 
                 deliveryList.clear();
                 listViewDeliveries.setAdapter(null);
-                listDeliveries(ed_Date.getText().toString(), ed_Address.getText().toString(), ed_Name.getText().toString(), ed_Phone.getText().toString());
+                try {
+                    listDeliveries(ed_Date.getText().toString(), ed_Address.getText().toString(), ed_Name.getText().toString(), ed_Phone.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -226,127 +233,129 @@ public class DeliveryList extends AppCompatActivity {
     }
 
 
-    public void listDeliveries(final String entryDate, final String address, final String name, final String phone) {
+    public void listDeliveries(final String entryDate, final String address, final String name, final String phone) throws ParseException {
 
-        String tag_string_req = "req_get_deliveries";
-        pDialog.setMessage("Listing Deliveries ...");
-        showDialog();
+        if (!NetworkUtil.isNetworkConnected(DeliveryList.this)) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
+            String tag_string_req = "req_get_deliveries";
+            pDialog.setMessage("Listing Deliveries ...");
+            showDialog();
 
-        deliveryList.clear();
-        listViewDeliveries.setAdapter(null);
+            deliveryList.clear();
+            listViewDeliveries.setAdapter(null);
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("entryDate", entryDate);
-            jsonObject.put("status", status);
-            jsonObject.put("receiverCity", receiverCity + "%");
-            jsonObject.put("senderCity", senderCity + "%");
-            jsonObject.put("assignedSector", responsible + "%");
-            jsonObject.put("acceptedPerson", accepted_person + "%");
-            jsonObject.put("address", address + "%");
-            jsonObject.put("name", name + "%");
-            jsonObject.put("phone", phone + "%");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("entryDate", entryDate);
+                jsonObject.put("status", status);
+                jsonObject.put("receiverCity", receiverCity + "%");
+                jsonObject.put("senderCity", senderCity + "%");
+                jsonObject.put("assignedSector", responsible + "%");
+                jsonObject.put("acceptedPerson", accepted_person + "%");
+                jsonObject.put("address", address + "%");
+                jsonObject.put("name", name + "%");
+                jsonObject.put("phone", phone + "%");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-        CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_DELIVERY_LIST, jsonObject,
-                new Response.Listener<JSONArray>() {
+            CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_DELIVERY_LIST, jsonObject,
+                    new Response.Listener<JSONArray>() {
 
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        Log.d(TAG, "Deliveries List Response: " + response);
-                        hideDialog();
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            Log.d(TAG, "Deliveries List Response: " + response);
+                            hideDialog();
 
-                        try {
-                            // Check for error node in json
-                            if (response.length() > 0) {
+                            try {
+                                // Check for error node in json
+                                if (response.length() > 0) {
 
-                                for (int i = 0; i < response.length(); i++) {
+                                    for (int i = 0; i < response.length(); i++) {
 
-                                    JSONObject c = response.getJSONObject(i);
-                                    Delivery o = new Delivery();
-                                    // Storing each json item in variable
-                                    o.number = i + 1;
-                                    o.sFullName = c.getString("senderName") + " - " + c.getString("senderPhone") + " - " + c.getString("senderCompany");
-                                    o.sFullAddress = c.getString("senderCity") + " - " + c.getString("senderAddress");
-                                    o.rFullName = c.getString("receiverName") + " - " + c.getString("receiverPhone") + " - " + c.getString("receiverCompany");
-                                    o.rFullAddress = c.getString("receiverCity") + " - " + c.getString("receiverAddress");
+                                        JSONObject c = response.getJSONObject(i);
+                                        Delivery o = new Delivery();
+                                        // Storing each json item in variable
+                                        o.number = i + 1;
+                                        o.sFullName = c.getString("senderName") + " - " + c.getString("senderPhone") + " - " + c.getString("senderCompany");
+                                        o.sFullAddress = c.getString("senderCity") + " - " + c.getString("senderAddress");
+                                        o.rFullName = c.getString("receiverName") + " - " + c.getString("receiverPhone") + " - " + c.getString("receiverCompany");
+                                        o.rFullAddress = c.getString("receiverCity") + " - " + c.getString("receiverAddress");
 
-                                    o.id = c.getString("deliveryId");
-                                    o.ed_sCity = c.getString("senderCity");
-                                    o.ed_sPhone = c.getString("senderPhone");
-                                    o.ed_sCompany = c.getString("senderCompany");
-                                    o.ed_sAddress = c.getString("senderAddress");
-                                    o.ed_sName = c.getString("senderName");
-                                    o.ed_rCity = c.getString("receiverCity");
-                                    o.ed_rName = c.getString("receiverName");
-                                    o.ed_rPhone = c.getString("receiverPhone");
-                                    o.ed_rAddress = c.getString("receiverAddress");
-                                    o.ed_rCompany = c.getString("receiverCompany");
-                                    o.status = c.getString("status");
-                                    o.entrydate = c.getString("entryDate");
+                                        o.id = c.getString("deliveryId");
+                                        o.ed_sCity = c.getString("senderCity");
+                                        o.ed_sPhone = c.getString("senderPhone");
+                                        o.ed_sCompany = c.getString("senderCompany");
+                                        o.ed_sAddress = c.getString("senderAddress");
+                                        o.ed_sName = c.getString("senderName");
+                                        o.ed_rCity = c.getString("receiverCity");
+                                        o.ed_rName = c.getString("receiverName");
+                                        o.ed_rPhone = c.getString("receiverPhone");
+                                        o.ed_rAddress = c.getString("receiverAddress");
+                                        o.ed_rCompany = c.getString("receiverCompany");
+                                        o.status = c.getString("status");
+                                        o.entrydate = c.getString("entryDate");
 
-                                    o.ed_dType = c.getString("deliveryType");
-                                    o.ed_dCount = c.getString("deliveryCount");
-                                    o.ed_dCost = c.getString("deliveryCost");
-                                    o.ed_diCost = c.getString("deliveryiCost");
-                                    o.ed_payment = c.getString("paymentType");
-                                    o.ed_dExpl = c.getString("deliveryExplanation");
-                                    o.ed_assignedPerson = c.getString("assignedSector");
-                                    o.ed_acceptedPerson = c.getString("acceptedPerson");
-                                    o.ed_deliveredPerson = c.getString("deliveredPerson").toString();
-                                    o.deliveredDate = c.getString("deliveredDate").toString();
-                                    o.ed_paidAmount = c.getString("paidAmount");
-                                    o.ed_buytype = c.getString("buyType");
+                                        o.ed_dType = c.getString("deliveryType");
+                                        o.ed_dCount = c.getString("deliveryCount");
+                                        o.ed_dCost = c.getString("deliveryCost");
+                                        o.ed_diCost = c.getString("deliveryiCost");
+                                        o.ed_payment = c.getString("paymentType");
+                                        o.ed_dExpl = c.getString("deliveryExplanation");
+                                        o.ed_assignedPerson = c.getString("assignedSector");
+                                        o.ed_acceptedPerson = c.getString("acceptedPerson");
+                                        o.ed_deliveredPerson = c.getString("deliveredPerson").toString();
+                                        o.deliveredDate = c.getString("deliveredDate").toString();
+                                        o.ed_paidAmount = c.getString("paidAmount");
+                                        o.ed_buytype = c.getString("buyType");
 
-                                    deliveryList.add(o);
+                                        deliveryList.add(o);
+                                    }
+
+                                    if (deliveryList.size() > 0) {
+                                        DeliveryListAdapter orderListAdapter = new DeliveryListAdapter(deliveryList, DeliveryList.this);
+                                        listViewDeliveries.setAdapter(orderListAdapter);
+                                    }
+
+                                } else {
+                                    MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
+                                            getApplicationContext().getString(R.string.dialog_error_title),
+                                            getApplicationContext().getString(R.string.NoData)).show();
                                 }
-
-                                if (deliveryList.size() > 0) {
-                                    DeliveryListAdapter orderListAdapter = new DeliveryListAdapter(deliveryList, DeliveryList.this);
-                                    listViewDeliveries.setAdapter(orderListAdapter);
-                                }
-
-                            } else {
-                                // Error in login. Get the error message
-                                Toast.makeText(getApplicationContext(),
-                                        "Эч нерсе табылбады, же ката пайда болду!", Toast.LENGTH_LONG).show();
+                            } catch (JSONException e) {
+                                MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
+                                        getApplicationContext().getString(R.string.dialog_error_title),
+                                        getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
                             }
-                        } catch (JSONException e) {
-                            // JSON error
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
                         }
+                    }, new Response.ErrorListener() {
 
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                if (error instanceof AuthFailureError) {
-                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
-                    Intent loginIntent = new Intent(DeliveryList.this, LoginActivity.class);
-                    startActivity(loginIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(DeliveryList.this, error);
+                    hideDialog();
                 }
-                hideDialog();
-            }
-        }) {
+            }) {
 
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", token);
-                return headers;
-            }
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", token);
+                    return headers;
+                }
 
-        };
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(req, tag_string_req);
-
+            };
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
     }
 
 

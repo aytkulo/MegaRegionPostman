@@ -28,16 +28,20 @@ import com.kg.yldampostman.HomeActivity;
 import com.kg.yldampostman.R;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
+import com.kg.yldampostman.delivery.DeliveryDeliver;
 import com.kg.yldampostman.delivery.DeliveryEntry;
 import com.kg.yldampostman.helper.CustomJsonArrayRequest;
 import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.LoginActivity;
+import com.kg.yldampostman.utils.MyDialog;
+import com.kg.yldampostman.utils.NetworkUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -137,7 +141,11 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
             public void onClick(View v) {
                 orderList.clear();
                 listViewOrders.setAdapter(null);
-                listOrders(ed_Date.getText().toString(), "0", sp_Sector.getSelectedItem().toString(), sp_Origin.getSelectedItem().toString());
+                try {
+                    listOrders(ed_Date.getText().toString(), "0", sp_Sector.getSelectedItem().toString(), sp_Origin.getSelectedItem().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -230,97 +238,105 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
     }
 
 
-    public void listOrders(final String entryDate, final String status, final String responsible, final String origin) {
+    public void listOrders(final String entryDate, final String status, final String responsible, final String origin) throws ParseException {
 
-        String tag_string_req = "req_getOrders";
-        pDialog.setMessage("Listing orders ...");
-        showDialog();
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("entryDate", entryDate);
-            jsonObject.put("status", status);
-            jsonObject.put("sector", responsible);
-            jsonObject.put("origin", origin);
-            jsonObject.put("destination", "");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        if (!NetworkUtil.isNetworkConnected(OrderListAssigned.this)) {
+            MyDialog.createSimpleOkErrorDialog(OrderListAssigned.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(OrderListAssigned.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
+            String tag_string_req = "req_getOrders";
+            pDialog.setMessage("Listing orders ...");
+            showDialog();
 
-        CustomJsonArrayRequest strReq = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_ORDER_GET, jsonObject,
-                new Response.Listener<JSONArray>() {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("entryDate", entryDate);
+                jsonObject.put("status", status);
+                jsonObject.put("sector", responsible);
+                jsonObject.put("origin", origin);
+                jsonObject.put("destination", "");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        hideDialog();
-                        try {
-                            // Check for error node in json
-                            if (response.length() > 0) {
+            CustomJsonArrayRequest strReq = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_ORDER_GET, jsonObject,
+                    new Response.Listener<JSONArray>() {
 
-                                for (int i = 0; i < response.length(); i++) {
-                                    JSONObject c = response.getJSONObject(i);
-                                    Orders o = new Orders();
-                                    // Storing each json item in variable
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            hideDialog();
+                            try {
+                                // Check for error node in json
+                                if (response.length() > 0) {
 
-                                    o.Name = c.getString("senderPhone") + " - " + c.getString("senderName") + " - " + c.getString("senderCompany");
-                                    o.Address = c.getString("senderCity") + " - " + c.getString("senderAddress");
-                                    o.responsible = c.getString("assignedSector");
+                                    for (int i = 0; i < response.length(); i++) {
+                                        JSONObject c = response.getJSONObject(i);
+                                        Orders o = new Orders();
+                                        // Storing each json item in variable
 
-                                    o.id = c.getString("orderId");
-                                    o.senderCity = c.getString("senderCity");
-                                    o.senderPhone = c.getString("senderPhone");
-                                    o.senderCompany = c.getString("senderCompany");
-                                    o.senderAddress = c.getString("senderAddress");
-                                    o.senderName = c.getString("senderName");
-                                    o.receiverCity = c.getString("receiverCity");
-                                    o.receiverName = c.getString("receiverName");
-                                    o.receiverPhone = c.getString("receiverPhone");
-                                    o.receiverAddress = c.getString("receiverAddress");
-                                    o.receiverCompany = c.getString("receiverCompany");
-                                    o.status = c.getString("status");
-                                    o.entrydate = c.getString("entryDate");
-                                    o.time = c.getString("entryTime");
+                                        o.Name = c.getString("senderPhone") + " - " + c.getString("senderName") + " - " + c.getString("senderCompany");
+                                        o.Address = c.getString("senderCity") + " - " + c.getString("senderAddress");
+                                        o.responsible = c.getString("assignedSector");
 
-                                    orderList.add(o);
+                                        o.id = c.getString("orderId");
+                                        o.senderCity = c.getString("senderCity");
+                                        o.senderPhone = c.getString("senderPhone");
+                                        o.senderCompany = c.getString("senderCompany");
+                                        o.senderAddress = c.getString("senderAddress");
+                                        o.senderName = c.getString("senderName");
+                                        o.receiverCity = c.getString("receiverCity");
+                                        o.receiverName = c.getString("receiverName");
+                                        o.receiverPhone = c.getString("receiverPhone");
+                                        o.receiverAddress = c.getString("receiverAddress");
+                                        o.receiverCompany = c.getString("receiverCompany");
+                                        o.status = c.getString("status");
+                                        o.entrydate = c.getString("entryDate");
+                                        o.time = c.getString("entryTime");
+
+                                        orderList.add(o);
+                                    }
+
+                                    if (orderList.size() > 0) {
+                                        OrderListAdapter orderListAdapter = new OrderListAdapter(orderList, OrderListAssigned.this);
+                                        listViewOrders.setAdapter(orderListAdapter);
+                                    }
+
+                                } else {
+                                    MyDialog.createSimpleOkErrorDialog(OrderListAssigned.this,
+                                            getApplicationContext().getString(R.string.dialog_error_title),
+                                            getApplicationContext().getString(R.string.NoData)).show();
                                 }
-
-                                if (orderList.size() > 0) {
-                                    OrderListAdapter orderListAdapter = new OrderListAdapter(orderList, OrderListAssigned.this);
-                                    listViewOrders.setAdapter(orderListAdapter);
-                                }
-
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Эч нерсе табылбады, же ката пайда болду!", Toast.LENGTH_LONG).show();
+                            } catch (JSONException e) {
+                                MyDialog.createSimpleOkErrorDialog(OrderListAssigned.this,
+                                        getApplicationContext().getString(R.string.dialog_error_title),
+                                        getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error instanceof AuthFailureError) {
-                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
-                    Intent loginIntent = new Intent(OrderListAssigned.this, LoginActivity.class);
-                    startActivity(loginIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(OrderListAssigned.this, error);
+                    hideDialog();
                 }
-                hideDialog();
-            }
-        }) {
+            }) {
 
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", token);
-                return headers;
-            }
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", token);
+                    return headers;
+                }
 
-        };
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+            };
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+        }
     }
 
 
@@ -383,7 +399,11 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
 
     @Override
     public void onRefresh() {
-        listOrders(ed_Date.getText().toString(), "0", sp_Sector.getSelectedItem().toString(), sp_Origin.getSelectedItem().toString());
+        try {
+            listOrders(ed_Date.getText().toString(), "0", sp_Sector.getSelectedItem().toString(), sp_Origin.getSelectedItem().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
     }
 

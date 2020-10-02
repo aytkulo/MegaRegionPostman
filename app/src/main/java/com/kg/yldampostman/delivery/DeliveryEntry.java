@@ -47,11 +47,14 @@ import com.kg.yldampostman.helper.Signature;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.orders.Orders;
 import com.kg.yldampostman.users.LoginActivity;
+import com.kg.yldampostman.utils.MyDialog;
+import com.kg.yldampostman.utils.NetworkUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -196,7 +199,7 @@ public class DeliveryEntry extends AppCompatActivity {
                                 delType.getSelectedItem().toString(), delCount.getText().toString(), delPrice.getText().toString(), paidAmount.getText().toString(), delItemPrice.getText().toString(),
                                 getPaymentRadioGroupValue(), delExpl.getText().toString(), signatureString, userName, getBuyingRadioGroupValue());
                     } catch (Exception e) {
-                        throw e;
+                        e.printStackTrace();
                     }
                 }
 
@@ -231,7 +234,11 @@ public class DeliveryEntry extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 if (s.length() > 3) {
-                    getSenderCustomers(s.toString(), "");
+                    try {
+                        getSenderCustomers(s.toString(), "");
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -266,7 +273,11 @@ public class DeliveryEntry extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 if (s.length() > 3) {
-                    getReceiverCustomers(s.toString(), "");
+                    try {
+                        getReceiverCustomers(s.toString(), "");
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -302,7 +313,11 @@ public class DeliveryEntry extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 if (s.length() > 3) {
-                    getSenderCustomers("", s.toString());
+                    try {
+                        getSenderCustomers("", s.toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -336,7 +351,11 @@ public class DeliveryEntry extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 if (s.length() > 3) {
-                    getReceiverCustomers("", s.toString());
+                    try {
+                        getReceiverCustomers("", s.toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -488,103 +507,108 @@ public class DeliveryEntry extends AppCompatActivity {
     private void saveDelivery(final String sName, final String sPhone, final String sComp, final String sCity, final String sAddress,
                               final String rName, final String rPhone, final String rComp, final String rCity, final String rAddress,
                               final String delType, final String delCount, final String delCost, final String paidAmount, final String deliCost,
-                              final String paymentType, final String delExpl, final String signature, final String acceptedUser, final String buyingType) {
-        // Tag used to cancel the request
-        String tag_string_req = "req_save_delivery";
+                              final String paymentType, final String delExpl, final String signature, final String acceptedUser, final String buyingType) throws ParseException {
 
-        pDialog.setMessage("Saving Data ...");
-        btn_saveData.setEnabled(false);
-        showDialog();
+        if (!NetworkUtil.isNetworkConnected(DeliveryEntry.this)) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
+            // Tag used to cancel the request
+            String tag_string_req = "req_save_delivery";
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("senderName", sName);
-            jsonObject.put("senderPhone", sPhone);
-            jsonObject.put("senderAddress", sAddress);
-            jsonObject.put("senderCity", sCity);
-            jsonObject.put("senderCompany", sComp);
-            jsonObject.put("receiverName", rName);
-            jsonObject.put("receiverPhone", rPhone);
-            jsonObject.put("receiverAddress", rAddress);
-            jsonObject.put("receiverCity", rCity);
-            jsonObject.put("receiverCompany", rComp);
-            jsonObject.put("deliveryType", delType);
-            jsonObject.put("deliveryCount", delCount);
-            jsonObject.put("deliveryCost", delCost);
-            jsonObject.put("paidAmount", paidAmount);
-            jsonObject.put("deliveryiCost", deliCost);
-            jsonObject.put("deliveryExplanation", delExpl);
-            jsonObject.put("signature", signature);
-            jsonObject.put("paymentType", paymentType);
-            jsonObject.put("acceptedPerson", acceptedUser);
-            jsonObject.put("buyType", buyingType);
-            jsonObject.put("assignedSector", "");
-            jsonObject.put("deliveredPerson", "");
-            jsonObject.put("receiver", "");
+            pDialog.setMessage("Saving Data ...");
+            btn_saveData.setEnabled(false);
+            showDialog();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("senderName", sName);
+                jsonObject.put("senderPhone", sPhone);
+                jsonObject.put("senderAddress", sAddress);
+                jsonObject.put("senderCity", sCity);
+                jsonObject.put("senderCompany", sComp);
+                jsonObject.put("receiverName", rName);
+                jsonObject.put("receiverPhone", rPhone);
+                jsonObject.put("receiverAddress", rAddress);
+                jsonObject.put("receiverCity", rCity);
+                jsonObject.put("receiverCompany", rComp);
+                jsonObject.put("deliveryType", delType);
+                jsonObject.put("deliveryCount", delCount);
+                jsonObject.put("deliveryCost", delCost);
+                jsonObject.put("paidAmount", paidAmount);
+                jsonObject.put("deliveryiCost", deliCost);
+                jsonObject.put("deliveryExplanation", delExpl);
+                jsonObject.put("signature", signature);
+                jsonObject.put("paymentType", paymentType);
+                jsonObject.put("acceptedPerson", acceptedUser);
+                jsonObject.put("buyType", buyingType);
+                jsonObject.put("assignedSector", "");
+                jsonObject.put("deliveredPerson", "");
+                jsonObject.put("receiver", "");
 
-        JsonObjectRequest req = new JsonObjectRequest(AppConfig.URL_DELIVERY_ENTRY, jsonObject,
-                new Response.Listener<JSONObject>() {
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "Save delivery Response: " + response);
-                        hideDialog();
-                        btn_saveData.setEnabled(true);
-                        try {
-                            if (response.getString("deliveryId").length() > 0) {
+            JsonObjectRequest req = new JsonObjectRequest(AppConfig.URL_DELIVERY_ENTRY, jsonObject,
+                    new Response.Listener<JSONObject>() {
 
-                                Toast.makeText(getApplicationContext(),
-                                        "Маалыматтар системага киргизилди!", Toast.LENGTH_LONG).show();
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "Save delivery Response: " + response);
+                            hideDialog();
+                            btn_saveData.setEnabled(true);
+                            try {
+                                if (response.getString("deliveryId").length() > 0) {
 
-                                // Bul jer buyuk ihtimal order uzerinden delivery kirilgende kerek bolso kerek. Esimde jok.
-                                Bundle b = new Bundle();
-                                b.putString("STATUS", HelperConstants.DELIVERYACCEPTED);
-                                Intent intent = new Intent();
-                                intent.putExtras(b);
-                                setResult(RESULT_OK, intent);
-                                // ---------------
+                                    Toast.makeText(getApplicationContext(),
+                                            "Маалыматтар системага киргизилди!", Toast.LENGTH_LONG).show();
 
-                                finish();
-                            } else {
-                                // Error in login. Get the error message
-                                Toast.makeText(getApplicationContext(),
-                                        "Кандайдыр бир ката пайда болду.", Toast.LENGTH_LONG).show();
+                                    // Bul jer buyuk ihtimal order uzerinden delivery kirilgende kerek bolso kerek. Esimde jok.
+                                    Bundle b = new Bundle();
+                                    b.putString("STATUS", HelperConstants.DELIVERYACCEPTED);
+                                    Intent intent = new Intent();
+                                    intent.putExtras(b);
+                                    setResult(RESULT_OK, intent);
+                                    // ---------------
+
+                                    finish();
+                                } else {
+                                    MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
+                                            getApplicationContext().getString(R.string.dialog_error_title),
+                                            getApplicationContext().getString(R.string.NoData)).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+
                         }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error instanceof AuthFailureError) {
-                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
-                    Intent loginIntent = new Intent(DeliveryEntry.this, LoginActivity.class);
-                    startActivity(loginIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(DeliveryEntry.this, error);
+                    hideDialog();
+                    btn_saveData.setEnabled(true);
                 }
-                hideDialog();
-                btn_saveData.setEnabled(true);
-            }
-        }) {
+            }) {
 
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", token);
-                return headers;
-            }
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", token);
+                    return headers;
+                }
 
-        };
+            };
 
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(req, tag_string_req);
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
     }
 
 
@@ -757,139 +781,152 @@ public class DeliveryEntry extends AppCompatActivity {
     }
 
 
-    public void getSenderCustomers(final String phone, final String company) {
+    public void getSenderCustomers(final String phone, final String company) throws ParseException {
 
-        String tag_string_req = "req_get_customers";
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("phone", phone);
-            jsonObject.put("company", company);
-            jsonObject.put("city", "");
-            jsonObject.put("address", "");
-            jsonObject.put("responsiblePerson", "");
-            jsonObject.put("customerId", "");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        if (!NetworkUtil.isNetworkConnected(DeliveryEntry.this)) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
 
-        CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_CUSTOMER_GET, jsonObject,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        Log.d(TAG, "List customers Response: " + response);
-                        try {
-                            if (response.length() > 0) {
+            String tag_string_req = "req_get_customers";
 
-                                String[] custs = new String[response.length()];
-                                for (int i = 0; i < response.length(); i++) {
-                                    JSONObject c = response.getJSONObject(i);
-                                    custs[i] = c.getString("phone") + "__" + c.getString("responsiblePerson") + "__" + c.getString("address") + "__" + c.getString("city") + "__" + c.getString("company");
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("phone", phone);
+                jsonObject.put("company", company);
+                jsonObject.put("city", "");
+                jsonObject.put("address", "");
+                jsonObject.put("responsiblePerson", "");
+                jsonObject.put("customerId", "");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_CUSTOMER_GET, jsonObject,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            Log.d(TAG, "List customers Response: " + response);
+                            try {
+                                if (response.length() > 0) {
+
+                                    String[] custs = new String[response.length()];
+                                    for (int i = 0; i < response.length(); i++) {
+                                        JSONObject c = response.getJSONObject(i);
+                                        custs[i] = c.getString("phone") + "__" + c.getString("responsiblePerson") + "__" + c.getString("address") + "__" + c.getString("city") + "__" + c.getString("company");
+                                    }
+                                    // update the adapater
+                                    myAdapterS = new ArrayAdapter<String>(DeliveryEntry.this, android.R.layout.simple_dropdown_item_1line, custs);
+                                    myAdapterSC = new ArrayAdapter<String>(DeliveryEntry.this, android.R.layout.simple_dropdown_item_1line, custs);
+                                    sPhone.setAdapter(myAdapterS);
+                                    sComp.setAdapter(myAdapterSC);
+                                    myAdapterS.notifyDataSetChanged();
+                                    myAdapterSC.notifyDataSetChanged();
                                 }
-                                // update the adapater
-                                myAdapterS = new ArrayAdapter<String>(DeliveryEntry.this, android.R.layout.simple_dropdown_item_1line, custs);
-                                myAdapterSC = new ArrayAdapter<String>(DeliveryEntry.this, android.R.layout.simple_dropdown_item_1line, custs);
-                                sPhone.setAdapter(myAdapterS);
-                                sComp.setAdapter(myAdapterSC);
-                                myAdapterS.notifyDataSetChanged();
-                                myAdapterSC.notifyDataSetChanged();
+                            } catch (JSONException e) {
+                                MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
+                                        getApplicationContext().getString(R.string.dialog_error_title),
+                                        getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
                         }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error instanceof AuthFailureError) {
-                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
-                    Intent loginIntent = new Intent(DeliveryEntry.this, LoginActivity.class);
-                    startActivity(loginIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(DeliveryEntry.this, error);
+                    hideDialog();
                 }
-                hideDialog();
-            }
-        }) {
+            }) {
 
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", token);
-                return headers;
-            }
-        };
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(req, tag_string_req);
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", token);
+                    return headers;
+                }
+            };
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
     }
 
 
-    public void getReceiverCustomers(final String phone, final String company) {
+    public void getReceiverCustomers(final String phone, final String company) throws ParseException {
 
-        String tag_string_req = "req_get_customers";
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("phone", phone);
-            jsonObject.put("company", company);
-            jsonObject.put("city", "");
-            jsonObject.put("address", "");
-            jsonObject.put("responsiblePerson", "");
-            jsonObject.put("customerId", "");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_CUSTOMER_GET, jsonObject,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        Log.d(TAG, "List customers Response: " + response);
+        if (!NetworkUtil.isNetworkConnected(DeliveryEntry.this)) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
+            String tag_string_req = "req_get_customers";
 
-                        try {
-                            if (response.length() > 0) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("phone", phone);
+                jsonObject.put("company", company);
+                jsonObject.put("city", "");
+                jsonObject.put("address", "");
+                jsonObject.put("responsiblePerson", "");
+                jsonObject.put("customerId", "");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_CUSTOMER_GET, jsonObject,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            Log.d(TAG, "List customers Response: " + response);
 
-                                String[] custs = new String[response.length()];
-                                for (int i = 0; i < response.length(); i++) {
-                                    JSONObject c = response.getJSONObject(i);
-                                    custs[i] = c.getString("phone") + "__" + c.getString("responsiblePerson") + "__" + c.getString("address") + "__" + c.getString("city") + "__" + c.getString("company");
+                            try {
+                                if (response.length() > 0) {
+
+                                    String[] custs = new String[response.length()];
+                                    for (int i = 0; i < response.length(); i++) {
+                                        JSONObject c = response.getJSONObject(i);
+                                        custs[i] = c.getString("phone") + "__" + c.getString("responsiblePerson") + "__" + c.getString("address") + "__" + c.getString("city") + "__" + c.getString("company");
+                                    }
+                                    myAdapterR = new ArrayAdapter<String>(DeliveryEntry.this, android.R.layout.simple_dropdown_item_1line, custs);
+                                    rPhone.setAdapter(myAdapterR);
+                                    myAdapterR.notifyDataSetChanged();
+                                    myAdapterRC = new ArrayAdapter<String>(DeliveryEntry.this, android.R.layout.simple_dropdown_item_1line, custs);
+                                    rComp.setAdapter(myAdapterRC);
+                                    myAdapterRC.notifyDataSetChanged();
+
                                 }
-                                myAdapterR = new ArrayAdapter<String>(DeliveryEntry.this, android.R.layout.simple_dropdown_item_1line, custs);
-                                rPhone.setAdapter(myAdapterR);
-                                myAdapterR.notifyDataSetChanged();
-                                myAdapterRC = new ArrayAdapter<String>(DeliveryEntry.this, android.R.layout.simple_dropdown_item_1line, custs);
-                                rComp.setAdapter(myAdapterRC);
-                                myAdapterRC.notifyDataSetChanged();
-
+                            } catch (JSONException e) {
+                                MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
+                                        getApplicationContext().getString(R.string.dialog_error_title),
+                                        getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
-                    }
-                }, new Response.ErrorListener() {
+                    }, new Response.ErrorListener() {
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error instanceof AuthFailureError) {
-                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
-                    Intent loginIntent = new Intent(DeliveryEntry.this, LoginActivity.class);
-                    startActivity(loginIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(DeliveryEntry.this, error);
+                    hideDialog();
                 }
-                hideDialog();
-            }
-        }) {
+            }) {
 
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", token);
-                return headers;
-            }
-        };
-        AppController.getInstance().addToRequestQueue(req, tag_string_req);
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", token);
+                    return headers;
+                }
+            };
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
     }
 }

@@ -54,6 +54,7 @@ public class HomeActivity extends AppCompatActivity
     public static String token = "";
     public static String userCity = "";
     public static String userLogin = "";
+    public static String apiDate;
 
     private ProgressDialog pDialog;
 
@@ -189,8 +190,7 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void logoutUser() {
-        session.setLogin(false, "2000-01-01");
-        session.setUser("", "", "", "", "");
+        session.setUser("", "", "", "", "", "");
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();

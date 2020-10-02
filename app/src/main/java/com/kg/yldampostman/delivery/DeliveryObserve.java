@@ -28,10 +28,13 @@ import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.LoginActivity;
+import com.kg.yldampostman.utils.MyDialog;
+import com.kg.yldampostman.utils.NetworkUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,78 +81,85 @@ public class DeliveryObserve extends AppCompatActivity {
         if (extras != null) {
             deliveryData = (Delivery) deliveryIntent.getSerializableExtra("delivery");
             putIncomingData(deliveryData);
-            getDelivery(deliveryData.id);
+            try {
+                getDelivery(deliveryData.id);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
     }
 
 
-    public void getDelivery(final String id) {
+    public void getDelivery(final String id) throws ParseException {
 
-        String tag_string_req = "req_get_deliveries";
-        pDialog.setMessage("Getting Receiver Signature ...");
-        showDialog();
+        if (!NetworkUtil.isNetworkConnected(DeliveryObserve.this)) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryObserve.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryObserve.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
+            String tag_string_req = "req_get_deliveries";
+            pDialog.setMessage("Getting Receiver Signature ...");
+            showDialog();
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("deliveryId", id);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("deliveryId", id);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConfig.URL_DELIVERY_GET, jsonObject,
-                new Response.Listener<JSONObject>() {
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConfig.URL_DELIVERY_GET, jsonObject,
+                    new Response.Listener<JSONObject>() {
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "Delivery Get Response: " + response);
-                        hideDialog();
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "Delivery Get Response: " + response);
+                            hideDialog();
 
-                        try {
-                            // Check for error node in json
-                            if (response.getString("deliveryId").length() > 0) {
+                            try {
+                                // Check for error node in json
+                                if (response.getString("deliveryId").length() > 0) {
 
-                                senderSignatureString = "";
-                                receiverSignatureString = response.getString("receiverSignature");
-                                differentReceiverString = response.getString("receiver");
-                                showSignatures();
+                                    senderSignatureString = "";
+                                    receiverSignatureString = response.getString("receiverSignature");
+                                    differentReceiverString = response.getString("receiver");
+                                    showSignatures();
 
-                            } else {
-                                Toast.makeText(getApplicationContext(),
-                                        "Кандайдыр бир ката пайда болду.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    MyDialog.createSimpleOkErrorDialog(DeliveryObserve.this,
+                                            getApplicationContext().getString(R.string.dialog_error_title),
+                                            getApplicationContext().getString(R.string.NoData)).show();
+                                }
+                            } catch (JSONException e) {
+                                MyDialog.createSimpleOkErrorDialog(DeliveryObserve.this,
+                                        getApplicationContext().getString(R.string.dialog_error_title),
+                                        getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
                             }
-                        } catch (JSONException e) {
-                            // JSON error
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
-                    }
-                }, new Response.ErrorListener() {
+                    }, new Response.ErrorListener() {
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                if (error instanceof AuthFailureError) {
-                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
-                    Intent loginIntent = new Intent(DeliveryObserve.this, LoginActivity.class);
-                    startActivity(loginIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(DeliveryObserve.this, error);
+                    hideDialog();
                 }
-                hideDialog();
-            }
-        }) {
+            }) {
 
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", HomeActivity.token);
-                return headers;
-            }
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", HomeActivity.token);
+                    return headers;
+                }
 
-        };
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(req, tag_string_req);
-
+            };
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
     }
 
     private void showSignatures() {

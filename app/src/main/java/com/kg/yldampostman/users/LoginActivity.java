@@ -21,7 +21,10 @@ import com.kg.yldampostman.R;
 import com.kg.yldampostman.HomeActivity;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
+import com.kg.yldampostman.delivery.DeliveryAssign;
 import com.kg.yldampostman.helper.SessionManager;
+import com.kg.yldampostman.utils.MyDialog;
+import com.kg.yldampostman.utils.NetworkUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -126,64 +129,68 @@ public class LoginActivity extends Activity {
 
     private void checkLogin(final String email, final String password) {
         // Tag used to cancel the request
-        String tag_string_req = "req_login";
-
-        pDialog.setMessage("Logging in ...");
-        showDialog();
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("email", email);
-            jsonObject.put("password", password);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (!NetworkUtil.isNetworkConnected(LoginActivity.this)) {
+            MyDialog.createSimpleOkErrorDialog(LoginActivity.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
         }
+        else {
+            String tag_string_req = "req_login";
 
-        JsonObjectRequest req = new JsonObjectRequest(AppConfig.URL_LOGIN, jsonObject,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        hideDialog();
-                        try {
+            pDialog.setMessage("Logging in ...");
+            showDialog();
 
-                            String token = response.getString("Authorization");
-                            String role = response.getString("UserRole");
-                            String login = response.getString("UserLogin");
-                            String city = response.getString("UserCity");
-                            String name = response.getString("UserName");
-
-                            Date date = Calendar.getInstance().getTime();
-                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                            String strDate = dateFormat.format(date);
-
-                            session.setLogin(true, strDate);
-                            session.setUser(token, role, city, login, name);
-
-                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                            startActivity(intent);
-                            finish();
-
-                        } catch (JSONException e) {
-                            // JSON error
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Login Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage() + "Orasi degil", Toast.LENGTH_LONG).show();
-                hideDialog();
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("email", email);
+                jsonObject.put("password", password);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }) {
 
-        };
+            JsonObjectRequest req = new JsonObjectRequest(AppConfig.URL_LOGIN, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            hideDialog();
+                            try {
 
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(req, tag_string_req);
+                                String token = response.getString("Authorization");
+                                String role = response.getString("UserRole");
+                                String login = response.getString("UserLogin");
+                                String city = response.getString("UserCity");
+                                String name = response.getString("UserName");
+                                String tillDate = response.getString("TillDate");
+
+                                session.setUser(token, role, city, login, name, tillDate);
+
+                                HomeActivity.token = token;
+                                HomeActivity.apiDate = tillDate;
+
+                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                startActivity(intent);
+                                finish();
+
+                            } catch (JSONException e) {
+                                MyDialog.createSimpleOkErrorDialog(LoginActivity.this,
+                                        getApplicationContext().getString(R.string.dialog_error_title),
+                                        getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(LoginActivity.this, error);
+                    hideDialog();
+                }
+            }) {
+
+            };
+
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
     }
 
     private void showDialog() {

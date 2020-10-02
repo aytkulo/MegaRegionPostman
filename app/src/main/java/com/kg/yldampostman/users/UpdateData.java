@@ -19,12 +19,16 @@ import com.kg.yldampostman.R;
 import com.kg.yldampostman.HomeActivity;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
+import com.kg.yldampostman.delivery.DeliveryAssign;
 import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.orders.OrderEntry;
+import com.kg.yldampostman.utils.MyDialog;
+import com.kg.yldampostman.utils.NetworkUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,10 +80,14 @@ public class UpdateData extends AppCompatActivity {
                 String fullName = txt_fullname.getText().toString().trim();
 
                 if (!old_password.isEmpty() && !username.isEmpty() && !new_password.isEmpty()) {
-                    updatePassword(old_password, username, new_password, fullName);
-                    Intent intent = new Intent(UpdateData.this, HomeActivity.class);
-                    startActivity(intent);
-                    finish();
+                    try {
+                        updatePassword(old_password, username, new_password, fullName);
+                        Intent intent = new Intent(UpdateData.this, HomeActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     Toast.makeText(getApplicationContext(),
                             "Please enter your details!", Toast.LENGTH_LONG)
@@ -98,66 +106,72 @@ public class UpdateData extends AppCompatActivity {
     }
 
     private void updatePassword(final String old_password, final String username,
-                                final String new_password, final String fullname) {
-        // Tag used to cancel the request
-        String tag_string_req = "req_update";
+                                final String new_password, final String fullname) throws ParseException {
 
-        pDialog.setMessage("Updating ...");
-        showDialog();
+        if (!NetworkUtil.isNetworkConnected(UpdateData.this)) {
+            MyDialog.createSimpleOkErrorDialog(UpdateData.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(UpdateData.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
+            // Tag used to cancel the request
+            String tag_string_req = "req_update";
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("nameSurname", fullname);
-            jsonObject.put("email", username);
-            jsonObject.put("new_password", new_password);
-            jsonObject.put("old_password", old_password);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            pDialog.setMessage("Updating ...");
+            showDialog();
 
-        JsonObjectRequest strReq = new JsonObjectRequest(AppConfig.URL_UPDATE_PSW, jsonObject,
-                new Response.Listener<JSONObject>() {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("nameSurname", fullname);
+                jsonObject.put("email", username);
+                jsonObject.put("new_password", new_password);
+                jsonObject.put("old_password", old_password);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "Update Response: " + response.toString());
-                        hideDialog();
-                        try {
-                            if (response.getString("userId").length() > 0) {
-                                Toast.makeText(getApplicationContext(), "Пароль өзгөтүлдү!", Toast.LENGTH_LONG).show();
-                                logoutUser();
-                            } else {
-                                Toast.makeText(getApplicationContext(),
-                                        "Кандайдыр бир ката пайда болду", Toast.LENGTH_LONG).show();
+            JsonObjectRequest strReq = new JsonObjectRequest(AppConfig.URL_UPDATE_PSW, jsonObject,
+                    new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "Update Response: " + response.toString());
+                            hideDialog();
+                            try {
+                                if (response.getString("userId").length() > 0) {
+                                    Toast.makeText(getApplicationContext(), "Пароль өзгөтүлдү!", Toast.LENGTH_LONG).show();
+                                    logoutUser();
+                                } else {
+                                    MyDialog.createSimpleOkErrorDialog(UpdateData.this,
+                                            getApplicationContext().getString(R.string.dialog_error_title),
+                                            getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-                    }
-                }, new Response.ErrorListener() {
+                    }, new Response.ErrorListener() {
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error instanceof AuthFailureError) {
-                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
-                    Intent loginIntent = new Intent(UpdateData.this, LoginActivity.class);
-                    startActivity(loginIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(UpdateData.this, error);
+                    hideDialog();
                 }
-                hideDialog();
-            }
-        }) {
+            }) {
 
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", HomeActivity.token);
-                return headers;
-            }
-        };
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", HomeActivity.token);
+                    return headers;
+                }
+            };
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+        }
     }
 
     private void showDialog() {

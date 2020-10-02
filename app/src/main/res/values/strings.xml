@@ -216,4 +216,17 @@
     <string name="title_activity_show_location">Map</string>
     <string name="DeliveryAssign"/>
 
+
+    <string name="OK">OK</string>
+
+    <string name="dialog_error_title">Внимание</string>
+    <string name="dialog_action_ok">ОК</string>
+    <string name="sending_data_to_server">Подождите, идет синхронизация</string>
+    <string name="check_internet">Проверьте интернет соединение</string>
+    <string name="url_not_found">Ссылка не найдена</string>
+    <string name="server_error">Наблюдается низкая скорость или сервер перегружен. Попробуйте еще раз через некоторое время.</string>
+    <string name="relogin">Время вашей сессии истекло, войдите заново, пожалуйста.</string>
+    <string name="NoData">Нет данных.</string>
+    <string name="ErrorWhenLoading">Произошла ошибка при обработке данных. Попробуйте еще раз позже.</string>
+
 </resources>

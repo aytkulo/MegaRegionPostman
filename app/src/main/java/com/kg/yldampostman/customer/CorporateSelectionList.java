@@ -19,12 +19,16 @@ import com.kg.yldampostman.R;
 import com.kg.yldampostman.HomeActivity;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
+import com.kg.yldampostman.delivery.DeliveryDeliver;
 import com.kg.yldampostman.helper.CustomJsonArrayRequest;
+import com.kg.yldampostman.utils.MyDialog;
+import com.kg.yldampostman.utils.NetworkUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +70,11 @@ public class CorporateSelectionList extends AppCompatActivity {
             city = extras.getString("city");
         }
 
-        listCustomers("", "", city);
+        try {
+            listCustomers("", "", city);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         listViewCustomers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -94,81 +102,90 @@ public class CorporateSelectionList extends AppCompatActivity {
     }
 
 
-    public void listCustomers(final String address, final String company, final String city) {
+    public void listCustomers(final String address, final String company, final String city) throws ParseException {
 
-        String tag_string_req = "req_list_customers";
-        pDialog.setMessage("Listing Corporate Customers...");
-        showDialog();
+        if (!NetworkUtil.isNetworkConnected(CorporateSelectionList.this)) {
+            MyDialog.createSimpleOkErrorDialog(CorporateSelectionList.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(CorporateSelectionList.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
+            String tag_string_req = "req_list_customers";
+            pDialog.setMessage("Listing Corporate Customers...");
+            showDialog();
 
-        listViewCustomers.setAdapter(null);
+            listViewCustomers.setAdapter(null);
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("address", address);
-            jsonObject.put("city", city);
-            jsonObject.put("company", company);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("address", address);
+                jsonObject.put("city", city);
+                jsonObject.put("company", company);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-        CustomJsonArrayRequest strReq = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_CORPORATE_CUSTOMER_LIST, jsonObject,
-                new Response.Listener<JSONArray>() {
+            CustomJsonArrayRequest strReq = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_CORPORATE_CUSTOMER_LIST, jsonObject,
+                    new Response.Listener<JSONArray>() {
 
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        hideDialog();
-                        try {
-                            if (response.length() > 0) {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            hideDialog();
+                            try {
+                                if (response.length() > 0) {
 
-                                for (int i = 0; i < response.length(); i++) {
-                                    JSONObject c = response.getJSONObject(i);
-                                    // Storing each json item in variable
-                                    Customer cust = new Customer();
+                                    for (int i = 0; i < response.length(); i++) {
+                                        JSONObject c = response.getJSONObject(i);
+                                        // Storing each json item in variable
+                                        Customer cust = new Customer();
 
-                                    cust.cusFullName = c.getString("company") + " (" + c.getString("city") + ")";
-                                    cust.cus_Address = c.getString("address");
-                                    cust.cusFullAddress = c.getString("address");
-                                    cust.cus_City = c.getString("city");
-                                    cust.cus_Company = c.getString("company");
-                                    cust.cus_Phone = c.getString("phone");
-                                    cust.cus_id = c.getString("id");
+                                        cust.cusFullName = c.getString("company") + " (" + c.getString("city") + ")";
+                                        cust.cus_Address = c.getString("address");
+                                        cust.cusFullAddress = c.getString("address");
+                                        cust.cus_City = c.getString("city");
+                                        cust.cus_Company = c.getString("company");
+                                        cust.cus_Phone = c.getString("phone");
+                                        cust.cus_id = c.getString("id");
 
-                                    customerList.add(cust);
+                                        customerList.add(cust);
+                                    }
+                                    if (customerList.size() > 0) {
+                                        CustomerListAdapter custListAdapter = new CustomerListAdapter(customerList, CorporateSelectionList.this);
+                                        listViewCustomers.setAdapter(custListAdapter);
+                                    }
+                                } else {
+                                    MyDialog.createSimpleOkErrorDialog(CorporateSelectionList.this,
+                                            getApplicationContext().getString(R.string.dialog_error_title),
+                                            getApplicationContext().getString(R.string.NoData)).show();
                                 }
-                                // update the adapater
-                                if (customerList.size() > 0) {
-                                    CustomerListAdapter custListAdapter = new CustomerListAdapter(customerList, CorporateSelectionList.this);
-                                    listViewCustomers.setAdapter(custListAdapter);
-                                }
-                            } else {
-                                Toast.makeText(getApplicationContext(),
-                                        "Эч нерсе табылбады, же ката пайда болду!", Toast.LENGTH_LONG).show();
+                            } catch (JSONException e) {
+                                MyDialog.createSimpleOkErrorDialog(CorporateSelectionList.this,
+                                        getApplicationContext().getString(R.string.dialog_error_title),
+                                        getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
                             }
-                        } catch (JSONException e) {
-                            // JSON error
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
                         }
+                    }, new Response.ErrorListener() {
 
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                hideDialog();
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", HomeActivity.token);
-                return headers;
-            }
-        };
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    hideDialog();
+                    NetworkUtil.checkHttpStatus(CorporateSelectionList.this, error);
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", HomeActivity.token);
+                    return headers;
+                }
+            };
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+        }
     }
 
 
