@@ -5,9 +5,9 @@ package com.kg.yldampostman.app;
  */
 public class AppConfig {
 
-    // public static String PURE_URL = "http://10.0.2.2:8080/";
+    public static String PURE_URL = "http://10.0.2.2:8080/";
 
-      public static String PURE_URL = "https://online.nova.kg/yldam-api/";
+   //   public static String PURE_URL = "https://online.nova.kg/yldam-api/";
 
     public static String URL_DELIVERY_ENTRY = PURE_URL + "delivery/save";
 
@@ -18,6 +18,8 @@ public class AppConfig {
     public static String URL_DELIVERY_UPDATE = PURE_URL + "delivery/update";
 
     public static String URL_DELIVERY_DELIVER = PURE_URL + "delivery/deliver";
+
+    public static String URL_DELIVERY_DELETE = PURE_URL + "delivery/delete";
 
     public static String URL_DELIVERY_ASSIGN = PURE_URL + "delivery/assign";
 

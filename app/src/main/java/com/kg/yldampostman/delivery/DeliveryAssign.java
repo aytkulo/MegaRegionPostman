@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -46,7 +45,6 @@ public class DeliveryAssign extends AppCompatActivity {
     private Spinner spn_users;
     private Delivery delivery;
     private ProgressDialog pDialog;
-    private SQLiteHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +63,9 @@ public class DeliveryAssign extends AppCompatActivity {
 
         getWindow().setLayout((int) (width), (int) (height));
 
-        btn_assign = (Button) findViewById(R.id.btn_assign);
-        spn_users = (Spinner) findViewById(R.id.spinner_assigned_postman);
+        btn_assign =  findViewById(R.id.btn_assign);
+        spn_users =  findViewById(R.id.spinner_assigned_postman);
 
-        db = new SQLiteHandler(getApplicationContext());
-        HashMap<String, String> user = db.getUserDetails();
-        String userName = user.get("name");
 
         Intent deliveryIntent = getIntent();
         Bundle extras = deliveryIntent.getExtras();
@@ -81,12 +76,12 @@ public class DeliveryAssign extends AppCompatActivity {
 
         sectorList = StringData.getSectors(HomeActivity.userCity);
         populateUserSpinner();
-        spn_users.setSelection(getIndex(spn_users, userName));
+        spn_users.setSelection(getIndex(spn_users, HomeActivity.userLogin));
 
         btn_assign.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 try {
-                    updateDelivery(spn_users.getSelectedItem().toString(), delivery.id);
+                    updateDelivery(spn_users.getSelectedItem().toString(), delivery.deliveryId);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

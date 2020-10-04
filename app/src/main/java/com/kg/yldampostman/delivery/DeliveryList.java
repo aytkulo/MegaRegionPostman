@@ -18,22 +18,19 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.kg.yldampostman.HomeActivity;
 import com.kg.yldampostman.R;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
 import com.kg.yldampostman.helper.CustomJsonArrayRequest;
 import com.kg.yldampostman.helper.HelperConstants;
-import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.helper.StringData;
-import com.kg.yldampostman.users.LoginActivity;
 import com.kg.yldampostman.utils.MyDialog;
 import com.kg.yldampostman.utils.NetworkUtil;
 
@@ -145,31 +142,30 @@ public class DeliveryList extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 delivery = (Delivery) parent.getItemAtPosition(position);
-                if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELIVER))
-                {
+                if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELIVER)) {
                     Intent intentDelivery = new Intent(DeliveryList.this, DeliveryDeliver.class);
                     intentDelivery.putExtra("delivery", delivery);
                     startActivityForResult(intentDelivery, 1);
-                }
-                else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_UPDATE))
-                {
+                } else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_UPDATE)) {
                     Intent intentDelivery = new Intent(DeliveryList.this, DeliveryUpdate.class);
 
-                    if (!delivery.entrydate.substring(0,10).equalsIgnoreCase(strDate)) {
+                    if (!delivery.entryDate.substring(0, 10).equalsIgnoreCase(strDate)) {
                         Toast.makeText(getApplicationContext(),
                                 "Бүгүндөн башка күндөгү посылканы өзгөртө албайсыз! " +
                                         "Башка күндү өзгөртүү керек болсо, админ менен сүйлөшүңүз.", Toast.LENGTH_LONG).show();
                     }
                     intentDelivery.putExtra("delivery", delivery);
-                    startActivityForResult(intentDelivery, 2);
+                    startActivityForResult(intentDelivery, 200);
 
                 } else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_ASSIGN)) {
                     Intent intentDelivery = new Intent(DeliveryList.this, DeliveryAssign.class);
                     intentDelivery.putExtra("delivery", delivery);
                     startActivityForResult(intentDelivery, 5);
-                }
-                else
-                    {
+                } else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELETE)) {
+                    Intent intentDelivery = new Intent(DeliveryList.this, DeliveryDelete.class);
+                    intentDelivery.putExtra("delivery", delivery);
+                    startActivityForResult(intentDelivery, 600);
+                } else {
                     Intent intentDelivery = new Intent(DeliveryList.this, DeliveryObserve.class);
                     intentDelivery.putExtra("delivery", delivery);
                     startActivityForResult(intentDelivery, 4);
@@ -216,6 +212,22 @@ public class DeliveryList extends AppCompatActivity {
         });
     }
 
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 200 || requestCode == 600) {
+            if (resultCode == RESULT_OK) {
+                deliveryList.clear();
+                listViewDeliveries.setAdapter(null);
+                try {
+                    listDeliveries(ed_Date.getText().toString(), ed_Address.getText().toString(), ed_Name.getText().toString(), ed_Phone.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
 
     private void populateUserSpinner() {
@@ -278,45 +290,21 @@ public class DeliveryList extends AppCompatActivity {
                                 // Check for error node in json
                                 if (response.length() > 0) {
 
+                                    JsonParser parser = new JsonParser();
+                                    Gson gson = new Gson();
+
                                     for (int i = 0; i < response.length(); i++) {
 
-                                        JSONObject c = response.getJSONObject(i);
-                                        Delivery o = new Delivery();
-                                        // Storing each json item in variable
-                                        o.number = i + 1;
-                                        o.sFullName = c.getString("senderName") + " - " + c.getString("senderPhone") + " - " + c.getString("senderCompany");
-                                        o.sFullAddress = c.getString("senderCity") + " - " + c.getString("senderAddress");
-                                        o.rFullName = c.getString("receiverName") + " - " + c.getString("receiverPhone") + " - " + c.getString("receiverCompany");
-                                        o.rFullAddress = c.getString("receiverCity") + " - " + c.getString("receiverAddress");
+                                        JsonElement mJsonM = parser.parse(response.getString(i));
+                                        Delivery dd = gson.fromJson(mJsonM, Delivery.class);
 
-                                        o.id = c.getString("deliveryId");
-                                        o.ed_sCity = c.getString("senderCity");
-                                        o.ed_sPhone = c.getString("senderPhone");
-                                        o.ed_sCompany = c.getString("senderCompany");
-                                        o.ed_sAddress = c.getString("senderAddress");
-                                        o.ed_sName = c.getString("senderName");
-                                        o.ed_rCity = c.getString("receiverCity");
-                                        o.ed_rName = c.getString("receiverName");
-                                        o.ed_rPhone = c.getString("receiverPhone");
-                                        o.ed_rAddress = c.getString("receiverAddress");
-                                        o.ed_rCompany = c.getString("receiverCompany");
-                                        o.status = c.getString("status");
-                                        o.entrydate = c.getString("entryDate");
+                                        dd.number = i + 1;
+                                        dd.sFullName = dd.senderName + " - " + dd.senderPhone + " - " + dd.senderCompany;
+                                        dd.sFullAddress = dd.senderCity + " - " + dd.senderAddress;
+                                        dd.rFullName = dd.receiverName + " - " + dd.receiverPhone + " - " + dd.receiverCompany;
+                                        dd.rFullAddress = dd.receiverCity + " - " + dd.receiverAddress;
 
-                                        o.ed_dType = c.getString("deliveryType");
-                                        o.ed_dCount = c.getString("deliveryCount");
-                                        o.ed_dCost = c.getString("deliveryCost");
-                                        o.ed_diCost = c.getString("deliveryiCost");
-                                        o.ed_payment = c.getString("paymentType");
-                                        o.ed_dExpl = c.getString("deliveryExplanation");
-                                        o.ed_assignedPerson = c.getString("assignedSector");
-                                        o.ed_acceptedPerson = c.getString("acceptedPerson");
-                                        o.ed_deliveredPerson = c.getString("deliveredPerson").toString();
-                                        o.deliveredDate = c.getString("deliveredDate").toString();
-                                        o.ed_paidAmount = c.getString("paidAmount");
-                                        o.ed_buytype = c.getString("buyType");
-
-                                        deliveryList.add(o);
+                                        deliveryList.add(dd);
                                     }
 
                                     if (deliveryList.size() > 0) {
@@ -397,9 +385,8 @@ public class DeliveryList extends AppCompatActivity {
                 senderCity = "%";
 
                 status = HelperConstants.DELIVERY_STATUS_NEW;
-            }
-            else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_UPDATE)) {
-
+            } else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_UPDATE) || operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELETE))
+            {
 
                 status = HelperConstants.DELIVERY_STATUS_NEW;
 

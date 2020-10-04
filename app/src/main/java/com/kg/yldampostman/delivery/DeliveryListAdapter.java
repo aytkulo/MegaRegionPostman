@@ -99,65 +99,65 @@ class DeliveryListAdapter extends BaseAdapter {
             //  viewItem.btn_Deliver.setEnabled(true);
             //  viewItem.btn_Update.setEnabled(true);
         }
-        String payment = valueList.get(position).ed_acceptedPerson + ", "
-                + valueList.get(position).ed_dCount + "-" + valueList.get(position).ed_dType + ", "
-                + (Integer.parseInt(valueList.get(position).ed_dCost) - Integer.parseInt(valueList.get(position).ed_paidAmount));
+        String payment = valueList.get(position).acceptedPerson + ", "
+                + valueList.get(position).deliveryCount + "-" + valueList.get(position).deliveryType + ", "
+                + (Integer.parseInt(valueList.get(position).deliveryCost) - Integer.parseInt(valueList.get(position).paidAmount));
 
-        if (valueList.get(position).ed_payment.equalsIgnoreCase("SC"))
+        if (valueList.get(position).paymentType.equalsIgnoreCase("SC"))
             payment = payment + " (+) ";
-        else if (valueList.get(position).ed_payment.equalsIgnoreCase("RC"))
+        else if (valueList.get(position).paymentType.equalsIgnoreCase("RC"))
             payment = payment + " (-) ";
         else {
-            if (valueList.get(position).ed_payment.equalsIgnoreCase("SB"))
+            if (valueList.get(position).paymentType.equalsIgnoreCase("SB"))
                 payment = payment + " + (Банк) ";
-            else if (valueList.get(position).ed_payment.equalsIgnoreCase("RB"))
+            else if (valueList.get(position).paymentType.equalsIgnoreCase("RB"))
                 payment = payment + " - (Банк) ";
             else
                 payment = payment + " (Банк) ";
         }
 
 
-        if (Integer.valueOf(valueList.get(position).ed_diCost) > 0)
-            payment = payment + ", " + valueList.get(position).ed_diCost;
+        if (Integer.valueOf(valueList.get(position).deliveryiCost) > 0)
+            payment = payment + ", " + valueList.get(position).deliveryiCost;
 
         viewItem.txtSenderAddress.setText(valueList.get(position).sFullAddress);
         viewItem.txtSenderName.setText(valueList.get(position).sFullName);
         viewItem.txtReceiverAddress.setText(valueList.get(position).rFullAddress);
         viewItem.txtReceiverName.setText(valueList.get(position).rFullName);
-        viewItem.txtAcceptedPostman.setText(payment + " (" + valueList.get(position).entrydate.substring(0, 10) + ")");
-        if (valueList.get(position).ed_deliveredPerson != "null" && valueList.get(position).ed_deliveredPerson.length() > 0)
-            viewItem.txtDeliveredPostman.setText(valueList.get(position).ed_deliveredPerson + "(" + valueList.get(position).deliveredDate.substring(5, 19) + ")");
+        viewItem.txtAcceptedPostman.setText(payment + " (" + valueList.get(position).entryDate.substring(0, 10) + ")");
+        if (valueList.get(position).deliveredPerson != "null" && valueList.get(position).deliveredPerson.length() > 0)
+            viewItem.txtDeliveredPostman.setText(valueList.get(position).deliveredPerson + "(" + valueList.get(position).deliveredDate.substring(5, 19) + ")");
         else
             viewItem.txtDeliveredPostman.setText(" ");
         viewItem.txtNumber.setText(valueList.get(position).number + ".");
 
-        viewItem.ed_id.setText(valueList.get(position).id);
+        viewItem.ed_id.setText(valueList.get(position).deliveryId);
 
-        viewItem.ed_sCity.setText(valueList.get(position).ed_sCity);
-        viewItem.ed_sPhone.setText(valueList.get(position).ed_sPhone);
-        viewItem.ed_sCompany.setText(valueList.get(position).ed_sCompany);
-        viewItem.ed_sAddress.setText(valueList.get(position).ed_sAddress);
-        viewItem.ed_sName.setText(valueList.get(position).ed_sName);
+        viewItem.ed_sCity.setText(valueList.get(position).senderCity);
+        viewItem.ed_sPhone.setText(valueList.get(position).senderPhone);
+        viewItem.ed_sCompany.setText(valueList.get(position).senderCompany);
+        viewItem.ed_sAddress.setText(valueList.get(position).senderAddress);
+        viewItem.ed_sName.setText(valueList.get(position).senderName);
 
-        viewItem.ed_rCity.setText(valueList.get(position).ed_rCity);
-        viewItem.ed_rPhone.setText(valueList.get(position).ed_rPhone);
-        viewItem.ed_rCompany.setText(valueList.get(position).ed_rCompany);
-        viewItem.ed_rAddress.setText(valueList.get(position).ed_rAddress);
-        viewItem.ed_rName.setText(valueList.get(position).ed_rName);
+        viewItem.ed_rCity.setText(valueList.get(position).receiverCity);
+        viewItem.ed_rPhone.setText(valueList.get(position).receiverPhone);
+        viewItem.ed_rCompany.setText(valueList.get(position).receiverCompany);
+        viewItem.ed_rAddress.setText(valueList.get(position).receiverAddress);
+        viewItem.ed_rName.setText(valueList.get(position).receiverName);
 
-        viewItem.ed_dType.setText(valueList.get(position).ed_dType);
-        viewItem.ed_dCost.setText(valueList.get(position).ed_dCost);
-        viewItem.ed_dCount.setText(valueList.get(position).ed_dCount);
-        viewItem.ed_diCost.setText(valueList.get(position).ed_diCost);
-        viewItem.ed_payment.setText(valueList.get(position).ed_payment);
-        viewItem.ed_dExpl.setText(valueList.get(position).ed_dExpl);
+        viewItem.ed_dType.setText(valueList.get(position).deliveryType);
+        viewItem.ed_dCost.setText(valueList.get(position).deliveryCost);
+        viewItem.ed_dCount.setText(valueList.get(position).deliveryCount);
+        viewItem.ed_diCost.setText(valueList.get(position).deliveryiCost);
+        viewItem.ed_payment.setText(valueList.get(position).paymentType);
+        viewItem.ed_dExpl.setText(valueList.get(position).deliveryExplanation);
 
-        String s = valueList.get(position).ed_assignedPerson;
+        String s = valueList.get(position).assignedSector;
         if (!s.equalsIgnoreCase("null") && s.length() > 0)
-            viewItem.txtAssignedPostman.setText("(" + valueList.get(position).ed_assignedPerson + ") "+valueList.get(position).ed_dExpl);
+            viewItem.txtAssignedPostman.setText("(" + valueList.get(position).assignedSector + ") "+valueList.get(position).deliveryExplanation);
         else
-            viewItem.txtAssignedPostman.setText(valueList.get(position).ed_dExpl);
-        viewItem.ed_paidAmount.setText(valueList.get(position).ed_paidAmount);
+            viewItem.txtAssignedPostman.setText(valueList.get(position).deliveryExplanation);
+        viewItem.ed_paidAmount.setText(valueList.get(position).paidAmount);
 
         /*
         viewItem.btn_Deliver.setOnClickListener(new View.OnClickListener() {

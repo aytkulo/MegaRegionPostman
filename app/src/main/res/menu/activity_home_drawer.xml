@@ -9,6 +9,11 @@
                 android:icon="@drawable/ic_delivlist"
                 android:title="@string/DeliveryList"/>
         <item
+            android:id="@+id/nav_delivery_delete"
+            android:icon="@drawable/ic_menu_delete"
+            android:title="@string/DeliveryDelete"/>
+
+        <item
                 android:id="@+id/nav_delivery_assign"
                 android:icon="@drawable/ic_menu_manage"
         android:title="@string/AssignDelivery"/>

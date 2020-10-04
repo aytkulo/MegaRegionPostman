@@ -35,6 +35,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kg.yldampostman.HomeActivity;
 import com.kg.yldampostman.R;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
@@ -124,11 +125,10 @@ public class DeliveryEntry extends AppCompatActivity {
         sProvince.setAdapter(provinceAdapter);
         rProvince.setAdapter(provinceAdapter);
 
-        SessionManager session = new SessionManager(getApplicationContext());
 
-        usersCity = session.getCity();
-        userName = session.getLogin();
-        token = session.getToken();
+        usersCity = HomeActivity.userCity;
+        token = HomeActivity.token;
+        userName = HomeActivity.userLogin;
 
         sProvince.setSelection(getIndex(sProvince, StringData.getProvince(usersCity)));
 

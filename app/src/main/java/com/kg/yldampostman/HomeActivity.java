@@ -35,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,7 +46,7 @@ import java.util.Map;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private SessionManager session;
+    private SessionManager sessionManager;
     private Button btnDeliveryEntry;
     private Button btnDeliverDelivery;
     private Button btnOrderListAssigned;
@@ -78,13 +79,13 @@ public class HomeActivity extends AppCompatActivity
         btnOrderListAssigned = findViewById(R.id.btn_order_list_assigned);
         btnDeliveryUpdate = findViewById(R.id.btn_update_delivery);
 
-        session = new SessionManager(getApplicationContext());
+        sessionManager = new SessionManager(getApplicationContext());
 
-        token = session.getToken();
-        userLogin = session.getLogin();
-        userCity = session.getCity();
+        token = sessionManager.getToken();
+        userLogin = sessionManager.getLogin();
+        userCity = sessionManager.getCity();
+        apiDate = sessionManager.getApiDate();
 
-        checkPermission();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -129,6 +130,12 @@ public class HomeActivity extends AppCompatActivity
             }
         });
 
+        try {
+            isLoginNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -163,10 +170,17 @@ public class HomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-         if (id == R.id.nav_delivery_list) {
+        if (id == R.id.nav_delivery_list) {
 
             Intent intent = new Intent(HomeActivity.this, DeliveryList.class);
             intent.putExtra(HelperConstants.DELIVERY_OPERATION, HelperConstants.DELIVERY_LIST);
+            startActivity(intent);
+
+        }
+        else if (id == R.id.nav_delivery_delete) {
+
+            Intent intent = new Intent(HomeActivity.this, DeliveryList.class);
+            intent.putExtra(HelperConstants.DELIVERY_OPERATION, HelperConstants.DELIVERY_DELETE);
             startActivity(intent);
 
         }else if (id == R.id.nav_delivery_assign) {
@@ -175,7 +189,7 @@ public class HomeActivity extends AppCompatActivity
             intent.putExtra(HelperConstants.DELIVERY_OPERATION, HelperConstants.DELIVERY_ASSIGN);
             startActivity(intent);
 
-        }  else if (id == R.id.nav_changePassword) {
+        } else if (id == R.id.nav_changePassword) {
 
             Intent intent = new Intent(this, UpdateData.class);
             startActivity(intent);
@@ -190,64 +204,40 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void logoutUser() {
-        session.setUser("", "", "", "", "", "");
+        sessionManager.setUser("", "", "", "", "", "");
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }
 
-
-
-    private void checkPermission() {
-        String tag_string_req = "req_get_user_permission";
-
-        pDialog.setMessage("Checking token ...");
-        showDialog();
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("permission", false);
-        } catch (JSONException e) {
-            e.printStackTrace();
+    private void isLoginNeeded() throws ParseException {
+        if (isTokenExpired()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivityForResult(intent, 111);
         }
-        JsonObjectRequest req = new JsonObjectRequest(AppConfig.URL_GET_USER_PERMISSION, jsonObject,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        hideDialog();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error instanceof AuthFailureError) {
-                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
-                    Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
-                    startActivity(loginIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                }
-                hideDialog();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", token);
-                return headers;
-            }
-        };
-        AppController.getInstance().addToRequestQueue(req, tag_string_req);
     }
 
-    private void showDialog() {
-        if (!pDialog.isShowing())
-            pDialog.show();
+    public boolean isTokenExpired() {
+        if (apiDate == null || apiDate.length() == 1)
+            return true;
+        long tillDate = Long.parseLong(apiDate);
+        return tillDate < new Date().getTime();
     }
 
-    private void hideDialog() {
-        if (pDialog.isShowing())
-            pDialog.dismiss();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 111) {
+            if (resultCode == RESULT_OK) {
+                token = sessionManager.getToken();
+                apiDate = sessionManager.getApiDate();
+                userLogin = sessionManager.getLogin();
+                userCity = sessionManager.getCity();
+            }
+        }
     }
+
+
 
 
 }

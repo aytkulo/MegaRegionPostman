@@ -20,10 +20,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kg.yldampostman.HomeActivity;
 import com.kg.yldampostman.R;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
@@ -33,7 +33,6 @@ import com.kg.yldampostman.helper.SMSManager;
 import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.helper.Signature;
 import com.kg.yldampostman.helper.StringData;
-import com.kg.yldampostman.users.LoginActivity;
 import com.kg.yldampostman.utils.MyDialog;
 import com.kg.yldampostman.utils.NetworkUtil;
 
@@ -79,10 +78,9 @@ public class DeliveryDeliver extends AppCompatActivity {
         initializeItems();
         disableItems();
 
-        SessionManager session = new SessionManager(getApplicationContext());
-        usersCity = session.getCity();
-        currentUser = session.getLogin();
-        token = session.getToken();
+        usersCity = HomeActivity.userCity;
+        currentUser = HomeActivity.userLogin;
+        token = HomeActivity.token;
 
 
         ArrayAdapter<String> provinceAdapter = new ArrayAdapter<String>(
@@ -118,7 +116,7 @@ public class DeliveryDeliver extends AppCompatActivity {
             public void onClick(View v) {
                 if (differentReceiver.length() > 0) {
                     try {
-                        deliverDelivery(deliveryData.id, signatureString, deliveryData.ed_sPhone, currentUser, differentReceiver);
+                        deliverDelivery(deliveryData.deliveryId, signatureString, deliveryData.senderPhone, currentUser, differentReceiver);
                         CustomerHelper.saveCustomer(rName.getText().toString(), rPhone.getText().toString(), rComp.getText().toString(), rCity.getSelectedItem().toString(), rAdres.getText().toString(), token);
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -270,31 +268,31 @@ public class DeliveryDeliver extends AppCompatActivity {
 
     public void putIncomingData(Delivery delivery) {
 
-        sName.setText(delivery.ed_sName);
-        sPhone.setText(delivery.ed_sPhone);
-        sAdres.setText(delivery.ed_sAddress);
-        sComp.setText(delivery.ed_sCompany);
-        rName.setText(delivery.ed_rName);
-        rPhone.setText(delivery.ed_rPhone);
-        rAdres.setText(delivery.ed_rAddress);
-        rComp.setText(delivery.ed_rCompany);
+        sName.setText(delivery.senderName);
+        sPhone.setText(delivery.senderPhone);
+        sAdres.setText(delivery.senderAddress);
+        sComp.setText(delivery.senderCompany);
+        rName.setText(delivery.receiverName);
+        rPhone.setText(delivery.receiverPhone);
+        rAdres.setText(delivery.receiverAddress);
+        rComp.setText(delivery.receiverCompany);
 
-        sCity.setSelection(getIndex(sCity, delivery.ed_sCity));
-        rCity.setSelection(getIndex(rCity, delivery.ed_rCity));
+        sCity.setSelection(getIndex(sCity, delivery.senderCity));
+        rCity.setSelection(getIndex(rCity, delivery.receiverCity));
 
-        sProvince.setSelection(getIndex(sProvince, StringData.getProvince(delivery.ed_sCity)));
-        rProvince.setSelection(getIndex(rProvince, StringData.getProvince(delivery.ed_rCity)));
+        sProvince.setSelection(getIndex(sProvince, StringData.getProvince(delivery.senderCity)));
+        rProvince.setSelection(getIndex(rProvince, StringData.getProvince(delivery.receiverCity)));
 
-        delType.setSelection(getIndex(delType, delivery.ed_dType));
-        delCount.setText(delivery.ed_dCount);
-        delPrice.setText(delivery.ed_dCost);
-        delItemPrice.setText(delivery.ed_diCost);
-        paidAmount.setText(delivery.ed_paidAmount);
+        delType.setSelection(getIndex(delType, delivery.deliveryType));
+        delCount.setText(delivery.deliveryCount);
+        delPrice.setText(delivery.deliveryCost);
+        delItemPrice.setText(delivery.deliveryiCost);
+        paidAmount.setText(delivery.paidAmount);
 
-        delExpl.setText(delivery.ed_dExpl);
+        delExpl.setText(delivery.deliveryExplanation);
 
-        setRadioGroupValue(delivery.ed_payment);
-        setBuyingRadioGroupValue(delivery.ed_buytype);
+        setRadioGroupValue(delivery.paymentType);
+        setBuyingRadioGroupValue(delivery.buyType);
     }
 
     private int getIndex(Spinner spinner, String myString) {

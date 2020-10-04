@@ -95,13 +95,45 @@ public class StringData {
             return "Жалал-Абад";
         else if (region.equalsIgnoreCase("Ноокен"))
             return "Жалал-Абад";
-        else if (region.equalsIgnoreCase("Нарын"))
+        else if (region.equalsIgnoreCase("Токтогул"))
+            return "Жалал-Абад";
+        else if (region.equalsIgnoreCase("Ала-Бука"))
+            return "Жалал-Абад";
+        else if (region.equalsIgnoreCase("Аксы"))
+            return "Жалал-Абад";
+        else if (region.equalsIgnoreCase("Нарын г."))
+            return "Нарын";
+        else if (region.equalsIgnoreCase("Нарын р."))
+            return "Нарын";
+        else if (region.equalsIgnoreCase("Ат-Башы"))
+            return "Нарын";
+        else if (region.equalsIgnoreCase("Ак-Талаа"))
+            return "Нарын";
+        else if (region.equalsIgnoreCase("Жумгал"))
             return "Нарын";
         else if (region.equalsIgnoreCase("Каракол"))
             return "Ыссык-Көл";
         else if (region.equalsIgnoreCase("Чолпон-Ата"))
             return "Ыссык-Көл";
-        else if (region.equalsIgnoreCase("Талас"))
+        else if (region.equalsIgnoreCase("Балыкчы"))
+            return "Ыссык-Көл";
+        else if (region.equalsIgnoreCase("Тоң"))
+            return "Ыссык-Көл";
+        else if (region.equalsIgnoreCase("Түп"))
+            return "Ыссык-Көл";
+        else if (region.equalsIgnoreCase("Жети-Өгүз"))
+            return "Ыссык-Көл";
+        else if (region.equalsIgnoreCase("Ак-Суу"))
+            return "Ыссык-Көл";
+        else if (region.equalsIgnoreCase("Талас г."))
+            return "Талас";
+        else if (region.equalsIgnoreCase("Талас р."))
+            return "Талас";
+        else if (region.equalsIgnoreCase("Кара-Буура"))
+            return "Талас";
+        else if (region.equalsIgnoreCase("Манас"))
+            return "Талас";
+        else if (region.equalsIgnoreCase("Бакай-Ата"))
             return "Талас";
         else if (region.equalsIgnoreCase("Москва"))
             return "Башкалар";
@@ -138,13 +170,29 @@ public class StringData {
             spinnerArray.add("Базар-Коргон");
             spinnerArray.add("Сузак");
             spinnerArray.add("Ноокен");
+            spinnerArray.add("Токтогул");
+            spinnerArray.add("Ала-Бука");
+            spinnerArray.add("Аксы");
         } else if (province.equalsIgnoreCase("Нарын")) {
-            spinnerArray.add("Нарын");
+            spinnerArray.add("Нарын г.");
+            spinnerArray.add("Нарын р.");
+            spinnerArray.add("Ат-Башы");
+            spinnerArray.add("Ак-Талаа");
+            spinnerArray.add("Жумгал");
         } else if (province.equalsIgnoreCase("Ыссык-Көл")) {
             spinnerArray.add("Каракол");
+            spinnerArray.add("Балыкчы");
             spinnerArray.add("Чолпон-Ата");
+            spinnerArray.add("Тоң");
+            spinnerArray.add("Түп");
+            spinnerArray.add("Жети-Өгүз");
+            spinnerArray.add("Ак-Суу");
         } else if (province.equalsIgnoreCase("Талас")) {
-            spinnerArray.add("Талас");
+            spinnerArray.add("Талас г.");
+            spinnerArray.add("Талас р.");
+            spinnerArray.add("Кара-Буура");
+            spinnerArray.add("Манас");
+            spinnerArray.add("Бакай-Ата");
         } else if (province.equalsIgnoreCase("Башкалар")) {
             spinnerArray.add("Москва");
         }

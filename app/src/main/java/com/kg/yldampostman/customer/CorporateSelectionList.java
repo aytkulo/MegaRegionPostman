@@ -7,6 +7,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -36,12 +37,13 @@ import java.util.Map;
 
 public class CorporateSelectionList extends AppCompatActivity {
 
-    private static final String TAG = CorporateSelectionList.class.getSimpleName();
     private ProgressDialog pDialog;
-    private Button btnClose;
+    private Button btnClose, btnSearch;
+    private EditText companyName;
     private ListView listViewCustomers;
     private List<Customer> customerList = new ArrayList<>();
     Customer customer;
+    String finalCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,8 @@ public class CorporateSelectionList extends AppCompatActivity {
 
         listViewCustomers = findViewById(R.id.listViewCustomers);
         btnClose = findViewById(R.id.btnClose);
+        btnSearch = findViewById(R.id.btn_search);
+        companyName = findViewById(R.id.companyName);
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -64,18 +68,21 @@ public class CorporateSelectionList extends AppCompatActivity {
 
         Intent deliveryIntent = getIntent();
         Bundle extras = deliveryIntent.getExtras();
-        String city = "";
 
         if (extras != null) {
-            city = extras.getString("city");
+            finalCity = extras.getString("city");
         }
 
-        try {
-            listCustomers("", "", city);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    listCustomers();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         listViewCustomers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -102,7 +109,7 @@ public class CorporateSelectionList extends AppCompatActivity {
     }
 
 
-    public void listCustomers(final String address, final String company, final String city) throws ParseException {
+    public void listCustomers() throws ParseException {
 
         if (!NetworkUtil.isNetworkConnected(CorporateSelectionList.this)) {
             MyDialog.createSimpleOkErrorDialog(CorporateSelectionList.this,
@@ -117,13 +124,14 @@ public class CorporateSelectionList extends AppCompatActivity {
             pDialog.setMessage("Listing Corporate Customers...");
             showDialog();
 
+            customerList.clear();
             listViewCustomers.setAdapter(null);
 
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("address", address);
-                jsonObject.put("city", city);
-                jsonObject.put("company", company);
+                jsonObject.put("address", "");
+                jsonObject.put("city", finalCity);
+                jsonObject.put("company", companyName.getText().toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
