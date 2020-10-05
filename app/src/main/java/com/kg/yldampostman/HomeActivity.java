@@ -22,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.navigation.NavigationView;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
+import com.kg.yldampostman.delivery.DeliveryDebteds;
 import com.kg.yldampostman.delivery.DeliveryEntry;
 import com.kg.yldampostman.delivery.DeliveryList;
 import com.kg.yldampostman.helper.HelperConstants;
@@ -187,6 +188,11 @@ public class HomeActivity extends AppCompatActivity
 
             Intent intent = new Intent(HomeActivity.this, DeliveryList.class);
             intent.putExtra(HelperConstants.DELIVERY_OPERATION, HelperConstants.DELIVERY_ASSIGN);
+            startActivity(intent);
+
+        } else if (id == R.id.nav_delivery_debt) {
+
+            Intent intent = new Intent(HomeActivity.this, DeliveryDebteds.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_changePassword) {

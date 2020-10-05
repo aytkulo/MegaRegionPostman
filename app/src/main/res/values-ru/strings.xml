@@ -115,6 +115,7 @@
     <string name="DeliveryList">СПИСОК ПОСЫЛОК</string>
     <string name="DeliveryDelete">УДАЛИТЬ ПОСЫЛКУ</string>
     <string name="DeliveryStatus">НЕ ЗАКРЫТЫЕ</string>
+    <string name="DeliveryDebs">ДОЛГИ</string>
 
     <string name="CropClientList">КОРП. КЛИЕНТЫ</string>
 

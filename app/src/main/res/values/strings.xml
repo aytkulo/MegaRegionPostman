@@ -115,6 +115,7 @@
     <string name="DeliveryDelete">АМАНАТ ӨЧҮРҮҮ</string>
     <string name="DeliveryStatus">ЖАБЫЛБАГАНДАР</string>
     <string name="ClientList">КЛИЕНТТЕР ТИЗМЕСИ</string>
+    <string name="DeliveryDebs">КАРЫЗДАР</string>
 
     <string name="CropClientList">КОРП. КЛИЕНТТЕР</string>
 
@@ -214,7 +215,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_show_location">Map</string>
-    <string name="DeliveryAssign"/>
+    <string name="DeliveryAssign" />
 
 
     <string name="OK">OK</string>
