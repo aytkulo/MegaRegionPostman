@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -16,11 +17,14 @@ import com.kg.yldampostman.helper.CustomJsonArrayRequest;
 import com.kg.yldampostman.utils.MyDialog;
 import com.kg.yldampostman.utils.NetworkUtil;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -52,6 +56,8 @@ public class DeliveryDebteds extends AppCompatActivity {
     private String strDate = "";
 
     int year_x, month_x, day_x;
+
+    Delivery delivery;
 
     private List<Delivery> deliveryList = new ArrayList<>();
 
@@ -107,7 +113,107 @@ public class DeliveryDebteds extends AppCompatActivity {
         });
 
 
+        listViewDeliveries.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                delivery = (Delivery) parent.getItemAtPosition(position);
+
+                new AlertDialog.Builder(DeliveryDebteds.this)
+                        .setTitle(getApplicationContext().getResources().getString(R.string.Attention))
+                        .setMessage(getApplicationContext().getResources().getString(R.string.DEBTISPAID))
+                        .setPositiveButton(getApplicationContext().getResources().getString(R.string.GOON), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    payDebt(delivery.deliveryId);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        })
+                        .setNegativeButton(getApplicationContext().getResources().getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .show().setCanceledOnTouchOutside(false);
+            }
+        });
+
     }
+
+
+
+    public void payDebt(String deliveryId) throws ParseException {
+
+        if (!NetworkUtil.isNetworkConnected(DeliveryDebteds.this)) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryDebteds.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryDebteds.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
+            String tag_string_req = "req_pay_debt";
+            pDialog.setMessage("Processing ...");
+            showDialog();
+
+            deliveryList.clear();
+            listViewDeliveries.setAdapter(null);
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("deliveryId", deliveryId);
+                jsonObject.put("payingUser", HomeActivity.userLogin);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConfig.URL_DELIVERY_PAY_DEBT, jsonObject,
+                    new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            hideDialog();
+                            if (response != null) {
+
+                                try {
+                                    payDebt(delivery.deliveryId);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                            } else {
+                                MyDialog.createSimpleOkErrorDialog(DeliveryDebteds.this,
+                                        getApplicationContext().getString(R.string.dialog_error_title),
+                                        getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
+                            }
+
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(DeliveryDebteds.this, error);
+                    hideDialog();
+                }
+            }) {
+
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", HomeActivity.token);
+                    return headers;
+                }
+
+            };
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
+    }
+
 
     public void listDeliveries(final String beginingDate, final String endingDate) throws ParseException {
 

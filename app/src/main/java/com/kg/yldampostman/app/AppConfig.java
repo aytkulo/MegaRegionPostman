@@ -17,6 +17,8 @@ public class AppConfig {
 
     public static String URL_DELIVERY_LIST_WITH_DEBTS = PURE_URL + "delivery/list/debt";
 
+    public static String URL_DELIVERY_PAY_DEBT = PURE_URL + "delivery/payCost/debt";
+
     public static String URL_DELIVERY_UPDATE = PURE_URL + "delivery/update";
 
     public static String URL_DELIVERY_DELIVER = PURE_URL + "delivery/deliver";

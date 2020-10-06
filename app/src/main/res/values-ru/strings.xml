@@ -231,4 +231,8 @@
     <string name="NoData">Нет данных.</string>
     <string name="ErrorWhenLoading">Произошла ошибка при обработке данных. Попробуйте еще раз позже.</string>
 
+    <string name="GOON">Продолжить</string>
+    <string name="CANCEL">Отменить</string>
+    <string name="DEBTISPAID">Вы действительно оплатили долг? \nОперация не обратима. \nЗакрыть долг?</string>
+
 </resources>
