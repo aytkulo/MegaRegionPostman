@@ -17,18 +17,19 @@ import com.kg.yldampostman.helper.CustomJsonArrayRequest;
 import com.kg.yldampostman.utils.MyDialog;
 import com.kg.yldampostman.utils.NetworkUtil;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,9 +57,8 @@ public class DeliveryDebteds extends AppCompatActivity {
     private String strDate = "";
 
     int year_x, month_x, day_x;
-
     Delivery delivery;
-
+    Dialog dialogPaying;
     private List<Delivery> deliveryList = new ArrayList<>();
 
     @Override
@@ -116,34 +116,53 @@ public class DeliveryDebteds extends AppCompatActivity {
         listViewDeliveries.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 delivery = (Delivery) parent.getItemAtPosition(position);
-
-                new AlertDialog.Builder(DeliveryDebteds.this)
-                        .setTitle(getApplicationContext().getResources().getString(R.string.Attention))
-                        .setMessage(getApplicationContext().getResources().getString(R.string.DEBTISPAID))
-                        .setPositiveButton(getApplicationContext().getResources().getString(R.string.GOON), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                try {
-                                    payDebt(delivery.deliveryId);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        })
-                        .setNegativeButton(getApplicationContext().getResources().getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .show().setCanceledOnTouchOutside(false);
+                showCustomDialog();
             }
         });
 
     }
 
 
+    public void showCustomDialog() {
+
+        dialogPaying = new Dialog(DeliveryDebteds.this);
+        dialogPaying.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogPaying.setCancelable(false);
+        dialogPaying.setContentView(R.layout.pay_debt_dialog);
+
+        Spinner postmanSpinner = dialogPaying.findViewById(R.id.spinner_postman);
+        populateUserSpinner(postmanSpinner);
+
+        Button btnOK = dialogPaying.findViewById(R.id.btnOk);
+        btnOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    payDebt(delivery.deliveryId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        dialogPaying.show();
+    }
+
+
+    private void populateUserSpinner(Spinner spinnerPostman) {
+
+        spinnerPostman.setAdapter(null);
+        ArrayList<String> lables = new ArrayList<String>();
+
+        lables.add(HomeActivity.userLogin);
+        // Creating adapter for spinner
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, lables);
+        // Drop down layout style - list view with radio button
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // attaching data adapter to spinner
+        spinnerPostman.setAdapter(spinnerAdapter);
+    }
 
     public void payDebt(String deliveryId) throws ParseException {
 
@@ -178,13 +197,7 @@ public class DeliveryDebteds extends AppCompatActivity {
                         public void onResponse(JSONObject response) {
                             hideDialog();
                             if (response != null) {
-
-                                try {
-                                    payDebt(delivery.deliveryId);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-
+                                dialogPaying.dismiss();
                             } else {
                                 MyDialog.createSimpleOkErrorDialog(DeliveryDebteds.this,
                                         getApplicationContext().getString(R.string.dialog_error_title),
