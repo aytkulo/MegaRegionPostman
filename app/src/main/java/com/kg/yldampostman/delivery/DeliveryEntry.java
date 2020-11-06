@@ -702,19 +702,26 @@ public class DeliveryEntry extends AppCompatActivity {
             delItemPrice.setText("0");
         } else if (Long.parseLong(delItemPrice.getText().toString()) > 0) {
             if (rg_buying.getCheckedRadioButtonId() == -1) {
-                ok = false;
                 String message = "Выкуп түрүн тандабадыңыз.";
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                return false;
             }
         }
 
         if (rg_payment.getCheckedRadioButtonId() == -1) {
-            ok = false;
             String message = "Төлөм түрүн тандабадыңыз.";
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            return false;
         }
 
-        if (sCity.getSelectedItem().toString().length() < 1) {
+        if (rCity.getSelectedItem() == null || rCity.getSelectedItem().toString().length() < 1) {
+            rCity.setBackground(getShape(Color.MAGENTA));
+            ok = false;
+        } else {
+            rCity.setBackgroundColor(Color.WHITE);
+        }
+
+        if (sCity.getSelectedItem()==null || sCity.getSelectedItem().toString().length() < 1) {
             sCity.setBackground(getShape(Color.MAGENTA));
             ok = false;
         } else {
@@ -752,12 +759,6 @@ public class DeliveryEntry extends AppCompatActivity {
             rPhone.setBackgroundColor(Color.WHITE);
         }
 
-        if (rCity.getSelectedItem().toString().length() < 1) {
-            rCity.setBackground(getShape(Color.MAGENTA));
-            ok = false;
-        } else {
-            rCity.setBackgroundColor(Color.WHITE);
-        }
         if (delCount.length() < 1) {
             delCount.setBackground(getShape(Color.MAGENTA));
             ok = false;
@@ -779,6 +780,7 @@ public class DeliveryEntry extends AppCompatActivity {
 
         return ok;
     }
+
 
 
     public void getSenderCustomers(final String phone, final String company) throws ParseException {

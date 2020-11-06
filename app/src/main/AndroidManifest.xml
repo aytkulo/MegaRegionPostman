@@ -1,152 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.kg.yldampostman">
 
-
-
     <permission
         android:name="android.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature"/>
+        android:protectionLevel="signature" />
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.SEND_SMS"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="com.kg.yldampostman.app.AppController"
+        android:name=".app.AppController"
         android:allowBackup="true"
         android:icon="@drawable/logoo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
+        <activity android:name=".delivery.DeliveryDebteds"></activity>
+        <activity android:name=".users.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-    <activity android:name="com.kg.yldampostman.users.LoginActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN"/>
-
-            <category android:name="android.intent.category.LAUNCHER"/>
-        </intent-filter>
-    </activity>
-    <activity
-        android:name="com.kg.yldampostman.customer.CorporateSelectionList"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:screenOrientation="portrait"
-        tools:ignore="LockedOrientationActivity"/>
-
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
-        android:name="com.kg.yldampostman.HomeActivity"
-        android:label="@string/title_activity_home"
-        android:launchMode="singleTop"
-        android:theme="@style/AppTheme.NoActionBar"/>
-    <activity
-        android:name="com.kg.yldampostman.users.UpdateData"
-        android:configChanges="orientation|keyboardHidden"
-        android:label="@string/title_activity_home"
-
-        android:theme="@style/AppTheme.NoActionBar"/>
-    <activity
-        android:name="com.kg.yldampostman.delivery.DeliveryEntry"
-        android:configChanges="orientation|keyboardHidden"
-        android:parentActivityName="com.kg.yldampostman.HomeActivity"
-        />
-    <activity
-        android:name="com.kg.yldampostman.helper.Signature"
-        android:configChanges="orientation|keyboardHidden"
-        android:theme="@style/AppTheme.PopupTheme"/>
-    <activity
-        android:name="com.kg.yldampostman.delivery.DeliveryDeliver"
-        android:configChanges="orientation|keyboardHidden"
-        android:parentActivityName="com.kg.yldampostman.HomeActivity"
-/>
-    <activity
-        android:name="com.kg.yldampostman.orders.OrderEntry"
-        android:configChanges="orientation|keyboardHidden"
-        android:parentActivityName="com.kg.yldampostman.HomeActivity"
-/>
-    <activity
-        android:name="com.kg.yldampostman.orders.OrderList"
-        android:configChanges="orientation|keyboardHidden"
-        android:parentActivityName="com.kg.yldampostman.HomeActivity"
-/>
-    <activity
-        android:name="com.kg.yldampostman.orders.OrderListAssigned"
-        android:configChanges="orientation|keyboardHidden"
-        android:parentActivityName="com.kg.yldampostman.HomeActivity"
-  />
-    <activity
-        android:name="com.kg.yldampostman.delivery.DeliveryList"
-        android:configChanges="orientation|keyboardHidden"
-        android:parentActivityName="com.kg.yldampostman.HomeActivity"/>
-    <activity
-        android:name="com.kg.yldampostman.delivery.DeliveryUpdate"
-        android:configChanges="orientation|keyboardHidden"
-        android:parentActivityName="com.kg.yldampostman.delivery.DeliveryList"/>
+            android:name=".customer.CorporateSelectionList"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.kg.yldampostman.delivery.DeliveryDelete"
+            android:name=".HomeActivity"
+            android:label="@string/title_activity_home"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".users.UpdateData"
             android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName="com.kg.yldampostman.delivery.DeliveryList"/>
-    <activity
-        android:name="com.kg.yldampostman.delivery.DeliveryAssign"
-        android:configChanges="orientation|keyboardHidden"
-        android:parentActivityName="com.kg.yldampostman.delivery.DeliveryList"
-        android:theme="@style/AppTheme.PopupTheme"/>
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".delivery.DeliveryEntry"
+            android:configChanges="orientation|keyboardHidden"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".helper.Signature"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/AppTheme.PopupTheme" />
+        <activity
+            android:name=".delivery.DeliveryDeliver"
+            android:configChanges="orientation|keyboardHidden"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".orders.OrderEntry"
+            android:configChanges="orientation|keyboardHidden"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".orders.OrderList"
+            android:configChanges="orientation|keyboardHidden"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".orders.OrderListAssigned"
+            android:configChanges="orientation|keyboardHidden"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".delivery.DeliveryList"
+            android:configChanges="orientation|keyboardHidden"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".delivery.DeliveryUpdate"
+            android:configChanges="orientation|keyboardHidden"
+            android:parentActivityName=".delivery.DeliveryList" />
+        <activity
+            android:name=".delivery.DeliveryDelete"
+            android:configChanges="orientation|keyboardHidden"
+            android:parentActivityName=".delivery.DeliveryList" />
+        <activity
+            android:name=".delivery.DeliveryAssign"
+            android:configChanges="orientation|keyboardHidden"
+            android:parentActivityName=".delivery.DeliveryList"
+            android:theme="@style/AppTheme.PopupTheme" />
 
-    <service android:name="com.kg.yldampostman.service.LocServ"/>
-    <service android:name="com.kg.yldampostman.service.MyFireBaseMessagingService">
-        <intent-filter>
-            <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-        </intent-filter>
-    </service>
-    <service android:name="com.kg.yldampostman.service.MyFireBaseIDService">
-        <intent-filter>
-            <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-        </intent-filter>
-    </service>
-
-    <!--
+        <service android:name=".service.LocServ" />
+        <service android:name=".service.MyFireBaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".service.MyFireBaseIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <!--
          The API key for Google Maps-based APIs is defined as a string resource.
          (See the file "res/values/google_maps_api.xml").
          Note that the API key is linked to the encryption key used to sign the APK.
          You need a different API key for each encryption key, including the release key that is used to
          sign the APK for publishing.
          You can define the keys for the debug and release targets in src/debug/ and src/release/.
-    -->
-    <uses-library android:name="com.google.android.maps"/>
+        -->
+        <uses-library android:name="com.google.android.maps" />
 
-    <meta-data
-        android:name="com.google.android.gms.version"
-        android:value="@integer/google_play_services_version"/>
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyBroFIkyOPRYLj4-XCoJ99H-ASaNgEEriI"/> <!-- android:value="AIzaSyAA0GSr8VLEuKL6r0srOhYOH6Ojg4KCsgk" /> -->
-    <meta-data
-        android:name="com.google.firebase.messaging.default_notification_icon"
-        android:resource="@drawable/dash_preorders_assigned"/>
-    <!--
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBroFIkyOPRYLj4-XCoJ99H-ASaNgEEriI" /> <!-- android:value="AIzaSyAA0GSr8VLEuKL6r0srOhYOH6Ojg4KCsgk" /> -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/dash_preorders_assigned" />
+        <!--
          Set color used with incoming notification messages. This is used when no color is set for the incoming
          notification message. See README(https://goo.gl/6BKBk7) for more.
-    -->
-    <meta-data
-        android:name="com.google.firebase.messaging.default_notification_color"
-        android:resource="@color/colorAccent"/>
+        -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
 
-
-    <activity
-        android:name="com.kg.yldampostman.delivery.DeliveryObserve"
-        android:configChanges="orientation|keyboardHidden"
-        android:parentActivityName="com.kg.yldampostman.delivery.DeliveryList" />
-
-    <activity
-        android:name="com.kg.yldampostman.customer.SMSSending"
-        android:parentActivityName="com.kg.yldampostman.HomeActivity"/>
-
-</application>
-
-
+        <activity
+            android:name=".delivery.DeliveryObserve"
+            android:configChanges="orientation|keyboardHidden"
+            android:parentActivityName=".delivery.DeliveryList" />
+        <activity
+            android:name=".customer.SMSSending"
+            android:parentActivityName=".HomeActivity" />
+    </application>
 
 </manifest>

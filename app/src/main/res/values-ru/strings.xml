@@ -115,6 +115,7 @@
     <string name="DeliveryList">СПИСОК ПОСЫЛОК</string>
     <string name="DeliveryDelete">УДАЛИТЬ ПОСЫЛКУ</string>
     <string name="DeliveryStatus">НЕ ЗАКРЫТЫЕ</string>
+    <string name="DeliveryDebs">ДОЛГИ</string>
 
     <string name="CropClientList">КОРП. КЛИЕНТЫ</string>
 
@@ -229,5 +230,9 @@
     <string name="relogin">Время вашей сессии истекло, войдите заново, пожалуйста.</string>
     <string name="NoData">Нет данных.</string>
     <string name="ErrorWhenLoading">Произошла ошибка при обработке данных. Попробуйте еще раз позже.</string>
+
+    <string name="GOON">Продолжить</string>
+    <string name="CANCEL">Отменить</string>
+    <string name="DEBTISPAID">Вы действительно оплатили долг? \nОперация не обратима. \nЗакрыть долг?</string>
 
 </resources>

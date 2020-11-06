@@ -181,7 +181,7 @@ public class LoginActivity extends Activity {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    NetworkUtil.checkHttpStatus(LoginActivity.this, error);
+                    Toast.makeText(LoginActivity.this, "Туура эмес маалымат кирдиңиз!", Toast.LENGTH_LONG).show();
                     hideDialog();
                 }
             }) {

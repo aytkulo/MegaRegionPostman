@@ -14,6 +14,11 @@
             android:title="@string/DeliveryDelete"/>
 
         <item
+            android:id="@+id/nav_delivery_debt"
+            android:icon="@drawable/icon_expense"
+            android:title="@string/DeliveryDebs"/>
+
+        <item
                 android:id="@+id/nav_delivery_assign"
                 android:icon="@drawable/ic_menu_manage"
         android:title="@string/AssignDelivery"/>
