@@ -287,11 +287,11 @@
                 <TextView
                         android:id="@+id/textView83"
                         android:layout_width="0dp"
-                        android:layout_weight="0.5"
+                        android:layout_weight="0.2"
                         style="@style/InlineLabels"
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="3dp"
-                        android:text="@string/AssignedSector"/>
+                        android:text="@string/Postman"/>
 
                 <Spinner
                         android:id="@+id/spinner_postman"

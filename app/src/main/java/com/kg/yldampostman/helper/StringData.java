@@ -26,30 +26,52 @@ public class StringData {
         List<String> spinnerArray = new ArrayList<>();
         spinnerArray.add("");
         spinnerArray.add("Бишкек");
-        spinnerArray.add("Ош");
-        spinnerArray.add("Жалал-Абад");
-        spinnerArray.add("Баткен");
-        spinnerArray.add("Нарын");
-        spinnerArray.add("Каракол");
-        spinnerArray.add("Талас");
-        spinnerArray.add("Москва");
-        spinnerArray.add("Кочкор-Ата");
-        spinnerArray.add("Таш-Комур");
-        spinnerArray.add("Чолпон-Ата");
         spinnerArray.add("Токмок");
         spinnerArray.add("Кара-Балта");
         spinnerArray.add("Сокулук");
         spinnerArray.add("Кемин");
+        spinnerArray.add("Чуй");
+        spinnerArray.add("Ош");
         spinnerArray.add("Өзгөн");
         spinnerArray.add("Ноокат");
         spinnerArray.add("Кара-Суу");
+        spinnerArray.add("Алай");
+        spinnerArray.add("Араван");
+        spinnerArray.add("Кара-Кулжа");
+        spinnerArray.add("Чоң-Алай");
+        spinnerArray.add("Баткен");
         spinnerArray.add("Кадамжай");
         spinnerArray.add("Кызыл-Кыя");
         spinnerArray.add("Лейлек");
         spinnerArray.add("Сулукту");
+        spinnerArray.add("Жалал-Абад");
+        spinnerArray.add("Кочкор-Ата");
+        spinnerArray.add("Таш-Көмур");
+        spinnerArray.add("Кара-Көл");
         spinnerArray.add("Базар-Коргон");
         spinnerArray.add("Сузак");
         spinnerArray.add("Ноокен");
+        spinnerArray.add("Токтогул");
+        spinnerArray.add("Ала-Бука");
+        spinnerArray.add("Аксы");
+        spinnerArray.add("Нарын г.");
+        spinnerArray.add("Нарын р.");
+        spinnerArray.add("Ат-Башы");
+        spinnerArray.add("Ак-Талаа");
+        spinnerArray.add("Жумгал");
+        spinnerArray.add("Каракол");
+        spinnerArray.add("Балыкчы");
+        spinnerArray.add("Чолпон-Ата");
+        spinnerArray.add("Тоң");
+        spinnerArray.add("Түп");
+        spinnerArray.add("Жети-Өгүз");
+        spinnerArray.add("Ак-Суу");
+        spinnerArray.add("Талас г.");
+        spinnerArray.add("Талас р.");
+        spinnerArray.add("Кара-Буура");
+        spinnerArray.add("Манас");
+        spinnerArray.add("Бакай-Ата");
+        spinnerArray.add("Москва");
 
         return spinnerArray;
     }
@@ -70,6 +92,14 @@ public class StringData {
         else if (region.equalsIgnoreCase("Өзгөн"))
             return "Ош";
         else if (region.equalsIgnoreCase("Ноокат"))
+            return "Ош";
+        else if (region.equalsIgnoreCase("Алай"))
+            return "Ош";
+        else if (region.equalsIgnoreCase("Араван"))
+            return "Ош";
+        else if (region.equalsIgnoreCase("Кара-Кулжа"))
+            return "Ош";
+        else if (region.equalsIgnoreCase("Чоң-Алай"))
             return "Ош";
         else if (region.equalsIgnoreCase("Кара-Суу"))
             return "Ош";
@@ -200,26 +230,4 @@ public class StringData {
         return spinnerArray;
     }
 
-    public static ArrayList<String> getSectors(String city) {
-        ArrayList<String> spinnerArray = new ArrayList<>();
-
-        if (city.equalsIgnoreCase("Бишкек")) {
-            spinnerArray.add("");
-            spinnerArray.add("Джал");
-            spinnerArray.add("Караван");
-            spinnerArray.add("Цум");
-            spinnerArray.add("Микрорайон");
-            spinnerArray.add("Центр");
-
-        } else if (city.equalsIgnoreCase("Ош")) {
-            spinnerArray.add("");
-            spinnerArray.add("Ош");
-            spinnerArray.add("Араванский");
-            spinnerArray.add("Базар");
-        } else {
-            spinnerArray.add("");
-            spinnerArray.add(city);
-        }
-        return spinnerArray;
-    }
 }

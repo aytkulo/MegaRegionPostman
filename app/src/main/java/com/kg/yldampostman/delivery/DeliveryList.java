@@ -31,6 +31,7 @@ import com.kg.yldampostman.app.AppController;
 import com.kg.yldampostman.helper.CustomJsonArrayRequest;
 import com.kg.yldampostman.helper.HelperConstants;
 import com.kg.yldampostman.helper.StringData;
+import com.kg.yldampostman.users.User;
 import com.kg.yldampostman.utils.MyDialog;
 import com.kg.yldampostman.utils.NetworkUtil;
 
@@ -69,7 +70,7 @@ public class DeliveryList extends AppCompatActivity {
     private String token = "";
 
     private List<Delivery> deliveryList = new ArrayList<>();
-    private ArrayList<String> sectorList = new ArrayList<>();
+    private List<User> userList = new ArrayList<>();
     private Delivery delivery;
     private String operationType;
     private String strDate = "";
@@ -103,7 +104,11 @@ public class DeliveryList extends AppCompatActivity {
 
         // Ushul jerdi duzelttim.. Sectordu artik koddan alacak.
         // getSectors(userCity);
-        sectorList = StringData.getSectors(userCity);
+        try {
+            listPostmans();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         populateUserSpinner();
         arrangeCities();
 
@@ -235,8 +240,9 @@ public class DeliveryList extends AppCompatActivity {
         postmans.setAdapter(null);
         ArrayList<String> lables = new ArrayList<String>();
 
-        for (int i = 0; i < sectorList.size(); i++) {
-            lables.add(sectorList.get(i));
+        lables.add("%");
+        for (int i = 0; i < userList.size(); i++) {
+            lables.add(userList.get(i).getEmail());
         }
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, lables);
@@ -347,6 +353,92 @@ public class DeliveryList extends AppCompatActivity {
     }
 
 
+    public void listPostmans() throws ParseException {
+
+        if (!NetworkUtil.isNetworkConnected(DeliveryList.this)) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
+                    getApplicationContext().getString(R.string.dialog_error_title),
+                    getApplicationContext().getString(R.string.relogin)).show();
+        } else {
+            String tag_string_req = "req_get_deliveries";
+            pDialog.setMessage("Listing Postmans ...");
+            showDialog();
+
+            deliveryList.clear();
+            listViewDeliveries.setAdapter(null);
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("city", HomeActivity.userCity);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_GET_USERS, jsonObject,
+                    new Response.Listener<JSONArray>() {
+
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            Log.d(TAG, "Deliveries List Response: " + response);
+                            hideDialog();
+
+                            try {
+                                // Check for error node in json
+                                if (response.length() > 0) {
+
+                                    JsonParser parser = new JsonParser();
+                                    Gson gson = new Gson();
+
+                                    for (int i = 0; i < response.length(); i++) {
+
+                                        JsonElement mJsonM = parser.parse(response.getString(i));
+                                        User dd = gson.fromJson(mJsonM, User.class);
+
+                                        userList.add(dd);
+                                    }
+
+                                    if (userList.size() > 0) {
+                                        populateUserSpinner();
+                                    }
+
+                                } else {
+                                    MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
+                                            getApplicationContext().getString(R.string.dialog_error_title),
+                                            getApplicationContext().getString(R.string.NoData)).show();
+                                }
+                            } catch (JSONException e) {
+                                MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
+                                        getApplicationContext().getString(R.string.dialog_error_title),
+                                        getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
+                            }
+
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkUtil.checkHttpStatus(DeliveryList.this, error);
+                    hideDialog();
+                }
+            }) {
+
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", token);
+                    return headers;
+                }
+
+            };
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
+    }
+
     private void arrangeCities() {
 
         Intent orderIntent = getIntent();
@@ -372,8 +464,6 @@ public class DeliveryList extends AppCompatActivity {
 
             operationType = extras.getString(HelperConstants.DELIVERY_OPERATION);
 
-            Log.e(TAG, "Operasyon: " + operationType);
-
             if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELIVER)) {
 
                 receiverCity = userCity;
@@ -385,7 +475,8 @@ public class DeliveryList extends AppCompatActivity {
                 senderCity = "%";
 
                 status = HelperConstants.DELIVERY_STATUS_NEW;
-            } else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_UPDATE) || operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELETE))
+            }
+            else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_UPDATE) || operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELETE))
             {
 
                 status = HelperConstants.DELIVERY_STATUS_NEW;
@@ -404,25 +495,14 @@ public class DeliveryList extends AppCompatActivity {
                 ed_Date.setEnabled(false);
 
             }
-            else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_ASSIGN)) {
-
-                rCity.setAdapter(cityAdapter1);
-                sCity.setAdapter(cityAdapterAll);
-                rCity.setEnabled(true);
-
-                status = HelperConstants.DELIVERY_STATUS_NEW;
-                postmans.setSelection(getIndex(postmans, "%"));
-                postmans.setEnabled(true);
-                sCity.setEnabled(true);
-            }
             else
                 {
-                status = "%";
-                postmans.setSelection(getIndex(postmans, userName));
-                postmans.setEnabled(false);
-                sCity.setAdapter(cityAdapter1);
-                rCity.setAdapter(cityAdapterAll);
-                sCity.setSelection(getIndex(sCity, userCity));
+                    status = "%";
+                    postmans.setSelection(getIndex(postmans, userName));
+                    postmans.setEnabled(false);
+                    sCity.setAdapter(cityAdapter1);
+                    rCity.setAdapter(cityAdapterAll);
+                    sCity.setSelection(getIndex(sCity, userCity));
             }
 
         }
