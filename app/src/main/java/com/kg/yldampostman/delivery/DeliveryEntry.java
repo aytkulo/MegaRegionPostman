@@ -387,11 +387,22 @@ public class DeliveryEntry extends AppCompatActivity {
                 // This puts the value (true/false) into the variable
 
                 if (checkedRadioButton.equals(rb_payment_receiverbank)) {
+
                     Intent intent = new Intent(DeliveryEntry.this, CorporateSelectionList.class);
 
                     if (rCity.getSelectedItem() != null && rCity.getSelectedItem().toString().length() > 0) {
-                        intent.putExtra("city", rCity.getSelectedItem().toString());
-                        startActivityForResult(intent, RECEIVER_COMPANY_LIST);
+                        if (rComp.getText() == null || rComp.getText().toString().length() < 1) {
+                            intent.putExtra("city", rCity.getSelectedItem().toString());
+                            startActivityForResult(intent, RECEIVER_COMPANY_LIST);
+                        }
+                        else
+                        {
+                            try {
+                                checkCorporateCustomer(rComp.getText().toString(), intent, RECEIVER_COMPANY_LIST);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     } else {
                         rb_payment_receiverbank.setChecked(false);
                         rAdres.setEnabled(true);
@@ -401,11 +412,22 @@ public class DeliveryEntry extends AppCompatActivity {
 
 
                 } else if (checkedRadioButton.equals(rb_payment_senderbank)) {
+
                     Intent intent = new Intent(DeliveryEntry.this, CorporateSelectionList.class);
 
                     if (sCity.getSelectedItem() != null && sCity.getSelectedItem().toString().length() > 0) {
-                        intent.putExtra("city", sCity.getSelectedItem().toString());
-                        startActivityForResult(intent, SENDER_COMPANY_LIST);
+                        if (sComp.getText() == null || sComp.getText().toString().length() < 1) {
+                            intent.putExtra("city", sCity.getSelectedItem().toString());
+                            startActivityForResult(intent, SENDER_COMPANY_LIST);
+                        }
+                        else
+                        {
+                            try {
+                                checkCorporateCustomer(sComp.getText().toString(), intent, SENDER_COMPANY_LIST);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     } else {
                         rb_payment_senderbank.setChecked(false);
                         sAdres.setEnabled(true);
@@ -413,11 +435,63 @@ public class DeliveryEntry extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Биринчи кайсыл шаарга кетишин тандаңыз.", Toast.LENGTH_LONG).show();
                     }
                 }
+                else
+                {
+                    sAdres.setEnabled(true);
+                    sComp.setEnabled(true);
+                    rAdres.setEnabled(true);
+                    rComp.setEnabled(true);
+                }
             }
         });
 
     }
 
+    public void checkCorporateCustomer(final String companyName, final Intent intent, final int RECEIVER_COMPANY_LIST) throws ParseException {
+
+        if (!NetworkUtil.isNetworkConnected(DeliveryEntry.this)) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
+                    DeliveryEntry.this.getString(R.string.dialog_error_title),
+                    DeliveryEntry.this.getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
+                    DeliveryEntry.this.getString(R.string.dialog_error_title),
+                    DeliveryEntry.this.getString(R.string.relogin)).show();
+        } else {
+            String tag_string_req = "req_check_corporate_customer";
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("company", companyName);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConfig.URL_CORPORATE_CUSTOMER_CHECK, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            if (response == null) {
+                                startActivityForResult(intent, RECEIVER_COMPANY_LIST);
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    startActivityForResult(intent, RECEIVER_COMPANY_LIST);
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", HomeActivity.token);
+                    return headers;
+                }
+            };
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
+    }
 
     private String getPaymentRadioGroupValue() {
 

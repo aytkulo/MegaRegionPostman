@@ -31,6 +31,8 @@ public class AppConfig {
 
     public static String URL_CORPORATE_CUSTOMER_SAVE = PURE_URL + "customers/corporate/save";
 
+    public static String URL_CORPORATE_CUSTOMER_CHECK = PURE_URL + "customers/corporate/check";
+
     public static String URL_CUSTOMER_UPDATE = PURE_URL + "customer/retail/update";
 
     public static String URL_CUSTOMER_GET = PURE_URL + "customers/retail/list";
