@@ -59,10 +59,6 @@ public class UpdateData extends AppCompatActivity {
         // session manager
         session = new SessionManager(getApplicationContext());
 
-        if (!session.isLoggedIn()) {
-            logoutUser();
-        }
-
         String login = session.getLogin();
         String fulname = session.getNameSurname();
 

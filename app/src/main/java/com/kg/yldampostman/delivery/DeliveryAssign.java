@@ -23,6 +23,7 @@ import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
 import com.kg.yldampostman.helper.CustomJsonArrayRequest;
 import com.kg.yldampostman.helper.HelperConstants;
+import com.kg.yldampostman.helper.PostmanHelper;
 import com.kg.yldampostman.helper.SQLiteHandler;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.LoginActivity;
@@ -74,8 +75,13 @@ public class DeliveryAssign extends AppCompatActivity {
         }
 
 
-        sectorList = StringData.getSectors(HomeActivity.userCity);
-        populateUserSpinner();
+        try {
+            PostmanHelper.listPostmans(HomeActivity.userCity, DeliveryAssign.this, spn_users);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
         spn_users.setSelection(getIndex(spn_users, HomeActivity.userLogin));
 
         btn_assign.setOnClickListener(new View.OnClickListener() {
@@ -156,20 +162,6 @@ public class DeliveryAssign extends AppCompatActivity {
     }
 
 
-    private void populateUserSpinner() {
-
-        spn_users.setAdapter(null);
-        ArrayList<String> lables = new ArrayList<String>();
-
-        for (int i = 0; i < sectorList.size(); i++) {
-            lables.add(sectorList.get(i));
-        }
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, lables);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spn_users.setAdapter(spinnerAdapter);
-    }
-
     private int getIndex(Spinner spinner, String myString) {
 
         int index = 0;
@@ -181,74 +173,6 @@ public class DeliveryAssign extends AppCompatActivity {
         }
         return index;
     }
-
-    public void getSectors() {
-
-        String tag_string_req = "req_getsectors";
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("city", HomeActivity.userCity);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_GET_SECTORS, jsonObject,
-                new Response.Listener<JSONArray>() {
-
-                    @Override
-                    public void onResponse(JSONArray response) {
-
-                        try {
-                            if (response.length() > 0) {
-
-                                sectorList.clear();
-                                sectorList.add("");
-
-                                for (int i = 0; i < response.length(); i++) {
-                                    JSONObject c = response.getJSONObject(i);
-                                    String sector = c.getString("sector");
-                                    sectorList.add(sector);
-                                }
-                                populateUserSpinner();
-
-                            } else {
-                                Toast.makeText(getApplicationContext(),
-                                        "Эч нерсе табылбады, же ката пайда болду!", Toast.LENGTH_LONG).show();
-                            }
-                        } catch (JSONException e) {
-                            // JSON error
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error instanceof AuthFailureError) {
-                    Toast.makeText(getApplicationContext(), "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
-                    Intent loginIntent = new Intent(DeliveryAssign.this, LoginActivity.class);
-                    startActivity(loginIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                }
-                hideDialog();
-            }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", HomeActivity.token);
-                return headers;
-            }
-        };
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(req, tag_string_req);
-
-    }
-
 
     private void showDialog() {
         if (!pDialog.isShowing())

@@ -31,6 +31,7 @@ import com.kg.yldampostman.app.AppController;
 import com.kg.yldampostman.delivery.DeliveryDeliver;
 import com.kg.yldampostman.delivery.DeliveryEntry;
 import com.kg.yldampostman.helper.CustomJsonArrayRequest;
+import com.kg.yldampostman.helper.PostmanHelper;
 import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.LoginActivity;
@@ -125,8 +126,11 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
                 sectorList.clear();
                 sp_Sector.setAdapter(null);
                 String senderCity = sp_Origin.getSelectedItem().toString();
-                sectorList = StringData.getSectors(senderCity);
-                populateSectorSpinner();
+                try {
+                    PostmanHelper.listPostmans(senderCity, OrderListAssigned.this, sp_Sector);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

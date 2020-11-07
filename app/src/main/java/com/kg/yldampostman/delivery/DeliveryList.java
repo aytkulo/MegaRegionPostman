@@ -30,6 +30,7 @@ import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
 import com.kg.yldampostman.helper.CustomJsonArrayRequest;
 import com.kg.yldampostman.helper.HelperConstants;
+import com.kg.yldampostman.helper.PostmanHelper;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.User;
 import com.kg.yldampostman.utils.MyDialog;
@@ -63,8 +64,8 @@ public class DeliveryList extends AppCompatActivity {
     private String senderCity = "";
     private String receiverCity = "";
     private String status = "%";
-    private String responsible = "%";
-    private String accepted_person = "%";
+    private String acceptedPostman = "%";
+    private String assignedPostman = "%";
     private String userCity = "";
     private String userName = "";
     private String token = "";
@@ -102,14 +103,11 @@ public class DeliveryList extends AppCompatActivity {
         userName = HomeActivity.userLogin;
         token = HomeActivity.token;
 
-        // Ushul jerdi duzelttim.. Sectordu artik koddan alacak.
-        // getSectors(userCity);
         try {
-            listPostmans();
+            PostmanHelper.listPostmans(HomeActivity.userCity,DeliveryList.this, postmans);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        populateUserSpinner();
         arrangeCities();
 
         ed_Date.setText(strDate);
@@ -183,12 +181,19 @@ public class DeliveryList extends AppCompatActivity {
         postmans.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                responsible = postmans.getSelectedItem().toString();
+
+                if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELIVER))
+                    assignedPostman = postmans.getSelectedItem().toString();
+                else
+                    acceptedPostman = postmans.getSelectedItem().toString();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                responsible = "%";
+                if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELIVER))
+                    assignedPostman = "%";
+                else
+                    acceptedPostman = "%";
             }
         });
 
@@ -235,21 +240,6 @@ public class DeliveryList extends AppCompatActivity {
     }
 
 
-    private void populateUserSpinner() {
-
-        postmans.setAdapter(null);
-        ArrayList<String> lables = new ArrayList<String>();
-
-        lables.add("%");
-        for (int i = 0; i < userList.size(); i++) {
-            lables.add(userList.get(i).getEmail());
-        }
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, lables);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        postmans.setAdapter(spinnerAdapter);
-    }
-
 
     public void listDeliveries(final String entryDate, final String address, final String name, final String phone) throws ParseException {
 
@@ -275,8 +265,8 @@ public class DeliveryList extends AppCompatActivity {
                 jsonObject.put("status", status);
                 jsonObject.put("receiverCity", receiverCity + "%");
                 jsonObject.put("senderCity", senderCity + "%");
-                jsonObject.put("assignedSector", responsible + "%");
-                jsonObject.put("acceptedPerson", accepted_person + "%");
+                jsonObject.put("assignedSector", assignedPostman + "%");
+                jsonObject.put("acceptedPerson", acceptedPostman + "%");
                 jsonObject.put("address", address + "%");
                 jsonObject.put("name", name + "%");
                 jsonObject.put("phone", phone + "%");
@@ -353,92 +343,6 @@ public class DeliveryList extends AppCompatActivity {
     }
 
 
-    public void listPostmans() throws ParseException {
-
-        if (!NetworkUtil.isNetworkConnected(DeliveryList.this)) {
-            MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
-                    getApplicationContext().getString(R.string.dialog_error_title),
-                    getApplicationContext().getString(R.string.check_internet)).show();
-        } else if (NetworkUtil.isTokenExpired()) {
-            MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
-                    getApplicationContext().getString(R.string.dialog_error_title),
-                    getApplicationContext().getString(R.string.relogin)).show();
-        } else {
-            String tag_string_req = "req_get_deliveries";
-            pDialog.setMessage("Listing Postmans ...");
-            showDialog();
-
-            deliveryList.clear();
-            listViewDeliveries.setAdapter(null);
-
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("city", HomeActivity.userCity);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_GET_USERS, jsonObject,
-                    new Response.Listener<JSONArray>() {
-
-                        @Override
-                        public void onResponse(JSONArray response) {
-                            Log.d(TAG, "Deliveries List Response: " + response);
-                            hideDialog();
-
-                            try {
-                                // Check for error node in json
-                                if (response.length() > 0) {
-
-                                    JsonParser parser = new JsonParser();
-                                    Gson gson = new Gson();
-
-                                    for (int i = 0; i < response.length(); i++) {
-
-                                        JsonElement mJsonM = parser.parse(response.getString(i));
-                                        User dd = gson.fromJson(mJsonM, User.class);
-
-                                        userList.add(dd);
-                                    }
-
-                                    if (userList.size() > 0) {
-                                        populateUserSpinner();
-                                    }
-
-                                } else {
-                                    MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
-                                            getApplicationContext().getString(R.string.dialog_error_title),
-                                            getApplicationContext().getString(R.string.NoData)).show();
-                                }
-                            } catch (JSONException e) {
-                                MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
-                                        getApplicationContext().getString(R.string.dialog_error_title),
-                                        getApplicationContext().getString(R.string.ErrorWhenLoading)).show();
-                            }
-
-                        }
-                    }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    NetworkUtil.checkHttpStatus(DeliveryList.this, error);
-                    hideDialog();
-                }
-            }) {
-
-                @Override
-                public Map<String, String> getHeaders() {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("Authorization", token);
-                    return headers;
-                }
-
-            };
-            // Adding request to request queue
-            AppController.getInstance().addToRequestQueue(req, tag_string_req);
-        }
-    }
-
     private void arrangeCities() {
 
         Intent orderIntent = getIntent();
@@ -472,12 +376,15 @@ public class DeliveryList extends AppCompatActivity {
                 rCity.setAdapter(cityAdapter1);
 
                 rCity.setSelection(getIndex(rCity, receiverCity));
+                rCity.setEnabled(false);
                 senderCity = "%";
 
                 status = HelperConstants.DELIVERY_STATUS_NEW;
             }
             else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_UPDATE) || operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELETE))
             {
+                postmans.setEnabled(false);
+                ed_Date.setEnabled(false);
 
                 status = HelperConstants.DELIVERY_STATUS_NEW;
 
@@ -486,14 +393,9 @@ public class DeliveryList extends AppCompatActivity {
                 sCity.setSelection(getIndex(sCity, senderCity));
                 sCity.setEnabled(false);
 
-                rCity.setSelection(getIndex(rCity, receiverCity));
                 rCity.setAdapter(cityAdapterAll);
                 receiverCity = "%";
-
-                accepted_person = userName;
-                postmans.setEnabled(false);
-                ed_Date.setEnabled(false);
-
+                acceptedPostman = userName;
             }
             else
                 {

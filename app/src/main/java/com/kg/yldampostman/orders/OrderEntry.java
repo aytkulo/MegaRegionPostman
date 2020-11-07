@@ -32,8 +32,10 @@ import com.kg.yldampostman.HomeActivity;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
 import com.kg.yldampostman.customer.CustomerHelper;
+import com.kg.yldampostman.delivery.DeliveryAssign;
 import com.kg.yldampostman.delivery.DeliveryDeliver;
 import com.kg.yldampostman.helper.CustomJsonArrayRequest;
+import com.kg.yldampostman.helper.PostmanHelper;
 import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.LoginActivity;
@@ -399,10 +401,12 @@ public class OrderEntry extends AppCompatActivity {
                 usersList.clear();
                 spinner_users.setAdapter(null);
                 String senderCity = spinner_senderCity.getSelectedItem().toString();
-                usersList = StringData.getSectors(senderCity);
-                populateSectorSpinner();
-                // Sector artik koddan getirilecek...
-               // getSectors(senderCity);
+                try {
+                    PostmanHelper.listPostmans(senderCity, OrderEntry.this, spinner_users);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
             }
 
             @Override
@@ -508,25 +512,6 @@ public class OrderEntry extends AppCompatActivity {
         return shape;
     }
 
-
-    private void populateSectorSpinner() {
-
-        spinner_users.setAdapter(null);
-
-        ArrayList<String> lables = new ArrayList<String>();
-
-        for (int i = 0; i < usersList.size(); i++) {
-            lables.add(usersList.get(i));
-        }
-        // Creating adapter for spinner
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, lables);
-
-        // Drop down layout style - list view with radio button
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // attaching data adapter to spinner
-        spinner_users.setAdapter(spinnerAdapter);
-    }
 
     public void getSenderCustomers(final String phone, final String company) throws ParseException {
 

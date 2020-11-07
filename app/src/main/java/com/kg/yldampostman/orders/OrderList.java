@@ -28,8 +28,10 @@ import com.kg.yldampostman.HomeActivity;
 import com.kg.yldampostman.R;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
+import com.kg.yldampostman.delivery.DeliveryAssign;
 import com.kg.yldampostman.delivery.DeliveryDeliver;
 import com.kg.yldampostman.helper.CustomJsonArrayRequest;
+import com.kg.yldampostman.helper.PostmanHelper;
 import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.LoginActivity;
@@ -129,8 +131,12 @@ public class OrderList extends AppCompatActivity {
                 sectorList.clear();
                 sp_Sectors.setAdapter(null);
                 String senderCity = sp_Origin.getSelectedItem().toString();
-                sectorList = StringData.getSectors(senderCity);
-                populateSectorSpinner();
+                try {
+                    PostmanHelper.listPostmans(senderCity, OrderList.this, sp_Sectors);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
             }
 
             @Override
