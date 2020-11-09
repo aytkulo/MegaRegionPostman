@@ -26,6 +26,7 @@ import com.kg.yldampostman.helper.HelperConstants;
 import com.kg.yldampostman.helper.PostmanHelper;
 import com.kg.yldampostman.helper.SQLiteHandler;
 import com.kg.yldampostman.helper.StringData;
+import com.kg.yldampostman.orders.OrderEntry;
 import com.kg.yldampostman.users.LoginActivity;
 import com.kg.yldampostman.utils.MyDialog;
 import com.kg.yldampostman.utils.NetworkUtil;
@@ -74,14 +75,7 @@ public class DeliveryAssign extends AppCompatActivity {
             delivery = (Delivery) deliveryIntent.getSerializableExtra("delivery");
         }
 
-
-        try {
-            PostmanHelper.listPostmans(HomeActivity.userCity, DeliveryAssign.this, spn_users);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
+        PostmanHelper.populateUserSpinner(DeliveryAssign.this, spn_users, HomeActivity.postmanList);
         spn_users.setSelection(getIndex(spn_users, HomeActivity.userLogin));
 
         btn_assign.setOnClickListener(new View.OnClickListener() {

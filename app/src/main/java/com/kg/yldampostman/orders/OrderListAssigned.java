@@ -35,6 +35,7 @@ import com.kg.yldampostman.helper.PostmanHelper;
 import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.LoginActivity;
+import com.kg.yldampostman.users.User;
 import com.kg.yldampostman.utils.MyDialog;
 import com.kg.yldampostman.utils.NetworkUtil;
 
@@ -126,11 +127,11 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
                 sectorList.clear();
                 sp_Sector.setAdapter(null);
                 String senderCity = sp_Origin.getSelectedItem().toString();
-                try {
-                    PostmanHelper.listPostmans(senderCity, OrderListAssigned.this, sp_Sector);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+
+                ArrayList<User> postmanList = new ArrayList<>();
+                PostmanHelper.getPostmans(senderCity, OrderListAssigned.this, postmanList);
+                PostmanHelper.populateUserSpinner(OrderListAssigned.this, sp_Sector, postmanList);
+
             }
 
             @Override

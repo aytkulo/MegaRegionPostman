@@ -15,33 +15,22 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.navigation.NavigationView;
-import com.kg.yldampostman.app.AppConfig;
-import com.kg.yldampostman.app.AppController;
 import com.kg.yldampostman.delivery.DeliveryDebteds;
 import com.kg.yldampostman.delivery.DeliveryEntry;
 import com.kg.yldampostman.delivery.DeliveryList;
 import com.kg.yldampostman.helper.HelperConstants;
+import com.kg.yldampostman.helper.PostmanHelper;
 import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.orders.OrderListAssigned;
 import com.kg.yldampostman.service.LocServ;
 import com.kg.yldampostman.users.LoginActivity;
 import com.kg.yldampostman.users.UpdateData;
+import com.kg.yldampostman.users.User;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class HomeActivity extends AppCompatActivity
@@ -62,6 +51,8 @@ public class HomeActivity extends AppCompatActivity
 
     NavigationView navigationView;
 
+    public static ArrayList<User> postmanList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +61,7 @@ public class HomeActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         //Intent intent = new Intent("com.example.asus.yldam.service.LocServ.class");
-        startService(new Intent(getBaseContext(), LocServ.class));
+        //startService(new Intent(getBaseContext(), LocServ.class));
 
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
@@ -137,6 +128,7 @@ public class HomeActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
+        PostmanHelper.getPostmans(userCity,HomeActivity.this, postmanList);
     }
 
     @Override

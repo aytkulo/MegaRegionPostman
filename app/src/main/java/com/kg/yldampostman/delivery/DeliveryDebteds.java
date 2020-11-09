@@ -145,6 +145,18 @@ public class DeliveryDebteds extends AppCompatActivity {
                 }
             }
         });
+
+        Button btnCancel = dialogPaying.findViewById(R.id.btnCancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    dialogPaying.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         dialogPaying.show();
     }
 

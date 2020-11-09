@@ -49,14 +49,33 @@
                 android:gravity="center"
                 android:layout_marginBottom="20dp"/>
 
-            <Button
-                android:id="@+id/btnOk"
-                android:layout_width="200dp"
-                android:layout_height="33dp"
-                android:background="@color/colorAccent"
-                android:text="OK"
-                android:textColor="@color/white"
-                android:layout_marginBottom="20dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/corporateBackColor"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnCancel"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorAccent"
+                    android:text="@string/CANCEL"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@color/white"/>
+
+                <Button
+                    android:id="@+id/btnOk"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorAccent"
+                    android:text="@string/OK"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/white"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

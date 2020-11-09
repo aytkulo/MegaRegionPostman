@@ -34,6 +34,7 @@ import com.kg.yldampostman.app.AppController;
 import com.kg.yldampostman.customer.CustomerHelper;
 import com.kg.yldampostman.delivery.DeliveryAssign;
 import com.kg.yldampostman.delivery.DeliveryDeliver;
+import com.kg.yldampostman.delivery.DeliveryList;
 import com.kg.yldampostman.helper.CustomJsonArrayRequest;
 import com.kg.yldampostman.helper.PostmanHelper;
 import com.kg.yldampostman.helper.SessionManager;
@@ -401,11 +402,8 @@ public class OrderEntry extends AppCompatActivity {
                 usersList.clear();
                 spinner_users.setAdapter(null);
                 String senderCity = spinner_senderCity.getSelectedItem().toString();
-                try {
-                    PostmanHelper.listPostmans(senderCity, OrderEntry.this, spinner_users);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+
+                PostmanHelper.populateUserSpinner(OrderEntry.this, spinner_users, HomeActivity.postmanList);
 
             }
 

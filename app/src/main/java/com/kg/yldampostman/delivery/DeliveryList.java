@@ -71,7 +71,6 @@ public class DeliveryList extends AppCompatActivity {
     private String token = "";
 
     private List<Delivery> deliveryList = new ArrayList<>();
-    private List<User> userList = new ArrayList<>();
     private Delivery delivery;
     private String operationType;
     private String strDate = "";
@@ -103,12 +102,15 @@ public class DeliveryList extends AppCompatActivity {
         userName = HomeActivity.userLogin;
         token = HomeActivity.token;
 
+        PostmanHelper.populateUserSpinner(DeliveryList.this, postmans, HomeActivity.postmanList);
+        /*
         try {
+            PostmanHelper.populateUserSpinner(DeliveryList.this, postmans, HomeActivity.postmanList);
             PostmanHelper.listPostmans(HomeActivity.userCity,DeliveryList.this, postmans);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        arrangeCities();
+*/
 
         ed_Date.setText(strDate);
 
@@ -220,6 +222,8 @@ public class DeliveryList extends AppCompatActivity {
                 receiverCity = "%";
             }
         });
+
+        arrangeCities();
     }
 
 
@@ -396,6 +400,19 @@ public class DeliveryList extends AppCompatActivity {
                 rCity.setAdapter(cityAdapterAll);
                 receiverCity = "%";
                 acceptedPostman = userName;
+                postmans.setSelection(getIndex(postmans, userName));
+            }
+            else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_ASSIGN))
+            {
+                postmans.setEnabled(true);
+                status = HelperConstants.DELIVERY_STATUS_NEW;
+
+                sCity.setAdapter(cityAdapterAll);
+                senderCity = "%";
+                sCity.setSelection(getIndex(sCity, senderCity));
+
+                rCity.setAdapter(cityAdapter1);
+                receiverCity = userCity;
             }
             else
                 {
@@ -414,7 +431,6 @@ public class DeliveryList extends AppCompatActivity {
     private int getIndex(Spinner spinner, String myString) {
 
         int index = 0;
-        Log.e(TAG, "Spinner Count: " + spinner.getCount());
         for (int i = 0; i < spinner.getCount(); i++) {
             if (spinner.getItemAtPosition(i).equals(myString)) {
                 index = i;

@@ -35,6 +35,7 @@ import com.kg.yldampostman.helper.PostmanHelper;
 import com.kg.yldampostman.helper.SessionManager;
 import com.kg.yldampostman.helper.StringData;
 import com.kg.yldampostman.users.LoginActivity;
+import com.kg.yldampostman.users.User;
 import com.kg.yldampostman.utils.MyDialog;
 import com.kg.yldampostman.utils.NetworkUtil;
 
@@ -131,12 +132,10 @@ public class OrderList extends AppCompatActivity {
                 sectorList.clear();
                 sp_Sectors.setAdapter(null);
                 String senderCity = sp_Origin.getSelectedItem().toString();
-                try {
-                    PostmanHelper.listPostmans(senderCity, OrderList.this, sp_Sectors);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
 
+                ArrayList<User> postmanList = new ArrayList<>();
+                PostmanHelper.getPostmans(senderCity, OrderList.this, postmanList);
+                PostmanHelper.populateUserSpinner(OrderList.this, sp_Sectors, postmanList);
             }
 
             @Override

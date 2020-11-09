@@ -31,6 +31,82 @@ public class PostmanHelper {
 
     static ArrayList<User> userList = new ArrayList<>();
 
+
+    public static void populateUserSpinner(Context context, Spinner postmans, ArrayList<User> userList) {
+
+        postmans.setAdapter(null);
+        ArrayList<String> lables = new ArrayList<String>();
+
+        lables.add("%");
+        for (int i = 0; i < userList.size(); i++) {
+            lables.add(userList.get(i).getEmail());
+        }
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(context,
+                android.R.layout.simple_spinner_item, lables);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        postmans.setAdapter(spinnerAdapter);
+
+    }
+
+    public static void getPostmans(final String city, final Context context, final ArrayList<User> userList) {
+
+        if (!NetworkUtil.isNetworkConnected(context)) {
+            MyDialog.createSimpleOkErrorDialog(context,
+                    context.getString(R.string.dialog_error_title),
+                    context.getString(R.string.check_internet)).show();
+        } else {
+            String tag_string_req = "req_get_deliveries";
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("city", city);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_GET_USERS, jsonObject,
+                    new Response.Listener<JSONArray>() {
+
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            try {
+                                if (response.length() > 0) {
+
+                                    userList.clear();
+                                    JsonParser parser = new JsonParser();
+                                    Gson gson = new Gson();
+
+                                    for (int i = 0; i < response.length(); i++) {
+
+                                        JsonElement mJsonM = parser.parse(response.getString(i));
+                                        User dd = gson.fromJson(mJsonM, User.class);
+                                        userList.add(dd);
+                                    }
+                                }
+                            } catch (JSONException e) {
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                }
+            }) {
+
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", HomeActivity.token);
+                    return headers;
+                }
+
+            };
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
+    }
+
+    /*
     public static void listPostmans(final String city, final Context context, final Spinner postmans) throws ParseException {
 
         if (!NetworkUtil.isNetworkConnected(context)) {
@@ -123,6 +199,9 @@ public class PostmanHelper {
                 android.R.layout.simple_spinner_item, lables);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         postmans.setAdapter(spinnerAdapter);
+
     }
 
+
+     */
 }
