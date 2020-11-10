@@ -169,12 +169,14 @@ public class HomeActivity extends AppCompatActivity
             intent.putExtra(HelperConstants.DELIVERY_OPERATION, HelperConstants.DELIVERY_LIST);
             startActivity(intent);
 
-        }
+     /*   }
         else if (id == R.id.nav_delivery_delete) {
 
             Intent intent = new Intent(HomeActivity.this, DeliveryList.class);
             intent.putExtra(HelperConstants.DELIVERY_OPERATION, HelperConstants.DELIVERY_DELETE);
             startActivity(intent);
+
+ */
 
         }else if (id == R.id.nav_delivery_assign) {
 

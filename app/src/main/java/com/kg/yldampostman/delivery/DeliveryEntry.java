@@ -398,7 +398,7 @@ public class DeliveryEntry extends AppCompatActivity {
                         else
                         {
                             try {
-                                checkCorporateCustomer(rComp.getText().toString(), intent, RECEIVER_COMPANY_LIST);
+                                checkCorporateCustomer(rCity.getSelectedItem().toString(), rComp.getText().toString(), intent, RECEIVER_COMPANY_LIST);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -423,7 +423,7 @@ public class DeliveryEntry extends AppCompatActivity {
                         else
                         {
                             try {
-                                checkCorporateCustomer(sComp.getText().toString(), intent, SENDER_COMPANY_LIST);
+                                checkCorporateCustomer(sCity.getSelectedItem().toString(), sComp.getText().toString(), intent, SENDER_COMPANY_LIST);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -447,7 +447,7 @@ public class DeliveryEntry extends AppCompatActivity {
 
     }
 
-    public void checkCorporateCustomer(final String companyName, final Intent intent, final int RECEIVER_COMPANY_LIST) throws ParseException {
+    public void checkCorporateCustomer(final String city, final String companyName, final Intent intent, final int RECEIVER_COMPANY_LIST) throws ParseException {
 
         if (!NetworkUtil.isNetworkConnected(DeliveryEntry.this)) {
             MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
@@ -463,7 +463,7 @@ public class DeliveryEntry extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("company", companyName);
-
+                jsonObject.put("city", city);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -541,14 +541,11 @@ public class DeliveryEntry extends AppCompatActivity {
                 if (extras != null) {
                     sAdres.setText(extras.getString("address"));
                     sComp.setText(extras.getString("company"));
-
-                    sAdres.setEnabled(false);
                     sComp.setEnabled(false);
                     Toast.makeText(getApplicationContext(), "Жөнөтүүчү фирма аты жана адреси өзгөрдү!", Toast.LENGTH_LONG).show();
                 }
             } else {
                 rb_payment_senderbank.setChecked(false);
-                sAdres.setEnabled(true);
                 sComp.setEnabled(true);
                 Toast.makeText(getApplicationContext(), "Төлөм түрү өзгөртүлдү!", Toast.LENGTH_LONG).show();
             }
@@ -559,20 +556,13 @@ public class DeliveryEntry extends AppCompatActivity {
                 if (extras != null) {
                     rAdres.setText(extras.getString("address"));
                     rComp.setText(extras.getString("company"));
-
-                    rAdres.setEnabled(false);
                     rComp.setEnabled(false);
-
                     Toast.makeText(getApplicationContext(), "Алуучу фирма аты жана адреси өзгөрдү!", Toast.LENGTH_LONG).show();
                 }
             } else {
                 rb_payment_receiverbank.setChecked(false);
-
-                rAdres.setEnabled(true);
                 rComp.setEnabled(true);
-
                 Toast.makeText(getApplicationContext(), "Төлөм түрү өзгөртүлдү!", Toast.LENGTH_LONG).show();
-
             }
         }
     }
