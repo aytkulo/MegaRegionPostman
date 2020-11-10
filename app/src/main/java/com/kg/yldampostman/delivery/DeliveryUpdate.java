@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -28,6 +29,7 @@ import com.kg.yldampostman.HomeActivity;
 import com.kg.yldampostman.R;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
+import com.kg.yldampostman.customer.CorporateSelectionList;
 import com.kg.yldampostman.helper.HelperConstants;
 import com.kg.yldampostman.helper.SQLiteHandler;
 import com.kg.yldampostman.helper.StringData;
@@ -44,8 +46,11 @@ import java.util.Map;
 public class DeliveryUpdate extends AppCompatActivity {
 
     private static final String TAG = DeliveryUpdate.class.getSimpleName();
+    public static final int SENDER_COMPANY_LIST = 2;
+    public static final int RECEIVER_COMPANY_LIST = 3;
+
     private Spinner sCity, rCity, delType, sProvince, rProvince;
-    ;
+
     private EditText sName, sPhone, sComp, sAdres;
     private EditText rName, rPhone, rComp, rAdres;
     private EditText delCount, delPrice, delItemPrice, delExpl, paidAmount;
@@ -54,13 +59,11 @@ public class DeliveryUpdate extends AppCompatActivity {
     private RadioGroup rg_payment;
     private RadioGroup rg_buying;
     private RadioButton rb_rc, rb_sc, rb_sb, rb_rb, rb_bc, rb_bt, rb_bd;
+    private RadioButton rb_payment_senderbank, rb_payment_receiverbank, rb_payment_sendercash;
     private CardView card_view_signature, card_view_saving;
 
     Delivery deliveryData;
-    private SQLiteHandler db;
     private String currentUser;
-    private String userRole;
-    private String usersCity;
     private String token;
 
     @Override
@@ -73,13 +76,8 @@ public class DeliveryUpdate extends AppCompatActivity {
 
         initializeItems();
 
-       // SessionManager session = new SessionManager(getApplicationContext());
-
-        usersCity = HomeActivity.userCity;
         currentUser = HomeActivity.userLogin;
         token = HomeActivity.token;
-
-
 
         ArrayAdapter<String> provinceAdapter = new ArrayAdapter<String>(
                 DeliveryUpdate.this,
@@ -89,7 +87,6 @@ public class DeliveryUpdate extends AppCompatActivity {
 
         sProvince.setAdapter(provinceAdapter);
         rProvince.setAdapter(provinceAdapter);
-
 
         sProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -153,8 +150,121 @@ public class DeliveryUpdate extends AppCompatActivity {
             }
         });
 
+
+        rg_payment.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
+                // This puts the value (true/false) into the variable
+
+                if (checkedRadioButton.equals(rb_payment_receiverbank)) {
+
+                    Intent intent = new Intent(DeliveryUpdate.this, CorporateSelectionList.class);
+
+                    if (rCity.getSelectedItem() != null && rCity.getSelectedItem().toString().length() > 0) {
+                        if (rComp.getText() == null || rComp.getText().toString().length() < 1) {
+                            intent.putExtra("city", rCity.getSelectedItem().toString());
+                            startActivityForResult(intent, RECEIVER_COMPANY_LIST);
+                        }
+                        else
+                        {
+                            try {
+                                checkCorporateCustomer(rCity.getSelectedItem().toString(), rComp.getText().toString(), intent, RECEIVER_COMPANY_LIST);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {
+                        rb_payment_receiverbank.setChecked(false);
+                        rAdres.setEnabled(true);
+                        rComp.setEnabled(true);
+                        Toast.makeText(getApplicationContext(), "Биринчи кайсыл шаарга кетишин тандаңыз.", Toast.LENGTH_LONG).show();
+                    }
+
+
+                } else if (checkedRadioButton.equals(rb_payment_senderbank)) {
+
+                    Intent intent = new Intent(DeliveryUpdate.this, CorporateSelectionList.class);
+
+                    if (sCity.getSelectedItem() != null && sCity.getSelectedItem().toString().length() > 0) {
+                        if (sComp.getText() == null || sComp.getText().toString().length() < 1) {
+                            intent.putExtra("city", sCity.getSelectedItem().toString());
+                            startActivityForResult(intent, SENDER_COMPANY_LIST);
+                        }
+                        else
+                        {
+                            try {
+                                checkCorporateCustomer(sCity.getSelectedItem().toString(), sComp.getText().toString(), intent, SENDER_COMPANY_LIST);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {
+                        rb_payment_senderbank.setChecked(false);
+                        sAdres.setEnabled(true);
+                        sComp.setEnabled(true);
+                        Toast.makeText(getApplicationContext(), "Биринчи кайсыл шаарга кетишин тандаңыз.", Toast.LENGTH_LONG).show();
+                    }
+                }
+                else
+                {
+                    sAdres.setEnabled(true);
+                    sComp.setEnabled(true);
+                    rAdres.setEnabled(true);
+                    rComp.setEnabled(true);
+                }
+            }
+        });
+
     }
 
+
+    public void checkCorporateCustomer(final String city, final String companyName, final Intent intent, final int RECEIVER_COMPANY_LIST) throws ParseException {
+
+        if (!NetworkUtil.isNetworkConnected(DeliveryUpdate.this)) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryUpdate.this,
+                    DeliveryUpdate.this.getString(R.string.dialog_error_title),
+                    DeliveryUpdate.this.getString(R.string.check_internet)).show();
+        } else if (NetworkUtil.isTokenExpired()) {
+            MyDialog.createSimpleOkErrorDialog(DeliveryUpdate.this,
+                    DeliveryUpdate.this.getString(R.string.dialog_error_title),
+                    DeliveryUpdate.this.getString(R.string.relogin)).show();
+        } else {
+            String tag_string_req = "req_check_corporate_customer";
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("company", companyName);
+                jsonObject.put("city", city);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, AppConfig.URL_CORPORATE_CUSTOMER_CHECK, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            if (response == null) {
+                                startActivityForResult(intent, RECEIVER_COMPANY_LIST);
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    startActivityForResult(intent, RECEIVER_COMPANY_LIST);
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", HomeActivity.token);
+                    return headers;
+                }
+            };
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+        }
+    }
 
     private String getBuyingRadioGroupValue() {
 
@@ -306,6 +416,8 @@ public class DeliveryUpdate extends AppCompatActivity {
     public void initializeItems() {
         rg_payment = (RadioGroup) findViewById(R.id.rg_payment);
         rg_buying = (RadioGroup) findViewById(R.id.rg_buying);
+        rb_payment_senderbank = findViewById(R.id.rb_sb);
+        rb_payment_receiverbank = findViewById(R.id.rb_rb);
 
         rb_rb = (RadioButton) findViewById(R.id.rb_rb);
         rb_rc = (RadioButton) findViewById(R.id.rb_rc);

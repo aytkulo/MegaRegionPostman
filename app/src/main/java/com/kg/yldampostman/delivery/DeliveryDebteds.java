@@ -14,6 +14,9 @@ import com.kg.yldampostman.R;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
 import com.kg.yldampostman.helper.CustomJsonArrayRequest;
+import com.kg.yldampostman.helper.PostmanHelper;
+import com.kg.yldampostman.helper.StringData;
+import com.kg.yldampostman.users.User;
 import com.kg.yldampostman.utils.MyDialog;
 import com.kg.yldampostman.utils.NetworkUtil;
 
@@ -52,15 +55,16 @@ public class DeliveryDebteds extends AppCompatActivity {
 
     private ProgressDialog pDialog;
     private EditText beginDate, endDate;
+    private Spinner sCity, rCity;
     private Button btn_dList;
     private Calendar calendar;
     private String strDate = "";
+    private String senderCity = "%", receiverCity="%";
 
-    int year_x, month_x, day_x;
     Delivery delivery;
-    Dialog dialogPaying;
+    int year_x, month_x, day_x;
     private List<Delivery> deliveryList = new ArrayList<>();
-
+    Dialog dialogPaying;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +77,16 @@ public class DeliveryDebteds extends AppCompatActivity {
         beginDate = findViewById(R.id.beginDate);
         endDate = findViewById(R.id.enDate);
         btn_dList = findViewById(R.id.btn_dList);
+        sCity = findViewById(R.id.sp_Origin);
+        rCity = findViewById(R.id.sp_Destination);
+
+        ArrayAdapter<String> cityAdapterAll = new ArrayAdapter<String>(
+                DeliveryDebteds.this,
+                android.R.layout.simple_spinner_dropdown_item,
+                StringData.getCityList()
+        );
+        sCity.setAdapter(cityAdapterAll);
+        rCity.setAdapter(cityAdapterAll);
 
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");//dd/MM/yyyy
         Date now = new Date();
@@ -112,15 +126,38 @@ public class DeliveryDebteds extends AppCompatActivity {
             }
         });
 
-
         listViewDeliveries.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 delivery = (Delivery) parent.getItemAtPosition(position);
                 showCustomDialog();
             }
         });
 
+        sCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                senderCity = sCity.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                senderCity = "%";
+            }
+        });
+
+        rCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                receiverCity = rCity.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                receiverCity = "%";
+            }
+        });
     }
 
 
@@ -131,15 +168,21 @@ public class DeliveryDebteds extends AppCompatActivity {
         dialogPaying.setCancelable(false);
         dialogPaying.setContentView(R.layout.pay_debt_dialog);
 
-        Spinner postmanSpinner = dialogPaying.findViewById(R.id.spinner_postman);
-        populateUserSpinner(postmanSpinner);
+        final Spinner postmanSpinner = dialogPaying.findViewById(R.id.spinner_postman);
+
+        ArrayList<User> postmanList = new ArrayList<>();
+        User us = new User();
+        us.setEmail(HomeActivity.userLogin);
+        postmanList.add(us);
+
+        PostmanHelper.populateUserSpinner(DeliveryDebteds.this, postmanSpinner, postmanList);
 
         Button btnOK = dialogPaying.findViewById(R.id.btnOk);
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    payDebt(delivery.deliveryId);
+                    payDebt(delivery.deliveryId, postmanSpinner.getSelectedItem().toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -158,25 +201,11 @@ public class DeliveryDebteds extends AppCompatActivity {
             }
         });
         dialogPaying.show();
+
+        dialogPaying.show();
     }
 
-
-    private void populateUserSpinner(Spinner spinnerPostman) {
-
-        spinnerPostman.setAdapter(null);
-        ArrayList<String> lables = new ArrayList<String>();
-
-        lables.add(HomeActivity.userLogin);
-        // Creating adapter for spinner
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, lables);
-        // Drop down layout style - list view with radio button
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // attaching data adapter to spinner
-        spinnerPostman.setAdapter(spinnerAdapter);
-    }
-
-    public void payDebt(String deliveryId) throws ParseException {
+    public void payDebt(String deliveryId, String selectedPostman) throws ParseException {
 
         if (!NetworkUtil.isNetworkConnected(DeliveryDebteds.this)) {
             MyDialog.createSimpleOkErrorDialog(DeliveryDebteds.this,
@@ -197,7 +226,7 @@ public class DeliveryDebteds extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("deliveryId", deliveryId);
-                jsonObject.put("payingUser", HomeActivity.userLogin);
+                jsonObject.put("payingUser", selectedPostman);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -239,7 +268,6 @@ public class DeliveryDebteds extends AppCompatActivity {
         }
     }
 
-
     public void listDeliveries(final String beginingDate, final String endingDate) throws ParseException {
 
         if (!NetworkUtil.isNetworkConnected(DeliveryDebteds.this)) {
@@ -262,7 +290,9 @@ public class DeliveryDebteds extends AppCompatActivity {
             try {
                 jsonObject.put("beginDate", beginingDate);
                 jsonObject.put("endDate", endingDate);
-                jsonObject.put("belongingUser", HomeActivity.userLogin);
+                jsonObject.put("senderCity", senderCity+"%");
+                jsonObject.put("receiverCity", receiverCity+"%");
+                jsonObject.put("belongingUser", "%");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -333,6 +363,8 @@ public class DeliveryDebteds extends AppCompatActivity {
             AppController.getInstance().addToRequestQueue(req, tag_string_req);
         }
     }
+
+
 
     private void showDialog() {
         if (!pDialog.isShowing())

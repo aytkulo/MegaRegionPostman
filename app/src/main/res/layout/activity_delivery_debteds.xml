@@ -5,9 +5,6 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,27 +22,37 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="0.3"
                     style="@style/InlineLabels"
-                    android:text="@string/Date"
-                    android:layout_marginLeft="20dp"
+                    android:text="@string/City"
+                    android:layout_marginStart="20dp"
                     android:layout_marginTop="3dp"/>
 
-                <EditText
-                    android:id="@+id/beginDate"
+                <Spinner
+                    android:id="@+id/sp_Origin"
                     android:layout_width="0dp"
-                    android:layout_weight="0.7"
-                    style="@style/MainLabels"
-                    android:focusable="false"
                     android:layout_height="30dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="0.7"
+                    android:layout_marginEnd="10dp"
                     android:background="@color/white"
-                    android:layout_marginTop="3dp"/>
+                    android:gravity="center_vertical"/>
+
+                <Spinner
+                    android:id="@+id/sp_Destination"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="0.7"
+                    android:layout_marginEnd="10dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -66,22 +73,35 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="0.3"
+                    android:layout_weight="0.4"
                     style="@style/InlineLabels"
                     android:text="@string/Date"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="3dp"/>
+
+                <EditText
+                    android:id="@+id/beginDate"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.9"
+                    style="@style/MainLabels"
+                    android:focusable="false"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@color/white"
                     android:layout_marginTop="3dp"/>
 
                 <EditText
                     android:id="@+id/enDate"
                     android:layout_width="0dp"
-                    android:layout_weight="0.7"
+                    android:layout_weight="0.9"
                     style="@style/MainLabels"
                     android:focusable="false"
                     android:layout_height="30dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="10dp"
                     android:background="@color/white"
                     android:layout_marginTop="3dp"/>
+
+
 
             </LinearLayout>
 
