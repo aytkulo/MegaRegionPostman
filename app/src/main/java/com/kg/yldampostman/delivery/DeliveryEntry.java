@@ -447,7 +447,7 @@ public class DeliveryEntry extends AppCompatActivity {
 
     }
 
-    public void checkCorporateCustomer(final String city, final String companyName, final Intent intent, final int RECEIVER_COMPANY_LIST) throws ParseException {
+    public void checkCorporateCustomer(final String city, final String companyName, final Intent intent, final int COMPANY_LIST) throws ParseException {
 
         if (!NetworkUtil.isNetworkConnected(DeliveryEntry.this)) {
             MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
@@ -473,13 +473,15 @@ public class DeliveryEntry extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
                             if (response == null) {
-                                startActivityForResult(intent, RECEIVER_COMPANY_LIST);
+                                intent.putExtra("city", city);
+                                startActivityForResult(intent, COMPANY_LIST);
                             }
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    startActivityForResult(intent, RECEIVER_COMPANY_LIST);
+                    intent.putExtra("city", city);
+                    startActivityForResult(intent, COMPANY_LIST);
                 }
             }) {
                 @Override
