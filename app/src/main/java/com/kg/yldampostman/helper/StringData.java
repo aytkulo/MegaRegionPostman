@@ -87,6 +87,8 @@ public class StringData {
             return "Чуй";
         else if (region.equalsIgnoreCase("Кемин"))
             return "Чуй";
+        else if (region.equalsIgnoreCase("Чуй"))
+            return "Чуй";
         else if (region.equalsIgnoreCase("Ош"))
             return "Ош";
         else if (region.equalsIgnoreCase("Өзгөн"))
@@ -106,9 +108,9 @@ public class StringData {
         else if (region.equalsIgnoreCase("Баткен"))
             return "Баткен";
         else if (region.equalsIgnoreCase("Кадамжай"))
-            return "Баткен";
+            return "Ош";
         else if (region.equalsIgnoreCase("Кызыл-Кыя"))
-            return "Баткен";
+            return "Ош";
         else if (region.equalsIgnoreCase("Лейлек"))
             return "Баткен";
         else if (region.equalsIgnoreCase("Сулукту"))
@@ -118,6 +120,8 @@ public class StringData {
         else if (region.equalsIgnoreCase("Кочкор-Ата"))
             return "Жалал-Абад";
         else if (region.equalsIgnoreCase("Таш-Комур"))
+            return "Жалал-Абад";
+        else if (region.equalsIgnoreCase("Кара-Көл"))
             return "Жалал-Абад";
         else if (region.equalsIgnoreCase("Базар-Коргон"))
             return "Жалал-Абад";
@@ -186,10 +190,14 @@ public class StringData {
             spinnerArray.add("Өзгөн");
             spinnerArray.add("Ноокат");
             spinnerArray.add("Кара-Суу");
-        } else if (province.equalsIgnoreCase("Баткен")) {
-            spinnerArray.add("Баткен");
             spinnerArray.add("Кадамжай");
             spinnerArray.add("Кызыл-Кыя");
+            spinnerArray.add("Алай");
+            spinnerArray.add("Араван");
+            spinnerArray.add("Кара-Кулжа");
+            spinnerArray.add("Чоң-Алай");
+        } else if (province.equalsIgnoreCase("Баткен")) {
+            spinnerArray.add("Баткен");
             spinnerArray.add("Лейлек");
             spinnerArray.add("Сулукту");
         } else if (province.equalsIgnoreCase("Жалал-Абад")) {
