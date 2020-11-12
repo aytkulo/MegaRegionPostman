@@ -23,6 +23,7 @@ import com.kg.yldampostman.utils.NetworkUtil;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -54,7 +55,7 @@ public class DeliveryDebteds extends AppCompatActivity {
     public static int DIALOG_ID_END = 1;
 
     private ProgressDialog pDialog;
-    private EditText beginDate, endDate;
+    private EditText beginDate, endDate, senderPhone;
     private Spinner sCity, rCity;
     private Button btn_dList;
     private Calendar calendar;
@@ -79,13 +80,23 @@ public class DeliveryDebteds extends AppCompatActivity {
         btn_dList = findViewById(R.id.btn_dList);
         sCity = findViewById(R.id.sp_Origin);
         rCity = findViewById(R.id.sp_Destination);
+        senderPhone = findViewById(R.id.senderPhone);
 
         ArrayAdapter<String> cityAdapterAll = new ArrayAdapter<String>(
                 DeliveryDebteds.this,
                 android.R.layout.simple_spinner_dropdown_item,
                 StringData.getCityList()
         );
-        sCity.setAdapter(cityAdapterAll);
+
+        String province = StringData.getProvince(HomeActivity.userCity);
+
+        ArrayAdapter<String> cityAdapterOwn = new ArrayAdapter<String>(
+                DeliveryDebteds.this,
+                android.R.layout.simple_spinner_dropdown_item,
+                StringData.getCityList(province)
+        );
+
+        sCity.setAdapter(cityAdapterOwn);
         rCity.setAdapter(cityAdapterAll);
 
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");//dd/MM/yyyy
@@ -119,7 +130,7 @@ public class DeliveryDebteds extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    listDeliveries(beginDate.getText().toString(), endDate.getText().toString());
+                    listDeliveries(beginDate.getText().toString(), endDate.getText().toString(), senderPhone.getText().toString());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -160,7 +171,20 @@ public class DeliveryDebteds extends AppCompatActivity {
         });
     }
 
+    public static void populateUserSpinner(Context context, Spinner postmans, ArrayList<User> userList) {
 
+        postmans.setAdapter(null);
+        ArrayList<String> lables = new ArrayList<String>();
+
+        for (int i = 0; i < userList.size(); i++) {
+            lables.add(userList.get(i).getEmail());
+        }
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(context,
+                android.R.layout.simple_spinner_item, lables);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        postmans.setAdapter(spinnerAdapter);
+
+    }
     public void showCustomDialog() {
 
         dialogPaying = new Dialog(DeliveryDebteds.this);
@@ -175,7 +199,7 @@ public class DeliveryDebteds extends AppCompatActivity {
         us.setEmail(HomeActivity.userLogin);
         postmanList.add(us);
 
-        PostmanHelper.populateUserSpinner(DeliveryDebteds.this, postmanSpinner, postmanList);
+        populateUserSpinner(DeliveryDebteds.this, postmanSpinner, postmanList);
 
         Button btnOK = dialogPaying.findViewById(R.id.btnOk);
         btnOK.setOnClickListener(new View.OnClickListener() {
@@ -268,7 +292,7 @@ public class DeliveryDebteds extends AppCompatActivity {
         }
     }
 
-    public void listDeliveries(final String beginingDate, final String endingDate) throws ParseException {
+    public void listDeliveries(final String beginingDate, final String endingDate, final String senderPhone) throws ParseException {
 
         if (!NetworkUtil.isNetworkConnected(DeliveryDebteds.this)) {
             MyDialog.createSimpleOkErrorDialog(DeliveryDebteds.this,
@@ -293,6 +317,7 @@ public class DeliveryDebteds extends AppCompatActivity {
                 jsonObject.put("senderCity", senderCity+"%");
                 jsonObject.put("receiverCity", receiverCity+"%");
                 jsonObject.put("belongingUser", "%");
+                jsonObject.put("senderPhone", senderPhone);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
