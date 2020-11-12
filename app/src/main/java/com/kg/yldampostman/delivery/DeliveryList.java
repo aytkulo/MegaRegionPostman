@@ -4,6 +4,10 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -134,7 +138,18 @@ public class DeliveryList extends AppCompatActivity {
                 deliveryList.clear();
                 listViewDeliveries.setAdapter(null);
                 try {
-                    listDeliveries(ed_Date.getText().toString(), ed_Address.getText().toString(), ed_Name.getText().toString(), ed_Phone.getText().toString());
+                    boolean check = true;
+                    if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_LIST))
+                    {
+                        if (ed_Phone.length() < 6) {
+                            ed_Phone.setBackground(getShape(Color.MAGENTA));
+                            check = false;
+                        } else {
+                            ed_Phone.setBackgroundColor(Color.WHITE);
+                        }
+                    }
+                    if(check)
+                        listDeliveries(ed_Date.getText().toString(), ed_Address.getText().toString(), ed_Name.getText().toString(), ed_Phone.getText().toString());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -226,6 +241,16 @@ public class DeliveryList extends AppCompatActivity {
         arrangeCities();
     }
 
+
+    private ShapeDrawable getShape(int color) {
+
+        ShapeDrawable shape = new ShapeDrawable(new RectShape());
+        shape.getPaint().setColor(color);
+        shape.getPaint().setStyle(Paint.Style.STROKE);
+        shape.getPaint().setStrokeWidth(3);
+
+        return shape;
+    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -417,13 +442,11 @@ public class DeliveryList extends AppCompatActivity {
             else
                 {
                     status = "%";
-                    postmans.setSelection(getIndex(postmans, userName));
                     postmans.setEnabled(false);
-                    sCity.setAdapter(cityAdapter1);
+                    sCity.setAdapter(cityAdapterAll);
                     rCity.setAdapter(cityAdapterAll);
                     sCity.setSelection(getIndex(sCity, userCity));
             }
-
         }
     }
 

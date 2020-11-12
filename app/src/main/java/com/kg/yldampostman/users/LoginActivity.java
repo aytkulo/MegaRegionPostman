@@ -112,6 +112,10 @@ public class LoginActivity extends Activity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+    }
+
     private void showAlert() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         adb.setMessage(getResources().getString(R.string.LanguageChanged));
@@ -167,8 +171,8 @@ public class LoginActivity extends Activity {
                                 HomeActivity.token = token;
                                 HomeActivity.apiDate = tillDate;
 
-                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                startActivity(intent);
+                                Intent intent = new Intent();
+                                setResult(RESULT_OK, intent);
                                 finish();
 
                             } catch (JSONException e) {

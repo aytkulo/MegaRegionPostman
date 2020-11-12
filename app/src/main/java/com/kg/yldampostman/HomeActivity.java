@@ -204,11 +204,9 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void logoutUser() {
-        sessionManager.setToken(" ");
+        sessionManager.setToken("");
         sessionManager.setTillDate("10000");
         finish();
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
     }
 
     private void isLoginNeeded() throws ParseException {
@@ -221,7 +219,7 @@ public class HomeActivity extends AppCompatActivity
     public boolean isTokenExpired() {
         sessionManager = new SessionManager(getApplicationContext());
         apiDate = sessionManager.getApiDate();
-        if (apiDate == null || apiDate.length() == 1)
+        if (apiDate == null || apiDate.length() <= 1)
             return true;
         long tillDate = Long.parseLong(apiDate);
         return tillDate < new Date().getTime();
@@ -230,7 +228,7 @@ public class HomeActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 111) {
+        if (requestCode == 111) {
             if (resultCode == RESULT_OK) {
                 token = sessionManager.getToken();
                 apiDate = sessionManager.getApiDate();
