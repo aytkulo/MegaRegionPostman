@@ -2,11 +2,15 @@ package com.kg.yldampostman.delivery;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -219,7 +223,42 @@ public class DeliveryUpdate extends AppCompatActivity {
     }
 
 
-    public void checkCorporateCustomer(final String city, final String companyName, final Intent intent, final int RECEIVER_COMPANY_LIST) throws ParseException {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SENDER_COMPANY_LIST) {
+            if (resultCode == RESULT_OK) {
+
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    sAdres.setText(extras.getString("address"));
+                    sComp.setText(extras.getString("company"));
+                    sComp.setEnabled(false);
+                    Toast.makeText(getApplicationContext(), "Жөнөтүүчү фирма аты жана адреси өзгөрдү!", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                rb_payment_senderbank.setChecked(false);
+                sComp.setEnabled(true);
+                Toast.makeText(getApplicationContext(), "Төлөм түрү өзгөртүлдү!", Toast.LENGTH_LONG).show();
+            }
+        } else if (requestCode == RECEIVER_COMPANY_LIST) {
+            if (resultCode == RESULT_OK) {
+
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    rAdres.setText(extras.getString("address"));
+                    rComp.setText(extras.getString("company"));
+                    rComp.setEnabled(false);
+                    Toast.makeText(getApplicationContext(), "Алуучу фирма аты жана адреси өзгөрдү!", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                rb_payment_receiverbank.setChecked(false);
+                rComp.setEnabled(true);
+                Toast.makeText(getApplicationContext(), "Төлөм түрү өзгөртүлдү!", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public void checkCorporateCustomer(final String city, final String companyName, final Intent intent, final int COMPANY_LIST) throws ParseException {
 
         if (!NetworkUtil.isNetworkConnected(DeliveryUpdate.this)) {
             MyDialog.createSimpleOkErrorDialog(DeliveryUpdate.this,
@@ -246,13 +285,15 @@ public class DeliveryUpdate extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
                             if (response == null) {
-                                startActivityForResult(intent, RECEIVER_COMPANY_LIST);
+                                intent.putExtra("city", city);
+                                startActivityForResult(intent, COMPANY_LIST);
                             }
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    startActivityForResult(intent, RECEIVER_COMPANY_LIST);
+                    intent.putExtra("city", city);
+                    startActivityForResult(intent, COMPANY_LIST);
                 }
             }) {
                 @Override
