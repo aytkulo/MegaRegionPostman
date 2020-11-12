@@ -84,11 +84,22 @@ public class SessionManager {
         return pref.getString(KEY_NAMESURNAME, "");
     }
 
-    public String getToken() {
-        return pref.getString(KEY_TOKEN, "Bearer ");
+    public String getToken(){
+        return pref.getString(KEY_TOKEN, "");
     }
 
     public String getTillDate() {
         return pref.getString(KEY_TILLDATE, "");
+    }
+
+
+    public void setToken(String token) {
+        editor.putString(KEY_TOKEN, token);
+        editor.commit();
+    }
+
+    public void setTillDate(String tillDate) {
+        editor.putString(KEY_TILLDATE, tillDate);
+        editor.commit();
     }
 }

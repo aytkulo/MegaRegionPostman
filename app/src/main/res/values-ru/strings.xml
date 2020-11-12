@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Курьер</string>
+    <string name="app_name">Ылдам Курьер</string>
     <string name="hint_email">Кыска аты (Username)</string>
     <string name="hint_password">Пароль</string>
     <string name="hint_new_password">Новый Пароль</string>
@@ -207,7 +207,7 @@
         <item>ПАКЕТ</item>
         <item>ДРУГОЕ</item>
     </string-array>
-    <string name="title_activity_home">ЫЛДАМ EXPRESS</string>
+    <string name="title_activity_home">Ылдам Курьер</string>
 
     <string name="google_maps_key">AIzaSyAA0GSr8VLEuKL6r0srOhYOH6Ojg4KCsgk</string>
 
