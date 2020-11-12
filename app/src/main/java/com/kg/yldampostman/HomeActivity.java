@@ -235,6 +235,8 @@ public class HomeActivity extends AppCompatActivity
                 apiDate = sessionManager.getApiDate();
                 userLogin = sessionManager.getLogin();
                 userCity = sessionManager.getCity();
+
+                PostmanHelper.getPostmans(userCity,HomeActivity.this, postmanList);
             }
         }
     }
