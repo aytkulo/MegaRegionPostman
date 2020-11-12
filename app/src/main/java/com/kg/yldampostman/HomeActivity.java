@@ -122,13 +122,15 @@ public class HomeActivity extends AppCompatActivity
             }
         });
 
+        PostmanHelper.getPostmans(userCity,HomeActivity.this, postmanList);
+
         try {
             isLoginNeeded();
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        PostmanHelper.getPostmans(userCity,HomeActivity.this, postmanList);
+
     }
 
     @Override
