@@ -125,8 +125,8 @@ class DeliveryListAdapter extends BaseAdapter {
         viewItem.txtReceiverAddress.setText(valueList.get(position).rFullAddress);
         viewItem.txtReceiverName.setText(valueList.get(position).rFullName);
         viewItem.txtAcceptedPostman.setText(payment + " (" + valueList.get(position).entryDate.substring(0, 10) + ")");
-        if (valueList.get(position).deliveredPerson != "null" && valueList.get(position).deliveredPerson.length() > 0)
-            viewItem.txtDeliveredPostman.setText(valueList.get(position).deliveredPerson + "(" + valueList.get(position).deliveredDate.substring(5, 19) + ")");
+        if (valueList.get(position).status!="0" && valueList.get(position).deliveredDate != null && valueList.get(position).deliveredDate.length() > 15)
+            viewItem.txtDeliveredPostman.setText(valueList.get(position).deliveredPerson + "(" + valueList.get(position).deliveredDate.substring(0, 10) + ")");
         else
             viewItem.txtDeliveredPostman.setText(" ");
         viewItem.txtNumber.setText(valueList.get(position).number + ".");

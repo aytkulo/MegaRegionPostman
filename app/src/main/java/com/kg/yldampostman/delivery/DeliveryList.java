@@ -141,11 +141,13 @@ public class DeliveryList extends AppCompatActivity {
                     boolean check = true;
                     if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_LIST))
                     {
-                        if (ed_Phone.length() < 6) {
-                            ed_Phone.setBackground(getShape(Color.MAGENTA));
-                            check = false;
-                        } else {
-                            ed_Phone.setBackgroundColor(Color.WHITE);
+                        if (ed_Phone.length() < 6 ) {
+                            if(!postmans.getSelectedItem().toString().equalsIgnoreCase(HomeActivity.userLogin)) {
+                                ed_Phone.setBackground(getShape(Color.MAGENTA));
+                                check = false;
+                            }else {
+                                ed_Phone.setBackgroundColor(Color.WHITE);
+                            }
                         }
                     }
                     if(check)
@@ -165,7 +167,7 @@ public class DeliveryList extends AppCompatActivity {
                 if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELIVER)) {
                     Intent intentDelivery = new Intent(DeliveryList.this, DeliveryDeliver.class);
                     intentDelivery.putExtra("delivery", delivery);
-                    startActivityForResult(intentDelivery, 1);
+                    startActivityForResult(intentDelivery, 100);
                 } else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_UPDATE)) {
                     Intent intentDelivery = new Intent(DeliveryList.this, DeliveryUpdate.class);
 
@@ -255,7 +257,7 @@ public class DeliveryList extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 200 || requestCode == 600) {
+        if (requestCode == 200 || requestCode == 600 || requestCode == 100) {
             if (resultCode == RESULT_OK) {
                 deliveryList.clear();
                 listViewDeliveries.setAdapter(null);
@@ -440,7 +442,6 @@ public class DeliveryList extends AppCompatActivity {
                 {
                     status = "%";
                     acceptedPostman = "%";
-                    postmans.setEnabled(false);
                     sCity.setAdapter(cityAdapterAll);
                     rCity.setAdapter(cityAdapterAll);
                     sCity.setSelection(getIndex(sCity, userCity));
