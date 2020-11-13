@@ -418,7 +418,7 @@ public class DeliveryList extends AppCompatActivity {
 
                 status = HelperConstants.DELIVERY_STATUS_NEW;
 
-                sCity.setAdapter(cityAdapterOwn);
+                sCity.setAdapter(cityAdapterAll);
                 senderCity = userCity;
                 sCity.setSelection(getIndex(sCity, senderCity));
                 rCity.setAdapter(cityAdapterAll);
