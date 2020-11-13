@@ -389,7 +389,7 @@ public class DeliveryList extends AppCompatActivity {
             );
 
             String province = StringData.getProvince(userCity);
-            ArrayAdapter<String> cityAdapter1 = new ArrayAdapter<String>(
+            ArrayAdapter<String> cityAdapterOwn = new ArrayAdapter<String>(
                     DeliveryList.this,
                     android.R.layout.simple_spinner_dropdown_item,
                     StringData.getCityList(province)
@@ -402,10 +402,9 @@ public class DeliveryList extends AppCompatActivity {
                 receiverCity = userCity;
 
                 sCity.setAdapter(cityAdapterAll);
-                rCity.setAdapter(cityAdapter1);
+                rCity.setAdapter(cityAdapterOwn);
 
                 rCity.setSelection(getIndex(rCity, receiverCity));
-                rCity.setEnabled(false);
                 senderCity = "%";
 
                 status = HelperConstants.DELIVERY_STATUS_NEW;
@@ -417,11 +416,9 @@ public class DeliveryList extends AppCompatActivity {
 
                 status = HelperConstants.DELIVERY_STATUS_NEW;
 
-                sCity.setAdapter(cityAdapter1);
+                sCity.setAdapter(cityAdapterOwn);
                 senderCity = userCity;
                 sCity.setSelection(getIndex(sCity, senderCity));
-                sCity.setEnabled(false);
-
                 rCity.setAdapter(cityAdapterAll);
                 receiverCity = "%";
                 acceptedPostman = userName;
@@ -436,12 +433,13 @@ public class DeliveryList extends AppCompatActivity {
                 senderCity = "%";
                 sCity.setSelection(getIndex(sCity, senderCity));
 
-                rCity.setAdapter(cityAdapter1);
+                rCity.setAdapter(cityAdapterOwn);
                 receiverCity = userCity;
             }
             else
                 {
                     status = "%";
+                    acceptedPostman = "%";
                     postmans.setEnabled(false);
                     sCity.setAdapter(cityAdapterAll);
                     rCity.setAdapter(cityAdapterAll);
