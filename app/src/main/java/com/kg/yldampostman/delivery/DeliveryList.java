@@ -107,14 +107,6 @@ public class DeliveryList extends AppCompatActivity {
         token = HomeActivity.token;
 
         PostmanHelper.populateUserSpinner(DeliveryList.this, postmans, HomeActivity.postmanList);
-        /*
-        try {
-            PostmanHelper.populateUserSpinner(DeliveryList.this, postmans, HomeActivity.postmanList);
-            PostmanHelper.listPostmans(HomeActivity.userCity,DeliveryList.this, postmans);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-*/
 
         ed_Date.setText(strDate);
 
@@ -200,18 +192,11 @@ public class DeliveryList extends AppCompatActivity {
         postmans.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELIVER))
-                    assignedPostman = postmans.getSelectedItem().toString();
-                else
                     acceptedPostman = postmans.getSelectedItem().toString();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELIVER))
-                    assignedPostman = "%";
-                else
                     acceptedPostman = "%";
             }
         });
@@ -406,9 +391,10 @@ public class DeliveryList extends AppCompatActivity {
                 sCity.setAdapter(cityAdapterAll);
                 rCity.setAdapter(cityAdapterOwn);
 
+                assignedPostman = userName;
                 rCity.setSelection(getIndex(rCity, receiverCity));
                 senderCity = "%";
-
+                acceptedPostman = "%";
                 status = HelperConstants.DELIVERY_STATUS_NEW;
             }
             else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_UPDATE) || operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELETE))
