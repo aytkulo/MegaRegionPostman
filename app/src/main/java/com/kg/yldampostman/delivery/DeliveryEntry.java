@@ -191,7 +191,7 @@ public class DeliveryEntry extends AppCompatActivity {
         btn_saveData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                btn_saveData.setEnabled(false);
                 if (deliveryDataCheck()) {
                     try {
                         saveDelivery(sName.getText().toString(), sPhone.getText().toString(), sComp.getText().toString(), sCity.getSelectedItem().toString(), sAdres.getText().toString(),
@@ -199,10 +199,11 @@ public class DeliveryEntry extends AppCompatActivity {
                                 delType.getSelectedItem().toString(), delCount.getText().toString(), delPrice.getText().toString(), paidAmount.getText().toString(), delItemPrice.getText().toString(),
                                 getPaymentRadioGroupValue(), delExpl.getText().toString(), signatureString, userName, getBuyingRadioGroupValue());
                     } catch (Exception e) {
+                        btn_saveData.setEnabled(true);
                         e.printStackTrace();
                     }
                 }
-
+                btn_saveData.setEnabled(true);
             }
         });
 
