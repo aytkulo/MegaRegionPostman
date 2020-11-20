@@ -370,8 +370,8 @@ public class DeliveryEntry extends AppCompatActivity {
 
                         String sCityString = parts[3];
                         String sProvinceString = StringData.getProvince(sCityString);
-                        sProvince.setSelection(getIndex(sProvince, sProvinceString));
-                        sCity.setSelection(getIndex(sCity, parts[3]));
+                        rProvince.setSelection(getIndex(sProvince, sProvinceString));
+                        rCity.setSelection(getIndex(sCity, parts[3]));
 
                         rAdres.setText(parts[2]);
                         rComp.setText(parts[4]);
