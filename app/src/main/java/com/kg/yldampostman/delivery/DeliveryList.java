@@ -194,7 +194,14 @@ public class DeliveryList extends AppCompatActivity {
         postmans.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    acceptedPostman = postmans.getSelectedItem().toString();
+                try {
+                    if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELIVER))
+                        assignedPostman = postmans.getSelectedItem().toString();
+                    else
+                        acceptedPostman = postmans.getSelectedItem().toString();
+                }
+                catch (Exception e){}
+
             }
 
             @Override
@@ -306,7 +313,7 @@ public class DeliveryList extends AppCompatActivity {
                 jsonObject.put("receiverCity", receiverCity + "%");
                 jsonObject.put("senderCity", senderCity + "%");
                 jsonObject.put("assignedSector", assignedPostman + "%");
-                jsonObject.put("acceptedPerson", acceptedPostman + "%");
+                jsonObject.put("acceptedPerson", acceptedPostman);
                 jsonObject.put("address", address + "%");
                 jsonObject.put("paymentType", payment_type);
                 jsonObject.put("name", name + "%");
@@ -350,9 +357,7 @@ public class DeliveryList extends AppCompatActivity {
                                     }
 
                                 } else {
-                                    MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
-                                            getApplicationContext().getString(R.string.dialog_error_title),
-                                            getApplicationContext().getString(R.string.NoData)).show();
+                                    Toast.makeText(DeliveryList.this, getApplicationContext().getString(R.string.NoData), Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
                                 MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
@@ -416,7 +421,6 @@ public class DeliveryList extends AppCompatActivity {
                 sCity.setAdapter(cityAdapterAll);
                 rCity.setAdapter(cityAdapterOwn);
 
-                assignedPostman = userName;
                 rCity.setSelection(getIndex(rCity, receiverCity));
                 senderCity = "%";
                 acceptedPostman = "%";
