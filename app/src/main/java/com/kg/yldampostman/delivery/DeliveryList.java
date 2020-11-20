@@ -63,7 +63,7 @@ public class DeliveryList extends AppCompatActivity {
     private EditText ed_Date, ed_Address, ed_Name, ed_Phone;
     private Button btn_dList;
     private Calendar calendar;
-    private Spinner sCity, rCity, postmans;
+    private Spinner sCity, rCity, postmans, spinner_pt;
     int year_x, month_x, day_x;
     private String senderCity = "";
     private String receiverCity = "";
@@ -78,6 +78,7 @@ public class DeliveryList extends AppCompatActivity {
     private Delivery delivery;
     private String operationType;
     private String strDate = "";
+    private String payment_type = "%";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,7 @@ public class DeliveryList extends AppCompatActivity {
         sCity = findViewById(R.id.sp_Origin);
         rCity = findViewById(R.id.sp_Destination);
         postmans = findViewById(R.id.spinner_postman);
+        spinner_pt = findViewById(R.id.spinner_paymentType);
 
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");//dd/MM/yyyy
         Date now = new Date();
@@ -143,7 +145,7 @@ public class DeliveryList extends AppCompatActivity {
                         }
                     }
                     if(check)
-                        listDeliveries(ed_Date.getText().toString(), ed_Address.getText().toString(), ed_Name.getText().toString(), ed_Phone.getText().toString());
+                        listDeliveries(ed_Date.getText().toString(), ed_Address.getText().toString(), ed_Name.getText().toString(), ed_Phone.getText().toString(), payment_type);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -225,6 +227,28 @@ public class DeliveryList extends AppCompatActivity {
             }
         });
 
+        spinner_pt.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = spinner_pt.getSelectedItem().toString();
+                if(item.equalsIgnoreCase("%"))
+                    payment_type = "%";
+                else if(item.equalsIgnoreCase("Отправитель наличными"))
+                    payment_type = "SC";
+                else if(item.equalsIgnoreCase("Получатель наличными"))
+                    payment_type = "RC";
+                else if(item.equalsIgnoreCase("Отправитель через банк"))
+                    payment_type = "SB";
+                else if(item.equalsIgnoreCase("Получатель через банк"))
+                    payment_type = "RB";
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                payment_type = "%";
+            }
+        });
+
         arrangeCities();
     }
 
@@ -247,7 +271,7 @@ public class DeliveryList extends AppCompatActivity {
                 deliveryList.clear();
                 listViewDeliveries.setAdapter(null);
                 try {
-                    listDeliveries(ed_Date.getText().toString(), ed_Address.getText().toString(), ed_Name.getText().toString(), ed_Phone.getText().toString());
+                    listDeliveries(ed_Date.getText().toString(), ed_Address.getText().toString(), ed_Name.getText().toString(), ed_Phone.getText().toString(), payment_type);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -257,7 +281,7 @@ public class DeliveryList extends AppCompatActivity {
 
 
 
-    public void listDeliveries(final String entryDate, final String address, final String name, final String phone) throws ParseException {
+    public void listDeliveries(final String entryDate, final String address, final String name, final String phone, final String payment_type) throws ParseException {
 
         if (!NetworkUtil.isNetworkConnected(DeliveryList.this)) {
             MyDialog.createSimpleOkErrorDialog(DeliveryList.this,
@@ -284,6 +308,7 @@ public class DeliveryList extends AppCompatActivity {
                 jsonObject.put("assignedSector", assignedPostman + "%");
                 jsonObject.put("acceptedPerson", acceptedPostman + "%");
                 jsonObject.put("address", address + "%");
+                jsonObject.put("paymentType", payment_type);
                 jsonObject.put("name", name + "%");
                 jsonObject.put("phone", phone + "%");
             } catch (JSONException e) {

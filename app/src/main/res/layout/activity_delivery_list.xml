@@ -204,7 +204,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="0.3"
                         style="@style/InlineLabels"
-                        android:text="@string/Address"
+                        android:text="@string/PaymentType"
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="3dp"/>
 
@@ -216,7 +216,20 @@
                         android:inputType="textPersonName"
                         android:layout_marginRight="20dp"
                         android:layout_marginTop="3dp"
+                        android:visibility="gone"
                         android:text=""/>
+
+                <Spinner
+                    android:id="@+id/spinner_paymentType"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_weight="0.7"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:entries="@array/payment_types"/>
+
 
             </LinearLayout>
 

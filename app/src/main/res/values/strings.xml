@@ -171,25 +171,14 @@
 
     <string name="FillTheReceiverData">Алуучунун кол тамгасын же эч болбосо аты жөнүн толтурушуңуз керек!</string>
 
-    <string-array name="cities">
+    <string name="PaymentType">Тип оплаты</string>
 
-        <item></item>
-        <item>Бишкек</item>
-        <item>Жалал-Абад</item>
-        <item>Ош</item>
-        <item>Нарын</item>
-        <item>Каракол</item>
-        <item>Талас</item>
-        <item>Баткен</item>
-        <item>Чуй</item>
-        <item>Токмок</item>
-        <item>Кара-Балта</item>
-        <item>Кочкор-Ата</item>
-        <item>Чолпон-Ата</item>
-        <item>Алма-Ата</item>
-        <item>Өзгөн</item>
-        <item>Москва</item>
-
+    <string-array name="payment_types">
+        <item>%</item>
+        <item>Отправитель наличными</item>
+        <item>Получатель наличными</item>
+        <item>Отправитель через банк</item>
+        <item>Получатель через банк</item>
     </string-array>
 
 
@@ -216,7 +205,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_show_location">Map</string>
     <string name="DeliveryAssign" />
-
 
     <string name="OK">OK</string>
 

@@ -170,28 +170,16 @@
     <string name="CashPayments">Наличный расчёт</string>
     <string name="BankPayments">Банковские переводы</string>
 
+    <string name="PaymentType">Тип оплаты</string>
+
     <string name="FillTheReceiverData">Вы должны получить подпись получателя или указать имя фамилию!</string>
 
-
-    <string-array name="cities">
-
-        <item></item>
-        <item>Бишкек</item>
-        <item>Жалал-Абад</item>
-        <item>Ош</item>
-        <item>Нарын</item>
-        <item>Каракол</item>
-        <item>Талас</item>
-        <item>Баткен</item>
-        <item>Чуй</item>
-        <item>Токмок</item>
-        <item>Кара-Балта</item>
-        <item>Кочкор-Ата</item>
-        <item>Чолпон-Ата</item>
-        <item>Алма-Ата</item>
-        <item>Өзгөн</item>
-        <item>Москва</item>
-
+    <string-array name="payment_types">
+        <item>%</item>
+        <item>Отправитель наличными</item>
+        <item>Получатель наличными</item>
+        <item>Отправитель через банк</item>
+        <item>Получатель через банк</item>
     </string-array>
 
     <string-array name="roles">

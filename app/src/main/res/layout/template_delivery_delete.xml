@@ -60,7 +60,6 @@
                         android:layout_marginTop="0dp"
                         android:layout_weight="0.7"
                         android:background="@color/white"
-                        android:entries="@array/cities"
                         android:clickable="false"
                         android:gravity="center_vertical"/>
 
@@ -215,7 +214,6 @@
                         android:layout_marginTop="0dp"
                         android:layout_weight="0.7"
                         android:background="@color/white"
-                        android:entries="@array/cities"
                         android:clickable="false"
                         android:gravity="center_vertical"/>
 

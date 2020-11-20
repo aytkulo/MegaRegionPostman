@@ -137,9 +137,6 @@
             android:name=".delivery.DeliveryObserve"
             android:configChanges="orientation|keyboardHidden"
             android:parentActivityName=".delivery.DeliveryList" />
-        <activity
-            android:name=".customer.SMSSending"
-            android:parentActivityName=".HomeActivity" />
     </application>
 
 </manifest>
