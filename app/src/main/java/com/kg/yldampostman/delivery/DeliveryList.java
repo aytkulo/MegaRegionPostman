@@ -240,14 +240,10 @@ public class DeliveryList extends AppCompatActivity {
                 String item = spinner_pt.getSelectedItem().toString();
                 if(item.equalsIgnoreCase("%"))
                     payment_type = "%";
-                else if(item.equalsIgnoreCase("Отправитель наличными"))
-                    payment_type = "SC";
-                else if(item.equalsIgnoreCase("Получатель наличными"))
-                    payment_type = "RC";
-                else if(item.equalsIgnoreCase("Отправитель через банк"))
-                    payment_type = "SB";
-                else if(item.equalsIgnoreCase("Получатель через банк"))
-                    payment_type = "RB";
+                else if(item.equalsIgnoreCase("Оплата наличными"))
+                    payment_type = "%C%";
+                else if(item.equalsIgnoreCase("Оплата через банк"))
+                    payment_type = "%B&";
             }
 
             @Override

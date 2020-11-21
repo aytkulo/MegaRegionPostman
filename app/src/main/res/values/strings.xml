@@ -175,10 +175,8 @@
 
     <string-array name="payment_types">
         <item>%</item>
-        <item>Отправитель наличными</item>
-        <item>Получатель наличными</item>
-        <item>Отправитель через банк</item>
-        <item>Получатель через банк</item>
+        <item>Оплата наличными</item>
+        <item>Оплата через банк</item>
     </string-array>
 
 
