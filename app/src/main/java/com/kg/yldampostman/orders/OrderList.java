@@ -114,12 +114,11 @@ public class OrderList extends AppCompatActivity {
         usersCity = HomeActivity.userCity;
         token = HomeActivity.token;
 
-        String province = StringData.getProvince(usersCity);
 
         ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
                 OrderList.this,
                 android.R.layout.simple_spinner_dropdown_item,
-                StringData.getCityList(province)
+                StringData.getCityList()
         );
 
         sp_Origin.setAdapter(cityAdapter);

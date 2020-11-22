@@ -72,7 +72,7 @@ public class DeliveryEntry extends AppCompatActivity {
     private LinearLayout mContent;
     private ProgressDialog pDialog;
 
-    private Spinner sCity, rCity, delType, sProvince, rProvince;
+    private Spinner sCity, rCity, delType;
     private EditText sName, sAdres;
     private EditText rName, rAdres;
     private CardView signatureCard, signatureCardLabel;
@@ -116,60 +116,19 @@ public class DeliveryEntry extends AppCompatActivity {
 
         initializeItems();
 
-        ArrayAdapter<String> provinceAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
                 DeliveryEntry.this,
                 android.R.layout.simple_spinner_dropdown_item,
-                StringData.getProvinceList()
+                StringData.getCityList()
         );
 
-        sProvince.setAdapter(provinceAdapter);
-        rProvince.setAdapter(provinceAdapter);
+        sCity.setAdapter(cityAdapter);
+        rCity.setAdapter(cityAdapter);
 
 
         usersCity = HomeActivity.userCity;
         token = HomeActivity.token;
         userName = HomeActivity.userLogin;
-
-        sProvince.setSelection(getIndex(sProvince, StringData.getProvince(usersCity)));
-
-        sProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-
-                ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
-                        DeliveryEntry.this,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        StringData.getCityList(sProvince.getSelectedItem().toString())
-                );
-
-                sCity.setAdapter(cityAdapter);
-                sCity.setSelection(getIndex(sCity, usersCity));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-        });
-
-        rProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-
-                ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
-                        DeliveryEntry.this,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        StringData.getCityList(rProvince.getSelectedItem().toString())
-                );
-
-                rCity.setAdapter(cityAdapter);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-        });
 
 
         Intent orderIntent = getIntent();
@@ -252,8 +211,6 @@ public class DeliveryEntry extends AppCompatActivity {
                         sPhone.setText(parts[0]);
 
                         String sCityString = parts[3];
-                        String sProvinceString = StringData.getProvince(sCityString);
-                        sProvince.setSelection(getIndex(sProvince, sProvinceString));
                         sCity.setSelection(getIndex(sCity, parts[3]));
 
                         sAdres.setText(parts[2]);
@@ -290,9 +247,6 @@ public class DeliveryEntry extends AppCompatActivity {
                         rName.setText(parts[1]);
                         rPhone.setText(parts[0]);
 
-                        String rCityString = parts[3];
-                        String rProvinceString = StringData.getProvince(rCityString);
-                        rProvince.setSelection(getIndex(sProvince, rProvinceString));
                         rCity.setSelection(getIndex(sCity, parts[3]));
 
                         rAdres.setText(parts[2]);
@@ -330,9 +284,6 @@ public class DeliveryEntry extends AppCompatActivity {
                         sName.setText(parts[1]);
                         sPhone.setText(parts[0]);
 
-                        String sCityString = parts[3];
-                        String sProvinceString = StringData.getProvince(sCityString);
-                        sProvince.setSelection(getIndex(sProvince, sProvinceString));
                         sCity.setSelection(getIndex(sCity, parts[3]));
 
                         sAdres.setText(parts[2]);
@@ -368,9 +319,6 @@ public class DeliveryEntry extends AppCompatActivity {
                         rName.setText(parts[1]);
                         rPhone.setText(parts[0]);
 
-                        String sCityString = parts[3];
-                        String sProvinceString = StringData.getProvince(sCityString);
-                        rProvince.setSelection(getIndex(sProvince, sProvinceString));
                         rCity.setSelection(getIndex(sCity, parts[3]));
 
                         rAdres.setText(parts[2]);
@@ -717,8 +665,6 @@ public class DeliveryEntry extends AppCompatActivity {
         sCity = findViewById(R.id.spinner_senderCity);
         rCity = findViewById(R.id.spinner_receiverCity);
         delType = findViewById(R.id.spinner_deliveryType);
-        sProvince = findViewById(R.id.spinner_senderProvince);
-        rProvince = findViewById(R.id.spinner_receiverProvince);
     }
 
 
@@ -731,9 +677,6 @@ public class DeliveryEntry extends AppCompatActivity {
         rPhone.setText(order.receiverPhone);
         rAdres.setText(order.receiverAddress);
         rComp.setText(order.receiverCompany);
-
-        sProvince.setSelection(getIndex(sProvince, StringData.getProvince(order.senderCity)));
-        rProvince.setSelection(getIndex(rProvince, StringData.getProvince(order.receiverCity)));
 
         sCity.setSelection(getIndex(sCity, order.senderCity));
         rCity.setSelection(getIndex(rCity, order.receiverCity));

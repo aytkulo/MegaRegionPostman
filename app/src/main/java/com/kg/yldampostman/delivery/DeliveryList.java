@@ -108,6 +108,15 @@ public class DeliveryList extends AppCompatActivity {
         userName = HomeActivity.userLogin;
         token = HomeActivity.token;
 
+        ArrayAdapter<String> cityAdapterAll = new ArrayAdapter<String>(
+                DeliveryList.this,
+                android.R.layout.simple_spinner_dropdown_item,
+                StringData.getCityList()
+        );
+
+        sCity.setAdapter(cityAdapterAll);
+        rCity.setAdapter(cityAdapterAll);
+
         PostmanHelper.populateUserSpinner(DeliveryList.this, postmans, HomeActivity.postmanList);
 
         ed_Date.setText(strDate);
@@ -339,10 +348,10 @@ public class DeliveryList extends AppCompatActivity {
                                         Delivery dd = gson.fromJson(mJsonM, Delivery.class);
 
                                         dd.number = i + 1;
-                                        dd.sFullName = dd.senderName + " - " + dd.senderPhone + " - " + dd.senderCompany;
-                                        dd.sFullAddress = dd.senderCity + " - " + dd.senderAddress;
-                                        dd.rFullName = dd.receiverName + " - " + dd.receiverPhone + " - " + dd.receiverCompany;
-                                        dd.rFullAddress = dd.receiverCity + " - " + dd.receiverAddress;
+                                        dd.sFullName = dd.senderName + ", " + dd.senderAddress + ", " + dd.senderCompany;
+                                        dd.sFullAddress = dd.senderCity + " - " + dd.senderPhone;
+                                        dd.rFullName = dd.receiverName + ", " + dd.receiverAddress + ", " + dd.receiverCompany;
+                                        dd.rFullAddress = dd.receiverCity + " - " + dd.receiverPhone;
 
                                         deliveryList.add(dd);
                                     }
@@ -395,18 +404,7 @@ public class DeliveryList extends AppCompatActivity {
             rCity.setEnabled(true);
             sCity.setEnabled(true);
 
-            ArrayAdapter<String> cityAdapterAll = new ArrayAdapter<String>(
-                    DeliveryList.this,
-                    android.R.layout.simple_spinner_dropdown_item,
-                    StringData.getCityList()
-            );
 
-            String province = StringData.getProvince(userCity);
-            ArrayAdapter<String> cityAdapterOwn = new ArrayAdapter<String>(
-                    DeliveryList.this,
-                    android.R.layout.simple_spinner_dropdown_item,
-                    StringData.getCityList(province)
-            );
 
             operationType = extras.getString(HelperConstants.DELIVERY_OPERATION);
 
@@ -414,8 +412,6 @@ public class DeliveryList extends AppCompatActivity {
 
                 receiverCity = userCity;
 
-                sCity.setAdapter(cityAdapterAll);
-                rCity.setAdapter(cityAdapterOwn);
 
                 rCity.setSelection(getIndex(rCity, receiverCity));
                 senderCity = "%";
@@ -429,10 +425,8 @@ public class DeliveryList extends AppCompatActivity {
 
                 status = HelperConstants.DELIVERY_STATUS_NEW;
 
-                sCity.setAdapter(cityAdapterAll);
                 senderCity = userCity;
                 sCity.setSelection(getIndex(sCity, senderCity));
-                rCity.setAdapter(cityAdapterAll);
                 receiverCity = "%";
                 acceptedPostman = userName;
                 postmans.setSelection(getIndex(postmans, userName));
@@ -442,19 +436,13 @@ public class DeliveryList extends AppCompatActivity {
                 postmans.setEnabled(true);
                 status = HelperConstants.DELIVERY_STATUS_NEW;
 
-                sCity.setAdapter(cityAdapterAll);
                 senderCity = "%";
                 sCity.setSelection(getIndex(sCity, senderCity));
-
-                rCity.setAdapter(cityAdapterOwn);
                 receiverCity = userCity;
             }
-            else
-                {
+            else {
                     status = "%";
                     acceptedPostman = "%";
-                    sCity.setAdapter(cityAdapterAll);
-                    rCity.setAdapter(cityAdapterAll);
                     sCity.setSelection(getIndex(sCity, userCity));
             }
         }

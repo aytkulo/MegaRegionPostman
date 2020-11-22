@@ -47,7 +47,7 @@ public class DeliveryDeliver extends AppCompatActivity {
     private static final String TAG = DeliveryDeliver.class.getSimpleName();
     public static final int SIGNATURE_ACTIVITY = 1;
 
-    private Spinner sCity, rCity, delType, sProvince, rProvince;
+    private Spinner sCity, rCity, delType;
     private EditText sName, sPhone, sComp, sAdres;
     private EditText rName, rPhone, rComp, rAdres;
     private EditText delCount, delPrice, delItemPrice, delExpl, paidAmount;
@@ -81,16 +81,6 @@ public class DeliveryDeliver extends AppCompatActivity {
         usersCity = HomeActivity.userCity;
         currentUser = HomeActivity.userLogin;
         token = HomeActivity.token;
-
-
-        ArrayAdapter<String> provinceAdapter = new ArrayAdapter<String>(
-                DeliveryDeliver.this,
-                android.R.layout.simple_spinner_dropdown_item,
-                StringData.getProvinceList()
-        );
-
-        sProvince.setAdapter(provinceAdapter);
-        rProvince.setAdapter(provinceAdapter);
 
 
         ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
@@ -280,9 +270,6 @@ public class DeliveryDeliver extends AppCompatActivity {
         sCity.setSelection(getIndex(sCity, delivery.senderCity));
         rCity.setSelection(getIndex(rCity, delivery.receiverCity));
 
-        sProvince.setSelection(getIndex(sProvince, StringData.getProvince(delivery.senderCity)));
-        rProvince.setSelection(getIndex(rProvince, StringData.getProvince(delivery.receiverCity)));
-
         delType.setSelection(getIndex(delType, delivery.deliveryType));
         delCount.setText(delivery.deliveryCount);
         delPrice.setText(delivery.deliveryCost);
@@ -340,8 +327,6 @@ public class DeliveryDeliver extends AppCompatActivity {
         rCity = findViewById(R.id.spinner_receiverCity);
         delType = findViewById(R.id.spinner_deliveryType);
 
-        sProvince = findViewById(R.id.spinner_senderProvince);
-        rProvince = findViewById(R.id.spinner_receiverProvince);
     }
 
     public void disableItems() {
@@ -377,7 +362,5 @@ public class DeliveryDeliver extends AppCompatActivity {
         rCity.setEnabled(false);
         delType.setEnabled(false);
 
-        sProvince.setEnabled(false);
-        rProvince.setEnabled(false);
     }
 }

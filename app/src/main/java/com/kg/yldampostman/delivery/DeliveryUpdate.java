@@ -53,7 +53,7 @@ public class DeliveryUpdate extends AppCompatActivity {
     public static final int SENDER_COMPANY_LIST = 2;
     public static final int RECEIVER_COMPANY_LIST = 3;
 
-    private Spinner sCity, rCity, delType, sProvince, rProvince;
+    private Spinner sCity, rCity, delType;
 
     private EditText sName, sPhone, sComp, sAdres;
     private EditText rName, rPhone, rComp, rAdres;
@@ -83,51 +83,14 @@ public class DeliveryUpdate extends AppCompatActivity {
         currentUser = HomeActivity.userLogin;
         token = HomeActivity.token;
 
-        ArrayAdapter<String> provinceAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
                 DeliveryUpdate.this,
                 android.R.layout.simple_spinner_dropdown_item,
-                StringData.getProvinceList()
+                StringData.getCityList()
         );
 
-        sProvince.setAdapter(provinceAdapter);
-        rProvince.setAdapter(provinceAdapter);
-
-        sProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-
-                ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
-                        DeliveryUpdate.this,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        StringData.getCityList(sProvince.getSelectedItem().toString())
-                );
-                sCity.setAdapter(cityAdapter);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-        });
-
-        rProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-
-                ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
-                        DeliveryUpdate.this,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        StringData.getCityList(rProvince.getSelectedItem().toString())
-                );
-                rCity.setAdapter(cityAdapter);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-        });
-
+        sCity.setAdapter(cityAdapter);
+        rCity.setAdapter(cityAdapter);
 
         Intent deliveryIntent = getIntent();
         Bundle extras = deliveryIntent.getExtras();
@@ -455,49 +418,46 @@ public class DeliveryUpdate extends AppCompatActivity {
     }
 
     public void initializeItems() {
-        rg_payment = (RadioGroup) findViewById(R.id.rg_payment);
-        rg_buying = (RadioGroup) findViewById(R.id.rg_buying);
+        rg_payment =  findViewById(R.id.rg_payment);
+        rg_buying =  findViewById(R.id.rg_buying);
         rb_payment_senderbank = findViewById(R.id.rb_sb);
         rb_payment_receiverbank = findViewById(R.id.rb_rb);
 
-        rb_rb = (RadioButton) findViewById(R.id.rb_rb);
-        rb_rc = (RadioButton) findViewById(R.id.rb_rc);
-        rb_sb = (RadioButton) findViewById(R.id.rb_sb);
-        rb_sc = (RadioButton) findViewById(R.id.rb_sc);
+        rb_rb =  findViewById(R.id.rb_rb);
+        rb_rc =  findViewById(R.id.rb_rc);
+        rb_sb =  findViewById(R.id.rb_sb);
+        rb_sc =  findViewById(R.id.rb_sc);
 
-        rb_bc = (RadioButton) findViewById(R.id.rb_buy_cash);
-        rb_bd = (RadioButton) findViewById(R.id.rb_buy_debt);
-        rb_bt = (RadioButton) findViewById(R.id.rb_buy_transfer);
+        rb_bc =  findViewById(R.id.rb_buy_cash);
+        rb_bd =  findViewById(R.id.rb_buy_debt);
+        rb_bt =  findViewById(R.id.rb_buy_transfer);
 
-        sName = (EditText) findViewById(R.id.senderName);
-        sPhone = (EditText) findViewById(R.id.senderPhone);
-        sAdres = (EditText) findViewById(R.id.senderAddress);
-        sComp = (EditText) findViewById(R.id.senderCompany);
-        rName = (EditText) findViewById(R.id.receiverName);
-        rPhone = (EditText) findViewById(R.id.receiverPhone);
-        rAdres = (EditText) findViewById(R.id.receiverAddress);
-        rComp = (EditText) findViewById(R.id.receiverCompany);
+        sName =  findViewById(R.id.senderName);
+        sPhone =  findViewById(R.id.senderPhone);
+        sAdres =  findViewById(R.id.senderAddress);
+        sComp =  findViewById(R.id.senderCompany);
+        rName =  findViewById(R.id.receiverName);
+        rPhone =  findViewById(R.id.receiverPhone);
+        rAdres =  findViewById(R.id.receiverAddress);
+        rComp =  findViewById(R.id.receiverCompany);
 
-        delExpl = (EditText) findViewById(R.id.deliveryExplanation);
-        delCount = (EditText) findViewById(R.id.deliveryCount);
-        delPrice = (EditText) findViewById(R.id.deliveryCost);
-        delItemPrice = (EditText) findViewById(R.id.deliveryItemCost);
-        paidAmount = (EditText) findViewById(R.id.deliveryPaidAmount);
+        delExpl =  findViewById(R.id.deliveryExplanation);
+        delCount =  findViewById(R.id.deliveryCount);
+        delPrice =  findViewById(R.id.deliveryCost);
+        delItemPrice =  findViewById(R.id.deliveryItemCost);
+        paidAmount =  findViewById(R.id.deliveryPaidAmount);
 
-        btnTakeSignature = (Button) findViewById(R.id.btn_takesignature);
+        btnTakeSignature =  findViewById(R.id.btn_takesignature);
 
-        sCity = (Spinner) findViewById(R.id.spinner_senderCity);
-        rCity = (Spinner) findViewById(R.id.spinner_receiverCity);
-        delType = (Spinner) findViewById(R.id.spinner_deliveryType);
-
-        sProvince = (Spinner) findViewById(R.id.spinner_senderProvince);
-        rProvince = (Spinner) findViewById(R.id.spinner_receiverProvince);
+        sCity =  findViewById(R.id.spinner_senderCity);
+        rCity =  findViewById(R.id.spinner_receiverCity);
+        delType =  findViewById(R.id.spinner_deliveryType);
 
         btnTakeSignature.setText(getResources().getString(R.string.DeliverUpdate));
 
-        card_view_signature = (CardView) findViewById(R.id.card_view_signature);
+        card_view_signature =  findViewById(R.id.card_view_signature);
         card_view_signature.setVisibility(View.GONE);
-        card_view_saving = (CardView) findViewById(R.id.card_view_saving);
+        card_view_saving =  findViewById(R.id.card_view_saving);
         card_view_saving.setVisibility(View.GONE);
 
     }
@@ -512,12 +472,6 @@ public class DeliveryUpdate extends AppCompatActivity {
         rPhone.setText(delivery.receiverPhone);
         rAdres.setText(delivery.receiverAddress);
         rComp.setText(delivery.receiverCompany);
-
-        String senderProvince = StringData.getProvince(delivery.senderCity);
-        sProvince.setSelection(getIndex(sProvince, senderProvince));
-
-        String receiverProvince = StringData.getProvince(delivery.receiverCity);
-        rProvince.setSelection(getIndex(rProvince, receiverProvince));
 
         sCity.setSelection(getIndex(sCity, delivery.senderCity));
         rCity.setSelection(getIndex(rCity, delivery.receiverCity));

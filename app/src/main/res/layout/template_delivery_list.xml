@@ -35,52 +35,24 @@
 
             <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:orientation="horizontal">
-
-                <TextView
-                        android:id="@+id/textView121"
-                        style="@style/InlineLabelsList"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.2"
-                        android:focusable="false"
-                        android:text=""/>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
 
                 <TextView
                         android:id="@+id/txtSenderAddress"
                         style="@style/InlineLabelsList"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.8"
+                        android:layout_width="match_parent"
                         android:focusable="false"
                         android:text=""/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:orientation="horizontal">
-
-                <TextView
-                        android:id="@+id/textView9"
-                        style="@style/InlineLabelsList"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.2"
-                        android:focusable="false"
-                        android:text="@string/Sender"/>
-
-                <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/colorPrimary"/>
 
                 <TextView
                         android:id="@+id/txtSenderName"
                         style="@style/InlineLabelsList"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.8"
+                        android:layout_width="match_parent"
                         android:focusable="false"
+                        android:maxLines="2"
+                        android:lines="2"
                         android:text=""/>
 
             </LinearLayout>
@@ -92,51 +64,23 @@
 
             <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:orientation="horizontal">
-
-                <TextView
-                        android:id="@+id/textViesd"
-                        style="@style/InlineLabelsList"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.2"
-                        android:focusable="false"
-                        android:text="@string/Receiver"/>
-
-                <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/colorPrimary"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                 <TextView
                         android:id="@+id/txtReceiverName"
                         style="@style/InlineLabelsList"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.8"
-                        android:focusable="false"
-                        android:text=""/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:orientation="horizontal">
-
-                <TextView
-                        android:id="@+id/textViessd"
-                        style="@style/InlineLabelsList"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.2"
+                        android:layout_width="match_parent"
                         android:focusable="false"
                         android:text=""/>
 
                 <TextView
                         android:id="@+id/txtReceiverAddress"
                         style="@style/InlineLabelsList"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.8"
+                        android:layout_width="match_parent"
                         android:focusable="false"
+                        android:maxLines="2"
+                        android:lines="2"
                         android:text=""/>
 
             </LinearLayout>
@@ -145,14 +89,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:orientation="horizontal">
-
-                <TextView
-                        android:id="@+id/textResLabel"
-                        style="@style/InlineLabelsList"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.2"
-                        android:focusable="false"
-                        android:text="@string/SectorAndInfo"/>
 
                 <TextView
                         android:id="@+id/txtAssignedPostman"
@@ -175,7 +111,7 @@
                         android:id="@+id/textResLabel1"
                         style="@style/InlineLabelsList"
                         android:layout_width="0dp"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.15"
                         android:focusable="false"
                         android:text="@string/AcceptedPostman"/>
 
@@ -183,7 +119,7 @@
                         android:id="@+id/txtAcceptedPostman"
                         style="@style/InlineLabelsList"
                         android:layout_width="0dp"
-                        android:layout_weight="0.8"
+                        android:layout_weight="0.85"
                         android:focusable="false"
                         android:text=""
                         android:textColor="@color/color_green"/>
@@ -201,7 +137,7 @@
                         android:id="@+id/textResLabelW"
                         style="@style/InlineLabelsList"
                         android:layout_width="0dp"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.15"
                         android:focusable="false"
                         android:text="@string/DeliveredPostman"/>
 
@@ -209,7 +145,7 @@
                         android:id="@+id/txtDeliveredPostman"
                         style="@style/InlineLabelsList"
                         android:layout_width="0dp"
-                        android:layout_weight="0.8"
+                        android:layout_weight="0.85"
                         android:focusable="false"
                         android:text=""
                         android:textColor="@color/color_green"/>

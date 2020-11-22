@@ -92,14 +92,12 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
         token = HomeActivity.token;
         userLogin = HomeActivity.userLogin;
         String userCity = HomeActivity.userCity;
-        String province = StringData.getProvince(userCity);
 
         ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
                 OrderListAssigned.this,
                 android.R.layout.simple_spinner_dropdown_item,
-                StringData.getCityList(province)
+                StringData.getCityList()
         );
-
         sp_Origin.setAdapter(cityAdapter);
         sp_Origin.setSelection(getIndex(sp_Origin, userCity));
 

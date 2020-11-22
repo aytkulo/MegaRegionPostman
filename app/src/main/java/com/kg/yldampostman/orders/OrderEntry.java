@@ -61,9 +61,6 @@ public class OrderEntry extends AppCompatActivity {
     Spinner spinner_senderCity;
     Spinner spinner_receiverCity;
 
-    Spinner sProvince;
-    Spinner rProvince;
-
     Button btn_save_order;
 
     EditText senderName;
@@ -105,9 +102,6 @@ public class OrderEntry extends AppCompatActivity {
         spinner_senderCity = (Spinner) findViewById(R.id.spinner_senderCity);
         spinner_receiverCity = (Spinner) findViewById(R.id.spinner_receiverCity);
 
-        sProvince = findViewById(R.id.spinner_senderProvince);
-        rProvince = findViewById(R.id.spinner_receiverProvince);
-
         btn_save_order = findViewById(R.id.btn_save_order);
 
         senderName = findViewById(R.id.senderName);
@@ -124,62 +118,17 @@ public class OrderEntry extends AppCompatActivity {
         check_addCustomer = findViewById(R.id.check_addToDB);
 
 
-        ArrayAdapter<String> provinceAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
                 OrderEntry.this,
                 android.R.layout.simple_spinner_dropdown_item,
-                StringData.getProvinceList()
+                StringData.getCityList()
         );
-
-        sProvince.setAdapter(provinceAdapter);
-        rProvince.setAdapter(provinceAdapter);
+        spinner_senderCity.setAdapter(cityAdapter);
+        spinner_receiverCity.setAdapter(cityAdapter);
 
         usersCity = HomeActivity.userCity;
         userName = HomeActivity.userLogin;
         token = HomeActivity.token;
-
-        String province = StringData.getProvince(usersCity);
-
-        sProvince.setSelection(getIndex(sProvince, province));
-
-
-        sProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-
-                ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
-                        OrderEntry.this,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        StringData.getCityList(sProvince.getSelectedItem().toString())
-                );
-
-                spinner_senderCity.setAdapter(cityAdapter);
-                spinner_senderCity.setSelection(getIndex(spinner_senderCity, usersCity));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-        });
-
-        rProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-
-                ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(
-                        OrderEntry.this,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        StringData.getCityList(rProvince.getSelectedItem().toString())
-                );
-
-                spinner_receiverCity.setAdapter(cityAdapter);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-        });
 
 
         senderPhone.addTextChangedListener(new TextWatcher() {
@@ -208,9 +157,6 @@ public class OrderEntry extends AppCompatActivity {
                         senderName.setText(parts[1]);
                         senderPhone.setText(parts[0]);
 
-                        String sCityString = parts[3];
-                        String sProvinceString = StringData.getProvince(sCityString);
-                        sProvince.setSelection(getIndex(sProvince, sProvinceString));
                         spinner_senderCity.setSelection(getIndex(spinner_senderCity, parts[3]));
 
                         senderAddress.setText(parts[2]);
@@ -247,9 +193,6 @@ public class OrderEntry extends AppCompatActivity {
                         receiverName.setText(parts[1]);
                         receiverPhone.setText(parts[0]);
 
-                        String rCityString = parts[3];
-                        String rProvinceString = StringData.getProvince(rCityString);
-                        rProvince.setSelection(getIndex(sProvince, rProvinceString));
                         spinner_receiverCity.setSelection(getIndex(spinner_receiverCity, parts[3]));
 
                         receiverAddress.setText(parts[2]);
@@ -287,9 +230,6 @@ public class OrderEntry extends AppCompatActivity {
                         senderName.setText(parts[1]);
                         senderPhone.setText(parts[0]);
 
-                        String sCityString = parts[3];
-                        String sProvinceString = StringData.getProvince(sCityString);
-                        sProvince.setSelection(getIndex(sProvince, sProvinceString));
                         spinner_senderCity.setSelection(getIndex(spinner_senderCity, parts[3]));
 
                         senderAddress.setText(parts[2]);
@@ -325,9 +265,6 @@ public class OrderEntry extends AppCompatActivity {
                         receiverName.setText(parts[1]);
                         receiverPhone.setText(parts[0]);
 
-                        String rCityString = parts[3];
-                        String rProvinceString = StringData.getProvince(rCityString);
-                        rProvince.setSelection(getIndex(sProvince, rProvinceString));
                         spinner_receiverCity.setSelection(getIndex(spinner_receiverCity, parts[3]));
 
                         receiverAddress.setText(parts[2]);

@@ -88,15 +88,7 @@ public class DeliveryDebteds extends AppCompatActivity {
                 StringData.getCityList()
         );
 
-        String province = StringData.getProvince(HomeActivity.userCity);
-
-        ArrayAdapter<String> cityAdapterOwn = new ArrayAdapter<String>(
-                DeliveryDebteds.this,
-                android.R.layout.simple_spinner_dropdown_item,
-                StringData.getCityList(province)
-        );
-
-        sCity.setAdapter(cityAdapterOwn);
+        sCity.setAdapter(cityAdapterAll);
         rCity.setAdapter(cityAdapterAll);
 
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");//dd/MM/yyyy

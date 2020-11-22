@@ -50,38 +50,38 @@ class DeliveryListAdapter extends BaseAdapter {
             //LayoutInflater layoutInfiater = LayoutInflater.from(context);
             convertView = layoutInfiater.inflate(R.layout.template_delivery_list, null);
 
-            viewItem.txtNumber = (TextView) convertView.findViewById(R.id.txt_number);
-            viewItem.txtSenderAddress = (TextView) convertView.findViewById(R.id.txtSenderAddress);
-            viewItem.txtSenderName = (TextView) convertView.findViewById(R.id.txtSenderName);
-            viewItem.txtReceiverAddress = (TextView) convertView.findViewById(R.id.txtReceiverAddress);
-            viewItem.txtReceiverName = (TextView) convertView.findViewById(R.id.txtReceiverName);
-            viewItem.txtAssignedPostman = (TextView) convertView.findViewById(R.id.txtAssignedPostman);
-            viewItem.txtDeliveredPostman = (TextView) convertView.findViewById(R.id.txtDeliveredPostman);
-            viewItem.txtAcceptedPostman = (TextView) convertView.findViewById(R.id.txtAcceptedPostman);
+            viewItem.txtNumber =  convertView.findViewById(R.id.txt_number);
+            viewItem.txtSenderAddress =  convertView.findViewById(R.id.txtSenderAddress);
+            viewItem.txtSenderName =  convertView.findViewById(R.id.txtSenderName);
+            viewItem.txtReceiverAddress =  convertView.findViewById(R.id.txtReceiverAddress);
+            viewItem.txtReceiverName =  convertView.findViewById(R.id.txtReceiverName);
+            viewItem.txtAssignedPostman =  convertView.findViewById(R.id.txtAssignedPostman);
+            viewItem.txtDeliveredPostman =  convertView.findViewById(R.id.txtDeliveredPostman);
+            viewItem.txtAcceptedPostman =  convertView.findViewById(R.id.txtAcceptedPostman);
 
 
-            viewItem.ed_id = (TextView) convertView.findViewById(R.id.ed_id);
+            viewItem.ed_id =  convertView.findViewById(R.id.ed_id);
 
-            viewItem.ed_sCity = (TextView) convertView.findViewById(R.id.ed_sCity);
-            viewItem.ed_sPhone = (TextView) convertView.findViewById(R.id.ed_sPhone);
-            viewItem.ed_sCompany = (TextView) convertView.findViewById(R.id.ed_sCompany);
-            viewItem.ed_sAddress = (TextView) convertView.findViewById(R.id.ed_sAddress);
-            viewItem.ed_sName = (TextView) convertView.findViewById(R.id.ed_sName);
-            viewItem.ed_rCity = (TextView) convertView.findViewById(R.id.ed_rCity);
-            viewItem.ed_rPhone = (TextView) convertView.findViewById(R.id.ed_rPhone);
-            viewItem.ed_rCompany = (TextView) convertView.findViewById(R.id.ed_rCompany);
-            viewItem.ed_rAddress = (TextView) convertView.findViewById(R.id.ed_rAddress);
-            viewItem.ed_rName = (TextView) convertView.findViewById(R.id.ed_rName);
-            viewItem.ed_dType = (TextView) convertView.findViewById(R.id.ed_dType);
-            viewItem.ed_dCost = (TextView) convertView.findViewById(R.id.ed_dCost);
-            viewItem.ed_dCount = (TextView) convertView.findViewById(R.id.ed_dCount);
-            viewItem.ed_diCost = (TextView) convertView.findViewById(R.id.ed_diCost);
-            viewItem.ed_payment = (TextView) convertView.findViewById(R.id.ed_payment);
-            viewItem.ed_dExpl = (TextView) convertView.findViewById(R.id.ed_diExpl);
+            viewItem.ed_sCity =  convertView.findViewById(R.id.ed_sCity);
+            viewItem.ed_sPhone =  convertView.findViewById(R.id.ed_sPhone);
+            viewItem.ed_sCompany =  convertView.findViewById(R.id.ed_sCompany);
+            viewItem.ed_sAddress =  convertView.findViewById(R.id.ed_sAddress);
+            viewItem.ed_sName =  convertView.findViewById(R.id.ed_sName);
+            viewItem.ed_rCity =  convertView.findViewById(R.id.ed_rCity);
+            viewItem.ed_rPhone =  convertView.findViewById(R.id.ed_rPhone);
+            viewItem.ed_rCompany =  convertView.findViewById(R.id.ed_rCompany);
+            viewItem.ed_rAddress =  convertView.findViewById(R.id.ed_rAddress);
+            viewItem.ed_rName =  convertView.findViewById(R.id.ed_rName);
+            viewItem.ed_dType =  convertView.findViewById(R.id.ed_dType);
+            viewItem.ed_dCost =  convertView.findViewById(R.id.ed_dCost);
+            viewItem.ed_dCount =  convertView.findViewById(R.id.ed_dCount);
+            viewItem.ed_diCost =  convertView.findViewById(R.id.ed_diCost);
+            viewItem.ed_payment =  convertView.findViewById(R.id.ed_payment);
+            viewItem.ed_dExpl =  convertView.findViewById(R.id.ed_diExpl);
 
-            viewItem.ed_paidAmount = (TextView) convertView.findViewById(R.id.ed_paidAmount);
+            viewItem.ed_paidAmount =  convertView.findViewById(R.id.ed_paidAmount);
 
-            viewItem.delivery_icon = (ImageView) convertView.findViewById(R.id.order_icon);
+            viewItem.delivery_icon =  convertView.findViewById(R.id.order_icon);
             //     viewItem.btn_Deliver = (Button) convertView.findViewById(R.id.btn_ls_Deliver);
             //    viewItem.btn_Update = (Button) convertView.findViewById(R.id.btn_ls_Update);
 
