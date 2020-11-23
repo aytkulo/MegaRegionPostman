@@ -124,7 +124,7 @@ public class DeliveryUpdate extends AppCompatActivity {
                 RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
                 // This puts the value (true/false) into the variable
 
-                if (checkedRadioButton.equals(rb_payment_receiverbank)) {
+                if (checkedRadioButton!=null && checkedRadioButton.equals(rb_payment_receiverbank)) {
 
                     Intent intent = new Intent(DeliveryUpdate.this, CorporateSelectionList.class);
 
@@ -149,7 +149,7 @@ public class DeliveryUpdate extends AppCompatActivity {
                     }
 
 
-                } else if (checkedRadioButton.equals(rb_payment_senderbank)) {
+                } else if (checkedRadioButton!=null && checkedRadioButton.equals(rb_payment_senderbank)) {
 
                     Intent intent = new Intent(DeliveryUpdate.this, CorporateSelectionList.class);
 
@@ -200,6 +200,7 @@ public class DeliveryUpdate extends AppCompatActivity {
                 }
             } else {
                 rb_payment_senderbank.setChecked(false);
+                rg_payment.clearCheck();
                 sComp.setEnabled(true);
                 Toast.makeText(getApplicationContext(), "Төлөм түрү өзгөртүлдү!", Toast.LENGTH_LONG).show();
             }
@@ -215,6 +216,7 @@ public class DeliveryUpdate extends AppCompatActivity {
                 }
             } else {
                 rb_payment_receiverbank.setChecked(false);
+                rg_payment.clearCheck();
                 rComp.setEnabled(true);
                 Toast.makeText(getApplicationContext(), "Төлөм түрү өзгөртүлдү!", Toast.LENGTH_LONG).show();
             }
