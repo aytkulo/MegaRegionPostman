@@ -348,10 +348,15 @@ public class DeliveryList extends AppCompatActivity {
                                         Delivery dd = gson.fromJson(mJsonM, Delivery.class);
 
                                         dd.number = i + 1;
-                                        dd.sFullName = dd.senderName + ", " + dd.senderAddress + ", " + dd.senderCompany;
+                                        dd.sFullName = dd.senderAddress + ", " + dd.senderCompany;
                                         dd.sFullAddress = dd.senderCity + " - " + dd.senderPhone;
-                                        dd.rFullName = dd.receiverName + ", " + dd.receiverAddress + ", " + dd.receiverCompany;
+                                        if (dd.senderName.length() > 3)
+                                            dd.sFullAddress = dd.senderCity + " - " + dd.senderPhone + ", " + dd.senderName;
+
+                                        dd.rFullName = dd.receiverAddress + ", " + dd.receiverCompany;
                                         dd.rFullAddress = dd.receiverCity + " - " + dd.receiverPhone;
+                                        if (dd.receiverName.length() > 3)
+                                            dd.rFullAddress = dd.receiverCity + " - " + dd.receiverPhone + ", " + dd.receiverName;
 
                                         deliveryList.add(dd);
                                     }

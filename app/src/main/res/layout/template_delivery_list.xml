@@ -40,11 +40,11 @@
 
 
                 <TextView
-                        android:id="@+id/txtSenderAddress"
-                        style="@style/InlineLabelsList"
-                        android:layout_width="match_parent"
-                        android:focusable="false"
-                        android:text=""/>
+                    android:id="@+id/txtSenderAddress"
+                    style="@style/InlineLabelsList"
+                    android:layout_width="match_parent"
+                    android:focusable="false"
+                    android:text="" />
 
                 <TextView
                         android:id="@+id/txtSenderName"
@@ -72,6 +72,8 @@
                         style="@style/InlineLabelsList"
                         android:layout_width="match_parent"
                         android:focusable="false"
+                        android:maxLines="2"
+                        android:lines="2"
                         android:text=""/>
 
                 <TextView
@@ -79,8 +81,6 @@
                         style="@style/InlineLabelsList"
                         android:layout_width="match_parent"
                         android:focusable="false"
-                        android:maxLines="2"
-                        android:lines="2"
                         android:text=""/>
 
             </LinearLayout>
@@ -108,14 +108,6 @@
                     android:orientation="horizontal">
 
                 <TextView
-                        android:id="@+id/textResLabel1"
-                        style="@style/InlineLabelsList"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.15"
-                        android:focusable="false"
-                        android:text="@string/AcceptedPostman"/>
-
-                <TextView
                         android:id="@+id/txtAcceptedPostman"
                         style="@style/InlineLabelsList"
                         android:layout_width="0dp"
@@ -124,22 +116,12 @@
                         android:text=""
                         android:textColor="@color/color_green"/>
 
-
             </LinearLayout>
 
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:orientation="horizontal">
-
-
-                <TextView
-                        android:id="@+id/textResLabelW"
-                        style="@style/InlineLabelsList"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.15"
-                        android:focusable="false"
-                        android:text="@string/DeliveredPostman"/>
 
                 <TextView
                         android:id="@+id/txtDeliveredPostman"
@@ -149,7 +131,6 @@
                         android:focusable="false"
                         android:text=""
                         android:textColor="@color/color_green"/>
-
 
             </LinearLayout>
 

@@ -125,6 +125,7 @@ public class DeliveryEntry extends AppCompatActivity {
         sCity.setAdapter(cityAdapter);
         rCity.setAdapter(cityAdapter);
 
+        sCity.setSelection(getIndex(sCity, HomeActivity.userCity));
 
         usersCity = HomeActivity.userCity;
         token = HomeActivity.token;
