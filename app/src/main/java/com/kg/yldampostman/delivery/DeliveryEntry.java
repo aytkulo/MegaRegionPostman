@@ -336,7 +336,7 @@ public class DeliveryEntry extends AppCompatActivity {
                 RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
                 // This puts the value (true/false) into the variable
 
-                if (checkedRadioButton.equals(rb_payment_receiverbank)) {
+                if (checkedRadioButton!=null && checkedRadioButton.equals(rb_payment_receiverbank)) {
 
                     Intent intent = new Intent(DeliveryEntry.this, CorporateSelectionList.class);
 
@@ -361,7 +361,7 @@ public class DeliveryEntry extends AppCompatActivity {
                     }
 
 
-                } else if (checkedRadioButton.equals(rb_payment_senderbank)) {
+                } else if (checkedRadioButton!=null && checkedRadioButton.equals(rb_payment_senderbank)) {
 
                     Intent intent = new Intent(DeliveryEntry.this, CorporateSelectionList.class);
 
@@ -498,6 +498,7 @@ public class DeliveryEntry extends AppCompatActivity {
                 }
             } else {
                 rb_payment_senderbank.setChecked(false);
+                rg_payment.clearCheck();
                 sComp.setEnabled(true);
                 Toast.makeText(getApplicationContext(), "Төлөм түрү өзгөртүлдү!", Toast.LENGTH_LONG).show();
             }
@@ -513,6 +514,7 @@ public class DeliveryEntry extends AppCompatActivity {
                 }
             } else {
                 rb_payment_receiverbank.setChecked(false);
+                rg_payment.clearCheck();
                 rComp.setEnabled(true);
                 Toast.makeText(getApplicationContext(), "Төлөм түрү өзгөртүлдү!", Toast.LENGTH_LONG).show();
             }
@@ -715,6 +717,7 @@ public class DeliveryEntry extends AppCompatActivity {
             if (rg_buying.getCheckedRadioButtonId() == -1) {
                 String message = "Выкуп түрүн тандабадыңыз.";
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                ok = false;
                 return false;
             }
         }
@@ -722,7 +725,7 @@ public class DeliveryEntry extends AppCompatActivity {
         if (rg_payment.getCheckedRadioButtonId() == -1) {
             String message = "Төлөм түрүн тандабадыңыз.";
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            return false;
+            ok = false;
         }
 
         if (rCity.getSelectedItem() == null || rCity.getSelectedItem().toString().length() < 1) {
