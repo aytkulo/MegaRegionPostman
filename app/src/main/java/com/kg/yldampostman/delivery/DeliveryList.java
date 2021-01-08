@@ -409,16 +409,13 @@ public class DeliveryList extends AppCompatActivity {
             rCity.setEnabled(true);
             sCity.setEnabled(true);
 
-
-
             operationType = extras.getString(HelperConstants.DELIVERY_OPERATION);
 
             if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELIVER)) {
 
                 receiverCity = userCity;
-
-
                 rCity.setSelection(getIndex(rCity, receiverCity));
+                rCity.setEnabled(false);
                 senderCity = "%";
                 acceptedPostman = "%";
                 status = HelperConstants.DELIVERY_STATUS_NEW;
@@ -432,6 +429,7 @@ public class DeliveryList extends AppCompatActivity {
 
                 senderCity = userCity;
                 sCity.setSelection(getIndex(sCity, senderCity));
+                sCity.setEnabled(false);
                 receiverCity = "%";
                 acceptedPostman = userName;
                 postmans.setSelection(getIndex(postmans, userName));
@@ -440,7 +438,7 @@ public class DeliveryList extends AppCompatActivity {
             {
                 postmans.setEnabled(true);
                 status = HelperConstants.DELIVERY_STATUS_NEW;
-
+                rCity.setEnabled(false);
                 senderCity = "%";
                 sCity.setSelection(getIndex(sCity, senderCity));
                 receiverCity = userCity;

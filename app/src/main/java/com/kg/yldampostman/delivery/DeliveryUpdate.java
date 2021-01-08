@@ -462,6 +462,9 @@ public class DeliveryUpdate extends AppCompatActivity {
         card_view_saving =  findViewById(R.id.card_view_saving);
         card_view_saving.setVisibility(View.GONE);
 
+        sCity.setVisibility(View.GONE);
+        rCity.setVisibility(View.GONE);
+
     }
 
     public void putIncomingData(Delivery delivery) {
@@ -532,7 +535,7 @@ public class DeliveryUpdate extends AppCompatActivity {
         } else {
             sAdres.setBackgroundColor(Color.WHITE);
         }
-        if (sPhone.length() != 10) {
+        if (sPhone.length() < 10) {
             sPhone.setBackground(getShape(Color.MAGENTA));
             ok = false;
         } else {

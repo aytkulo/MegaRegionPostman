@@ -22,6 +22,10 @@ public class StringData {
         spinnerArray.add("Токтогул");
         spinnerArray.add("Каракуль");
         spinnerArray.add("Кызыл Кыя");
+        spinnerArray.add("Исфана");
+        spinnerArray.add("Кочкор");
+        spinnerArray.add("Балыкчы");
+        spinnerArray.add("Москва");
         spinnerArray.add("Башкалар");
         return spinnerArray;
     }

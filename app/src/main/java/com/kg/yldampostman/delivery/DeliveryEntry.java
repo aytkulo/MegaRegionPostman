@@ -12,6 +12,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Selection;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
@@ -183,6 +184,13 @@ public class DeliveryEntry extends AppCompatActivity {
         myAdapterRC = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, item);
         rComp.setAdapter(myAdapterRC);
         rComp.setThreshold(3);
+
+
+        sPhone.setText("0");
+        int position = sPhone.length();
+        Editable etext = sPhone.getText();
+        Selection.setSelection(etext, position);
+
 
         // autocompletetextview is in activity_main.xml
         sPhone.addTextChangedListener(new TextWatcher() {
@@ -668,6 +676,8 @@ public class DeliveryEntry extends AppCompatActivity {
         sCity = findViewById(R.id.spinner_senderCity);
         rCity = findViewById(R.id.spinner_receiverCity);
         delType = findViewById(R.id.spinner_deliveryType);
+
+        sCity.setEnabled(false);
     }
 
 
@@ -753,7 +763,7 @@ public class DeliveryEntry extends AppCompatActivity {
         } else {
             sAdres.setBackgroundColor(Color.WHITE);
         }
-        if (sPhone.length() != 10) {
+        if (sPhone.length() < 10) {
             sPhone.setBackground(getShape(Color.MAGENTA));
             ok = false;
         } else {
