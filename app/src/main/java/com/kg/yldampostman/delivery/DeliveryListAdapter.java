@@ -100,7 +100,7 @@ class DeliveryListAdapter extends BaseAdapter {
             //  viewItem.btn_Update.setEnabled(true);
         }
         String payment = valueList.get(position).acceptedPerson + ", "
-                + valueList.get(position).deliveryCount + "-" + valueList.get(position).deliveryType + ", "
+                + valueList.get(position).deliveryCount + "-" + valueList.get(position).deliveryType.substring(0, 3) + ", "
                 + (Integer.parseInt(valueList.get(position).deliveryCost) - Integer.parseInt(valueList.get(position).paidAmount));
 
         if (valueList.get(position).paymentType.equalsIgnoreCase("SC"))
@@ -124,11 +124,20 @@ class DeliveryListAdapter extends BaseAdapter {
         viewItem.txtSenderName.setText(valueList.get(position).sFullName);
         viewItem.txtReceiverAddress.setText(valueList.get(position).rFullAddress);
         viewItem.txtReceiverName.setText(valueList.get(position).rFullName);
-        viewItem.txtAcceptedPostman.setText(payment + " (" + valueList.get(position).entryDate.substring(0, 10) + ")");
-        if (valueList.get(position).status!="0" && valueList.get(position).deliveredDate != null && valueList.get(position).deliveredDate.length() > 5)
-            viewItem.txtDeliveredPostman.setText(valueList.get(position).deliveredPerson + " (" + valueList.get(position).deliveredDate.substring(5, 19) + ")");
-        else
-            viewItem.txtDeliveredPostman.setText(" ");
+        viewItem.txtAcceptedPostman.setText(payment + " (" + valueList.get(position).entryDate.substring(0, 16) + ")");
+
+
+        String deliveredPaid = "";
+        if (valueList.get(position).deliveredDate != null && valueList.get(position).deliveredDate.length() > 1) {
+            deliveredPaid = valueList.get(position).deliveredPerson + " (" + valueList.get(position).deliveredDate.substring(5, 16) + ")";
+        }
+
+        if (valueList.get(position).costPaidDate != null && valueList.get(position).costPaidDate.length() > 1) {
+            deliveredPaid =deliveredPaid + ", "+ valueList.get(position).costPaidUser + " (" + valueList.get(position).costPaidDate.substring(5, 16) + ")";
+        }
+
+        viewItem.txtDeliveredPostman.setText(deliveredPaid);
+
         viewItem.txtNumber.setText(valueList.get(position).number + ".");
 
         viewItem.ed_id.setText(valueList.get(position).deliveryId);

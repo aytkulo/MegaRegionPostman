@@ -37,6 +37,9 @@ public class Delivery implements Serializable {
     public String acceptedPerson;
     public String buyType;
 
+    public String costPaidDate;
+    public String costPaidUser;
+
     public String paidAmount;
 
     public String entryDate;

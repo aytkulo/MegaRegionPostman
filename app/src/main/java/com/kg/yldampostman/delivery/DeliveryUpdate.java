@@ -91,6 +91,7 @@ public class DeliveryUpdate extends AppCompatActivity {
 
         sCity.setAdapter(cityAdapter);
         rCity.setAdapter(cityAdapter);
+        sCity.setEnabled(false);
 
         Intent deliveryIntent = getIntent();
         Bundle extras = deliveryIntent.getExtras();
@@ -461,9 +462,6 @@ public class DeliveryUpdate extends AppCompatActivity {
         card_view_signature.setVisibility(View.GONE);
         card_view_saving =  findViewById(R.id.card_view_saving);
         card_view_saving.setVisibility(View.GONE);
-
-        sCity.setVisibility(View.GONE);
-        rCity.setVisibility(View.GONE);
 
     }
 
