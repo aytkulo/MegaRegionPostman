@@ -518,9 +518,19 @@ public class DeliveryUpdate extends AppCompatActivity {
 
         boolean ok = true;
 
+
         if (delItemPrice.getText().toString().length() == 0) {
             delItemPrice.setText("0");
+        } else if (Long.parseLong(delItemPrice.getText().toString()) > 0) {
+            if (rg_buying.getCheckedRadioButtonId() == -1) {
+                String message = "Выкуп түрүн тандабадыңыз.";
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                ok = false;
+                return false;
+            }
         }
+
+
         if (sName.length() < 1) {
             sName.setBackground(getShape(Color.MAGENTA));
             ok = false;
@@ -533,10 +543,19 @@ public class DeliveryUpdate extends AppCompatActivity {
         } else {
             sAdres.setBackgroundColor(Color.WHITE);
         }
-        if (sPhone.length() < 10) {
+
+        if (sCity.getSelectedItem().toString().equalsIgnoreCase("Москва")) {
+            if(sPhone.length() < 10) {
+                sPhone.setBackground(getShape(Color.MAGENTA));
+                ok = false;
+            }
+        }
+        else if (sPhone.length() != 10)
+        {
             sPhone.setBackground(getShape(Color.MAGENTA));
             ok = false;
-        } else {
+        }
+        else {
             sPhone.setBackgroundColor(Color.WHITE);
         }
 
@@ -546,10 +565,19 @@ public class DeliveryUpdate extends AppCompatActivity {
         } else {
             rName.setBackgroundColor(Color.WHITE);
         }
-        if (rPhone.length() != 10) {
+
+        if (rCity.getSelectedItem().toString().equalsIgnoreCase("Москва")) {
+            if(rPhone.length() < 10) {
+                rPhone.setBackground(getShape(Color.MAGENTA));
+                ok = false;
+            }
+        }
+        else if (rPhone.length() != 10)
+        {
             rPhone.setBackground(getShape(Color.MAGENTA));
             ok = false;
-        } else {
+        }
+        else {
             rPhone.setBackgroundColor(Color.WHITE);
         }
 

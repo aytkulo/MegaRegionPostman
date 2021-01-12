@@ -189,6 +189,8 @@ public class DeliveryEntry extends AppCompatActivity {
         sPhone.setText("0");
         int position = sPhone.length();
         Editable etext = sPhone.getText();
+        sPhone.requestFocus();
+        sPhone.setSelection(sPhone.getText().length());
         Selection.setSelection(etext, position);
 
 
@@ -763,10 +765,19 @@ public class DeliveryEntry extends AppCompatActivity {
         } else {
             sAdres.setBackgroundColor(Color.WHITE);
         }
-        if (sPhone.length() < 10) {
+
+        if (sCity.getSelectedItem().toString().equalsIgnoreCase("Москва")) {
+            if(sPhone.length() < 10) {
+                sPhone.setBackground(getShape(Color.MAGENTA));
+                ok = false;
+            }
+        }
+        else if (sPhone.length() != 10)
+        {
             sPhone.setBackground(getShape(Color.MAGENTA));
             ok = false;
-        } else {
+        }
+        else {
             sPhone.setBackgroundColor(Color.WHITE);
         }
 
@@ -776,10 +787,19 @@ public class DeliveryEntry extends AppCompatActivity {
         } else {
             rName.setBackgroundColor(Color.WHITE);
         }
-        if (rPhone.length() != 10) {
+
+        if (rCity.getSelectedItem().toString().equalsIgnoreCase("Москва")) {
+            if(rPhone.length() < 10) {
+                rPhone.setBackground(getShape(Color.MAGENTA));
+                ok = false;
+            }
+        }
+        else if (rPhone.length() != 10)
+        {
             rPhone.setBackground(getShape(Color.MAGENTA));
             ok = false;
-        } else {
+        }
+        else {
             rPhone.setBackgroundColor(Color.WHITE);
         }
 

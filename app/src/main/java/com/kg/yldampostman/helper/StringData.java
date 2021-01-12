@@ -17,7 +17,6 @@ public class StringData {
         spinnerArray.add("Талас");
         spinnerArray.add("Кара балта");
         spinnerArray.add("Токмок");
-        spinnerArray.add("Чуй");
         spinnerArray.add("Чолпоната");
         spinnerArray.add("Токтогул");
         spinnerArray.add("Каракуль");
@@ -26,7 +25,6 @@ public class StringData {
         spinnerArray.add("Кочкор");
         spinnerArray.add("Балыкчы");
         spinnerArray.add("Москва");
-        spinnerArray.add("Башкалар");
         return spinnerArray;
     }
 
