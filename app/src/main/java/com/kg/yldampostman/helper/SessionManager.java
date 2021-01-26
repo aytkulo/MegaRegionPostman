@@ -30,6 +30,7 @@ public class SessionManager {
     private static final String KEY_USERNAME = "USERNAME";
     private static final String KEY_NAMESURNAME = "NAMESURNAME";
     private static final String KEY_TILLDATE = "TILLDATE";
+    private static final String KEY_SECTOR = "SECTOR";
 
     public SessionManager(Context context) {
         this._context = context;
@@ -92,6 +93,14 @@ public class SessionManager {
         return pref.getString(KEY_TILLDATE, "");
     }
 
+    public String getSector(){
+        return pref.getString(KEY_SECTOR, "");
+    }
+
+    public void setSector(String sector) {
+        editor.putString(KEY_SECTOR, sector);
+        editor.commit();
+    }
 
     public void setToken(String token) {
         editor.putString(KEY_TOKEN, token);

@@ -46,6 +46,7 @@ public class HomeActivity extends AppCompatActivity
     public static String userCity = "";
     public static String userLogin = "";
     public static String apiDate;
+    public static String sector;
 
     private ProgressDialog pDialog;
 
@@ -77,6 +78,7 @@ public class HomeActivity extends AppCompatActivity
         userLogin = sessionManager.getLogin();
         userCity = sessionManager.getCity();
         apiDate = sessionManager.getApiDate();
+        sector = sessionManager.getSector();
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -220,6 +222,7 @@ public class HomeActivity extends AppCompatActivity
     public boolean isTokenExpired() {
         sessionManager = new SessionManager(getApplicationContext());
         apiDate = sessionManager.getApiDate();
+
         if (apiDate == null || apiDate.length() <= 1)
             return true;
         long tillDate = Long.parseLong(apiDate);
@@ -235,7 +238,7 @@ public class HomeActivity extends AppCompatActivity
                 apiDate = sessionManager.getApiDate();
                 userLogin = sessionManager.getLogin();
                 userCity = sessionManager.getCity();
-
+                sector = sessionManager.getSector();
                 PostmanHelper.getPostmans(userCity,HomeActivity.this, postmanList);
             }
         }

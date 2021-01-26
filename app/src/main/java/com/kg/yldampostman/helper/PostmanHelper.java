@@ -14,6 +14,7 @@ import com.kg.yldampostman.HomeActivity;
 import com.kg.yldampostman.R;
 import com.kg.yldampostman.app.AppConfig;
 import com.kg.yldampostman.app.AppController;
+import com.kg.yldampostman.orders.Sector;
 import com.kg.yldampostman.users.User;
 import com.kg.yldampostman.utils.MyDialog;
 import com.kg.yldampostman.utils.NetworkUtil;
@@ -30,7 +31,7 @@ import java.util.Map;
 public class PostmanHelper {
 
     static ArrayList<User> userList = new ArrayList<>();
-
+    static ArrayList<Sector> sectorList = new ArrayList<>();
 
     public static void populateUserSpinner(Context context, Spinner postmans, ArrayList<User> userList) {
 
@@ -106,8 +107,8 @@ public class PostmanHelper {
         }
     }
 
-    /*
-    public static void listPostmans(final String city, final Context context, final Spinner postmans) throws ParseException {
+
+    public static void listSectors(final String city, final Context context, final Spinner incomingSpinner) throws ParseException {
 
         if (!NetworkUtil.isNetworkConnected(context)) {
             MyDialog.createSimpleOkErrorDialog(context,
@@ -123,11 +124,12 @@ public class PostmanHelper {
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("city", city);
+                jsonObject.put("sector", "");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_GET_USERS, jsonObject,
+            CustomJsonArrayRequest req = new CustomJsonArrayRequest(Request.Method.POST, AppConfig.URL_GET_SECTORS, jsonObject,
                     new Response.Listener<JSONArray>() {
 
                         @Override
@@ -136,25 +138,22 @@ public class PostmanHelper {
                             try {
                                 if (response.length() > 0) {
 
-                                    userList.clear();
+                                    sectorList.clear();
                                     JsonParser parser = new JsonParser();
                                     Gson gson = new Gson();
 
                                     for (int i = 0; i < response.length(); i++) {
 
                                         JsonElement mJsonM = parser.parse(response.getString(i));
-                                        User dd = gson.fromJson(mJsonM, User.class);
-                                        userList.add(dd);
+                                        Sector dd = gson.fromJson(mJsonM, Sector.class);
+                                        sectorList.add(dd);
                                     }
 
-                                    if (userList.size() > 0) {
-                                        populateUserSpinner(context, postmans);
+                                    if (sectorList.size() > 0) {
+                                        populateSectorSpinner(context, incomingSpinner);
+                                        incomingSpinner.setSelection(getIndex(incomingSpinner, HomeActivity.sector));
                                     }
 
-                                } else {
-                                    MyDialog.createSimpleOkErrorDialog(context,
-                                            context.getString(R.string.dialog_error_title),
-                                            context.getString(R.string.NoData)).show();
                                 }
                             } catch (JSONException e) {
                                 MyDialog.createSimpleOkErrorDialog(context,
@@ -184,24 +183,30 @@ public class PostmanHelper {
         }
     }
 
+    private static int getIndex(Spinner spinner, String myString) {
 
+        int index = 0;
 
-    private static void populateUserSpinner(Context context, Spinner postmans) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).equals(myString)) {
+                index = i;
+            }
+        }
+        return index;
+    }
+
+    private static void populateSectorSpinner(Context context, Spinner postmans) {
 
         postmans.setAdapter(null);
         ArrayList<String> lables = new ArrayList<String>();
 
-        lables.add("%");
-        for (int i = 0; i < userList.size(); i++) {
-            lables.add(userList.get(i).getEmail());
+        for (int i = 0; i < sectorList.size(); i++) {
+            lables.add(sectorList.get(i).getSector());
         }
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_spinner_item, lables);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         postmans.setAdapter(spinnerAdapter);
-
     }
 
-
-     */
 }

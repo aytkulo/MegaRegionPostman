@@ -56,11 +56,11 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
 
     private static final String TAG = OrderList.class.getSimpleName();
     private ArrayList<String> sectorList = new ArrayList<>();
-    public static int DIALOG_ID = 0;
+    public static int DIALOG_ID1 = 0;
+    public static int DIALOG_ID2 = 0;
     ListView listViewOrders;
     Orders order;
-    private EditText ed_Date;
-    private String strDate;
+    private EditText ed_Date1, ed_Date2, phone;
     private Button btn_List;
     private Spinner sp_Origin;
     private Spinner sp_Sector;
@@ -82,12 +82,13 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
         listViewOrders = findViewById(R.id.listViewOrders);
-        ed_Date = findViewById(R.id.ed_Date);
+        ed_Date1 = findViewById(R.id.ed_Date1);
+        ed_Date2 = findViewById(R.id.ed_Date2);
+        phone = findViewById(R.id.sp_Phone);
         btn_List = findViewById(R.id.btn_oList);
         sp_Origin = findViewById(R.id.sp_Origin);
         sp_Sector = findViewById(R.id.sp_sectors);
         sp_Origin.setEnabled(false);
-
 
         token = HomeActivity.token;
         userLogin = HomeActivity.userLogin;
@@ -98,23 +99,32 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
                 android.R.layout.simple_spinner_dropdown_item,
                 StringData.getCityList()
         );
+
         sp_Origin.setAdapter(cityAdapter);
         sp_Origin.setSelection(getIndex(sp_Origin, userCity));
 
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");//dd/MM/yyyy
         Date now = new Date();
         String strDate = sdfDate.format(now);
-        ed_Date.setText(strDate);
+        ed_Date1.setText(strDate);
+        ed_Date2.setText(strDate);
 
         calendar = Calendar.getInstance();
         year_x = calendar.get(Calendar.YEAR);
         month_x = calendar.get(Calendar.MONTH);
         day_x = calendar.get(Calendar.DAY_OF_MONTH);
 
-        ed_Date.setOnClickListener(new View.OnClickListener() {
+        ed_Date1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog(DIALOG_ID);
+                showDialog(DIALOG_ID1);
+            }
+        });
+
+        ed_Date2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DIALOG_ID2);
             }
         });
 
@@ -126,10 +136,11 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
                 sp_Sector.setAdapter(null);
                 String senderCity = sp_Origin.getSelectedItem().toString();
 
-                ArrayList<User> postmanList = new ArrayList<>();
-                PostmanHelper.getPostmans(senderCity, OrderListAssigned.this, postmanList);
-                PostmanHelper.populateUserSpinner(OrderListAssigned.this, sp_Sector, postmanList);
-
+                try {
+                    PostmanHelper.listSectors(senderCity,OrderListAssigned.this, sp_Sector);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -138,6 +149,7 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
             }
         });
 
+        sp_Sector.setEnabled(false);
 
         btn_List.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,7 +157,7 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
                 orderList.clear();
                 listViewOrders.setAdapter(null);
                 try {
-                    listOrders(ed_Date.getText().toString(), "0", sp_Sector.getSelectedItem().toString(), sp_Origin.getSelectedItem().toString());
+                    listOrders(ed_Date1.getText().toString(), ed_Date2.getText().toString(), sp_Sector.getSelectedItem().toString(), sp_Origin.getSelectedItem().toString(), phone.getText().toString());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -169,8 +181,10 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
 
     protected Dialog onCreateDialog(int id) {
 
-        if (id == DIALOG_ID)
+        if (id == DIALOG_ID1)
             return new DatePickerDialog(this, datePickerListener, year_x, month_x, day_x);
+        else if (id == DIALOG_ID2)
+            return new DatePickerDialog(this, datePickerListener2, year_x, month_x, day_x);
         else
             return null;
     }
@@ -192,7 +206,28 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
                 dateS = dateS + "-0" + day_x;
             else
                 dateS = dateS + "-" + day_x;
-            ed_Date.setText(dateS);
+            ed_Date1.setText(dateS);
+        }
+    };
+
+    protected DatePickerDialog.OnDateSetListener datePickerListener2
+            = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+            year_x = year;
+            month_x = month + 1;
+            day_x = dayOfMonth;
+            String dateS = String.valueOf(year);
+            if (month_x < 10)
+                dateS = dateS + "-0" + month_x;
+            else
+                dateS = dateS + "-" + month_x;
+            if (day_x < 10)
+                dateS = dateS + "-0" + day_x;
+            else
+                dateS = dateS + "-" + day_x;
+            ed_Date2.setText(dateS);
         }
     };
 
@@ -221,28 +256,8 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
     }
 
 
-    private void populateSectorSpinner() {
 
-        sp_Sector.setAdapter(null);
-
-        ArrayList<String> lables = new ArrayList<String>();
-
-        for (int i = 0; i < sectorList.size(); i++) {
-            lables.add(sectorList.get(i));
-        }
-        // Creating adapter for spinner
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, lables);
-
-        // Drop down layout style - list view with radio button
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // attaching data adapter to spinner
-        sp_Sector.setAdapter(spinnerAdapter);
-    }
-
-
-    public void listOrders(final String entryDate, final String status, final String responsible, final String origin) throws ParseException {
-
+    public void listOrders(final String entryDate1, final String entryDate2, final String responsible, final String origin, final String phone) throws ParseException {
 
         if (!NetworkUtil.isNetworkConnected(OrderListAssigned.this)) {
             MyDialog.createSimpleOkErrorDialog(OrderListAssigned.this,
@@ -259,11 +274,12 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
 
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("entryDate", entryDate);
-                jsonObject.put("status", status);
+                jsonObject.put("entryDate1", entryDate1);
+                jsonObject.put("entryDate2", entryDate2);
+                jsonObject.put("phone", phone+"%");
                 jsonObject.put("sector", responsible);
                 jsonObject.put("origin", origin);
-                jsonObject.put("destination", "");
+                jsonObject.put("status", "0");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -301,6 +317,9 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
                                         o.status = c.getString("status");
                                         o.entrydate = c.getString("entryDate");
                                         o.time = c.getString("entryTime");
+                                        o.enteredUser = c.getString("enteredUser");
+                                        o.updatedUser = c.getString("updatedUser");
+                                        o.updatedDate = c.getString("updatedDate");
 
                                         orderList.add(o);
                                     }
@@ -403,7 +422,7 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
     @Override
     public void onRefresh() {
         try {
-            listOrders(ed_Date.getText().toString(), "0", sp_Sector.getSelectedItem().toString(), sp_Origin.getSelectedItem().toString());
+            listOrders(ed_Date1.getText().toString(), ed_Date2.getText().toString(), sp_Sector.getSelectedItem().toString(), sp_Origin.getSelectedItem().toString(), phone.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
         }

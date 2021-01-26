@@ -6,6 +6,7 @@ import java.io.Serializable;
  * Created by ASUS on 7/1/2017.
  */
 
+
 public class Orders implements Serializable {
 
     public String Name;
@@ -26,6 +27,8 @@ public class Orders implements Serializable {
     public String receiverAddress;
     public String status;
     public String entrydate;
-
+    public String enteredUser;
+    public String updatedUser;
+    public String updatedDate;
 
 }

@@ -185,14 +185,14 @@ public class DeliveryEntry extends AppCompatActivity {
         rComp.setAdapter(myAdapterRC);
         rComp.setThreshold(3);
 
-
-        sPhone.setText("0");
-        int position = sPhone.length();
-        Editable etext = sPhone.getText();
-        sPhone.requestFocus();
-        sPhone.setSelection(sPhone.getText().length());
-        Selection.setSelection(etext, position);
-
+        if(sPhone.getText() ==null || sPhone.getText().toString().length()==0) {
+            sPhone.setText("0");
+            int position = sPhone.length();
+            Editable etext = sPhone.getText();
+            sPhone.requestFocus();
+            sPhone.setSelection(sPhone.getText().length());
+            Selection.setSelection(etext, position);
+        }
 
         // autocompletetextview is in activity_main.xml
         sPhone.addTextChangedListener(new TextWatcher() {

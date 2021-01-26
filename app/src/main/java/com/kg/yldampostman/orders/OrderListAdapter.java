@@ -50,23 +50,23 @@ public class OrderListAdapter extends BaseAdapter {
             //LayoutInflater layoutInfiater = LayoutInflater.from(context);
             convertView = layoutInfiater.inflate(R.layout.template_order_list, null);
 
-            viewItem.txtAddress = (TextView) convertView.findViewById(R.id.txtAddress);
-            viewItem.txtName = (TextView) convertView.findViewById(R.id.txtName);
-            viewItem.txtResponsible = (TextView) convertView.findViewById(R.id.txtResponsible);
-            viewItem.txtTime = (TextView) convertView.findViewById(R.id.txtTime);
+            viewItem.txtAddress =  convertView.findViewById(R.id.txtAddress);
+            viewItem.txtName =  convertView.findViewById(R.id.txtName);
+            viewItem.txtResponsible =  convertView.findViewById(R.id.txtResponsible);
+            viewItem.txtTime =  convertView.findViewById(R.id.txtTime);
 
-            viewItem.ed_id = (TextView) convertView.findViewById(R.id.ed_id);
-            viewItem.ed_sCity = (TextView) convertView.findViewById(R.id.ed_sCity);
-            viewItem.ed_sName = (TextView) convertView.findViewById(R.id.ed_sName);
-            viewItem.ed_sPhone = (TextView) convertView.findViewById(R.id.ed_sPhone);
-            viewItem.ed_sAddress = (TextView) convertView.findViewById(R.id.ed_sAddress);
-            viewItem.ed_sCompany = (TextView) convertView.findViewById(R.id.ed_sCompany);
-            viewItem.ed_rCity = (TextView) convertView.findViewById(R.id.ed_rCity);
-            viewItem.ed_rName = (TextView) convertView.findViewById(R.id.ed_rName);
-            viewItem.ed_rPhone = (TextView) convertView.findViewById(R.id.ed_rPhone);
-            viewItem.ed_rAddress = (TextView) convertView.findViewById(R.id.ed_rAddress);
-            viewItem.ed_rCompany = (TextView) convertView.findViewById(R.id.ed_rCompany);
-            viewItem.order_icon = (ImageView) convertView.findViewById(R.id.order_icon);
+            viewItem.ed_id =  convertView.findViewById(R.id.ed_id);
+            viewItem.ed_sCity =  convertView.findViewById(R.id.ed_sCity);
+            viewItem.ed_sName =  convertView.findViewById(R.id.ed_sName);
+            viewItem.ed_sPhone =  convertView.findViewById(R.id.ed_sPhone);
+            viewItem.ed_sAddress =  convertView.findViewById(R.id.ed_sAddress);
+            viewItem.ed_sCompany =  convertView.findViewById(R.id.ed_sCompany);
+            viewItem.ed_rCity =  convertView.findViewById(R.id.ed_rCity);
+            viewItem.ed_rName =  convertView.findViewById(R.id.ed_rName);
+            viewItem.ed_rPhone =  convertView.findViewById(R.id.ed_rPhone);
+            viewItem.ed_rAddress =  convertView.findViewById(R.id.ed_rAddress);
+            viewItem.ed_rCompany =  convertView.findViewById(R.id.ed_rCompany);
+            viewItem.order_icon =  convertView.findViewById(R.id.order_icon);
 
             convertView.setTag(viewItem);
         } else {
@@ -81,8 +81,17 @@ public class OrderListAdapter extends BaseAdapter {
 
         viewItem.txtAddress.setText(valueList.get(position).Address);
         viewItem.txtName.setText(valueList.get(position).Name);
-        viewItem.txtResponsible.setText(valueList.get(position).responsible);
-        viewItem.txtTime.setText(valueList.get(position).time);
+
+        Orders or = valueList.get(position);
+
+        String res = or.responsible;
+        res = res + " (" + or.enteredUser + " - " + or.entrydate.substring(0, 10) + ", " + or.entrydate.substring(11, 16) + ")";
+        viewItem.txtResponsible.setText(res);
+
+        if (!or.updatedDate.equalsIgnoreCase("null")) {
+            res = or.updatedUser + " (" + or.updatedDate.substring(0, 10) + ", " + or.updatedDate.substring(11, 16) + ")";
+            viewItem.txtTime.setText(res);
+        }
 
         viewItem.ed_id.setText(valueList.get(position).id);
 

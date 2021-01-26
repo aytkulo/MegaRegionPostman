@@ -8,6 +8,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Selection;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -62,10 +63,7 @@ public class OrderEntry extends AppCompatActivity {
     Spinner spinner_receiverCity;
 
     Button btn_save_order;
-
     EditText senderName;
-    // EditText senderAddress;
-
 
     AutoCompleteTextView senderPhone;
     AutoCompleteTextView receiverPhone;
@@ -77,11 +75,9 @@ public class OrderEntry extends AppCompatActivity {
     CheckBox check_addCustomer;
 
     EditText receiverAddress;
-    EditText senderAddress;
-    // adapter for auto-complete
+    EditText senderAddress, orderExplanation;
     ArrayAdapter<String> myAdapterS;
     ArrayAdapter<String> myAdapterR;
-    // just to add some initial value
 
     ArrayAdapter<String> myAdapterSC;
     ArrayAdapter<String> myAdapterRC;
@@ -114,6 +110,7 @@ public class OrderEntry extends AppCompatActivity {
         receiverCompany = findViewById(R.id.receiverCompany);
         receiverAddress = findViewById(R.id.receiverAddress);
         senderAddress = findViewById(R.id.senderAddress);
+        orderExplanation = findViewById(R.id.orderExplanation);
 
         check_addCustomer = findViewById(R.id.check_addToDB);
 
@@ -123,6 +120,7 @@ public class OrderEntry extends AppCompatActivity {
                 android.R.layout.simple_spinner_dropdown_item,
                 StringData.getCityList()
         );
+
         spinner_senderCity.setAdapter(cityAdapter);
         spinner_receiverCity.setAdapter(cityAdapter);
 
@@ -130,6 +128,14 @@ public class OrderEntry extends AppCompatActivity {
         userName = HomeActivity.userLogin;
         token = HomeActivity.token;
 
+        spinner_senderCity.setSelection(getIndex(spinner_senderCity, usersCity));
+
+        senderPhone.setText("0");
+        int position = senderPhone.length();
+        Editable etext = senderPhone.getText();
+        senderPhone.requestFocus();
+        senderPhone.setSelection(senderPhone.getText().length());
+        Selection.setSelection(etext, position);
 
         senderPhone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -158,7 +164,6 @@ public class OrderEntry extends AppCompatActivity {
                         senderPhone.setText(parts[0]);
 
                         spinner_senderCity.setSelection(getIndex(spinner_senderCity, parts[3]));
-
                         senderAddress.setText(parts[2]);
                         if (parts.length > 4)
                             senderCompany.setText(parts[4]);
@@ -192,9 +197,7 @@ public class OrderEntry extends AppCompatActivity {
                     if (parts.length > 1) {
                         receiverName.setText(parts[1]);
                         receiverPhone.setText(parts[0]);
-
                         spinner_receiverCity.setSelection(getIndex(spinner_receiverCity, parts[3]));
-
                         receiverAddress.setText(parts[2]);
                         if (parts.length > 4)
                             receiverCompany.setText(parts[4]);
@@ -315,6 +318,7 @@ public class OrderEntry extends AppCompatActivity {
                 if (spinner_receiverCity.getSelectedItem() != null)
                     rCity = spinner_receiverCity.getSelectedItem().toString();
                 String rComp = receiverCompany.getText().toString();
+                String explanation = orderExplanation.getText().toString();
 
                 if (check_addCustomer.isChecked() && addCustomerCheck(sName, sPhone, sComp, sAddr, sCity)) {
                     CustomerHelper.saveCustomer(sName, sPhone, sComp, sCity, sAddr, token);
@@ -323,7 +327,7 @@ public class OrderEntry extends AppCompatActivity {
                 if (orderDataCheck()) {
                     try {
                         String sector = spinner_users.getSelectedItem().toString();
-                        saveOrder(sName, sPhone, sComp, sCity, sAddr, rName, rPhone, rComp, rCity, rAddr, sector);
+                        saveOrder(sName, sPhone, sComp, sCity, sAddr, rName, rPhone, rComp, rCity, rAddr, sector, explanation);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -340,8 +344,11 @@ public class OrderEntry extends AppCompatActivity {
                 spinner_users.setAdapter(null);
                 String senderCity = spinner_senderCity.getSelectedItem().toString();
 
-                PostmanHelper.populateUserSpinner(OrderEntry.this, spinner_users, HomeActivity.postmanList);
-
+                try {
+                    PostmanHelper.listSectors(senderCity, OrderEntry.this, spinner_users);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -366,7 +373,7 @@ public class OrderEntry extends AppCompatActivity {
 
     public void saveOrder(final String sName, final String sPhone, final String sComp, final String sCity, final String sAddress,
                           final String rName, final String rPhone, final String rComp, final String rCity, final String rAddress,
-                          final String sector) throws ParseException {
+                          final String sector, final String explanation) throws ParseException {
 
         if (!NetworkUtil.isNetworkConnected(OrderEntry.this)) {
             MyDialog.createSimpleOkErrorDialog(OrderEntry.this,
@@ -397,6 +404,7 @@ public class OrderEntry extends AppCompatActivity {
                 jsonObject.put("receiverCompany", rComp);
                 jsonObject.put("assignedSector", sector);
                 jsonObject.put("user", userName);
+                jsonObject.put("explanation", explanation);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -432,8 +440,8 @@ public class OrderEntry extends AppCompatActivity {
                     return headers;
                 }
             };
-                // Adding request to request queue
-                AppController.getInstance().addToRequestQueue(req, tag_string_req);
+            AppController.getInstance().addToRequestQueue(req, tag_string_req);
+
         }
     }
 
@@ -446,6 +454,7 @@ public class OrderEntry extends AppCompatActivity {
 
         return shape;
     }
+
 
 
     public void getSenderCustomers(final String phone, final String company) throws ParseException {
@@ -578,7 +587,6 @@ public class OrderEntry extends AppCompatActivity {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
                     NetworkUtil.checkHttpStatus(OrderEntry.this, error);
                     hideDialog();
                 }
@@ -617,18 +625,10 @@ public class OrderEntry extends AppCompatActivity {
         if (spinner_senderCity.getSelectedItem() != null)
             cCity = spinner_senderCity.getSelectedItem().toString();
 
-        String rCity = "";
-        if (spinner_receiverCity.getSelectedItem() != null)
-            rCity = spinner_receiverCity.getSelectedItem().toString();
-
 
         String sector = "";
         if (spinner_users.getSelectedItem() != null)
             sector = spinner_users.getSelectedItem().toString();
-
-
-        String rName = receiverName.getText().toString();
-        String rPhone = receiverPhone.getText().toString();
 
         if (sector.length() < 1) {
             spinner_users.setBackground(getShape(Color.MAGENTA));
@@ -637,13 +637,6 @@ public class OrderEntry extends AppCompatActivity {
             spinner_users.setBackgroundColor(Color.WHITE);
         }
 
-
-        if (rCity.length() < 1) {
-            spinner_receiverCity.setBackground(getShape(Color.MAGENTA));
-            ok = false;
-        } else {
-            spinner_receiverCity.setBackgroundColor(Color.WHITE);
-        }
 
         if (cCity.length() < 1) {
             spinner_senderCity.setBackground(getShape(Color.MAGENTA));
@@ -668,19 +661,6 @@ public class OrderEntry extends AppCompatActivity {
             ok = false;
         } else {
             senderPhone.setBackgroundColor(Color.WHITE);
-        }
-
-        if (rName.length() < 1) {
-            receiverName.setBackground(getShape(Color.MAGENTA));
-            ok = false;
-        } else {
-            receiverName.setBackgroundColor(Color.WHITE);
-        }
-        if (rPhone.length() != 10) {
-            receiverPhone.setBackground(getShape(Color.MAGENTA));
-            ok = false;
-        } else {
-            receiverPhone.setBackgroundColor(Color.WHITE);
         }
 
         if (!ok) {
