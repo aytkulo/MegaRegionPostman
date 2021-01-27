@@ -186,7 +186,6 @@ public class DeliveryEntry extends AppCompatActivity {
         rComp.setThreshold(3);
 
         if(sPhone.getText() ==null || sPhone.getText().toString().length()==0) {
-            sPhone.setText("0");
             int position = sPhone.length();
             Editable etext = sPhone.getText();
             sPhone.requestFocus();
@@ -692,6 +691,7 @@ public class DeliveryEntry extends AppCompatActivity {
         rPhone.setText(order.receiverPhone);
         rAdres.setText(order.receiverAddress);
         rComp.setText(order.receiverCompany);
+        delExpl.setText(order.orderExplanation);
 
         sCity.setSelection(getIndex(sCity, order.senderCity));
         rCity.setSelection(getIndex(rCity, order.receiverCity));

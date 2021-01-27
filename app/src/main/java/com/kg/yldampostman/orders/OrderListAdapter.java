@@ -67,6 +67,7 @@ public class OrderListAdapter extends BaseAdapter {
             viewItem.ed_rAddress =  convertView.findViewById(R.id.ed_rAddress);
             viewItem.ed_rCompany =  convertView.findViewById(R.id.ed_rCompany);
             viewItem.order_icon =  convertView.findViewById(R.id.order_icon);
+            viewItem.ed_eplanation =  convertView.findViewById(R.id.orderExplanation);
 
             convertView.setTag(viewItem);
         } else {
@@ -93,6 +94,7 @@ public class OrderListAdapter extends BaseAdapter {
             viewItem.txtTime.setText(res);
         }
 
+        viewItem.ed_eplanation.setText(or.orderExplanation);
         viewItem.ed_id.setText(valueList.get(position).id);
 
         viewItem.ed_sCity.setText(valueList.get(position).senderCity);

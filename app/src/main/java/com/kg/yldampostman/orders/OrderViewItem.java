@@ -24,6 +24,7 @@ public class OrderViewItem {
     TextView ed_rAddress;
     TextView ed_rCompany;
     TextView ed_rPhone;
+    TextView ed_eplanation;
 
     ImageView order_icon;
 

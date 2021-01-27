@@ -8,13 +8,13 @@
     <ImageView
         android:id="@+id/order_icon"
         android:layout_width="50dp"
-        android:layout_height="105dp"
+        android:layout_height="wrap_content"
         card_view:srcCompat="@drawable/logo"
         android:focusable="false"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
@@ -49,6 +49,16 @@
             android:text=""
             android:textColor="@color/colorPrimary"
             android:focusable="false"/>
+
+        <TextView
+            android:id="@+id/orderExplanation"
+            style="@style/InlineLabelsList"
+            android:layout_width="match_parent"
+            android:text=""
+            android:textColor="@color/colorPrimary"
+            android:focusable="false"
+            android:maxLines="2"
+            android:lines="2"/>
 
 
         <LinearLayout

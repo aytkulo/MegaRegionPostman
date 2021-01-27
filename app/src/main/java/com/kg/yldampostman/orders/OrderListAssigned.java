@@ -251,6 +251,13 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 updateOrderStatus();
+                orderList.clear();
+                listViewOrders.setAdapter(null);
+                try {
+                    listOrders(ed_Date1.getText().toString(), ed_Date2.getText().toString(), sp_Sector.getSelectedItem().toString(), sp_Origin.getSelectedItem().toString(), phone.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -320,6 +327,7 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
                                         o.enteredUser = c.getString("enteredUser");
                                         o.updatedUser = c.getString("updatedUser");
                                         o.updatedDate = c.getString("updatedDate");
+                                        o.orderExplanation = c.getString("explanation");
 
                                         orderList.add(o);
                                     }

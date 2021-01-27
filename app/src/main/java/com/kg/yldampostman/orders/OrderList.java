@@ -299,6 +299,7 @@ public class OrderList extends AppCompatActivity {
                                         o.enteredUser = c.getString("enteredUser");
                                         o.updatedUser = c.getString("updatedUser");
                                         o.updatedDate = c.getString("updatedDate");
+                                        o.orderExplanation = c.getString("explanation");
 
                                         orderList.add(o);
                                     }

@@ -200,6 +200,7 @@ public class PostmanHelper {
         postmans.setAdapter(null);
         ArrayList<String> lables = new ArrayList<String>();
 
+        lables.add("%");
         for (int i = 0; i < sectorList.size(); i++) {
             lables.add(sectorList.get(i).getSector());
         }

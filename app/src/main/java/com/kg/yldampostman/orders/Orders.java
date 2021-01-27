@@ -30,5 +30,6 @@ public class Orders implements Serializable {
     public String enteredUser;
     public String updatedUser;
     public String updatedDate;
+    public String orderExplanation;
 
 }
