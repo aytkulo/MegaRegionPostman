@@ -846,7 +846,7 @@ public class DeliveryEntry extends AppCompatActivity {
             try {
                 jsonObject.put("phone", phone);
                 jsonObject.put("company", company);
-                jsonObject.put("city", "");
+                jsonObject.put("city", HomeActivity.userCity);
                 jsonObject.put("address", "");
                 jsonObject.put("responsiblePerson", "");
                 jsonObject.put("customerId", "");
