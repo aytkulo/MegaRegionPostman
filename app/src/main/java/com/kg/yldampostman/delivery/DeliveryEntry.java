@@ -618,7 +618,21 @@ public class DeliveryEntry extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    NetworkUtil.checkHttpStatus(DeliveryEntry.this, error);
+                    if (error instanceof AuthFailureError) {
+                        if (error.networkResponse.statusCode == 403) {
+                            Toast.makeText(DeliveryEntry.this, "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
+                            Intent loginIntent = new Intent(DeliveryEntry.this, LoginActivity.class);
+                            DeliveryEntry.this.startActivity(loginIntent);
+                        } else {
+                            Toast.makeText(DeliveryEntry.this, "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
+                        }
+                    } else if (error.networkResponse.statusCode == 409) {
+                        Toast.makeText(DeliveryEntry.this, "Мындай посылса системага киргизилген!", Toast.LENGTH_LONG).show();
+                    } else {
+                        MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
+                                DeliveryEntry.this.getString(R.string.dialog_error_title),
+                                DeliveryEntry.this.getString(R.string.server_error)).show();
+                    }
                     hideDialog();
                     btn_saveData.setEnabled(true);
                 }
