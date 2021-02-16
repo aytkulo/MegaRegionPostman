@@ -156,15 +156,13 @@ public class DeliveryEntry extends AppCompatActivity {
                 btn_saveData.setEnabled(false);
                 if (deliveryDataCheck()) {
                     try {
-                        saveData();
-                        /*
-                        checkDelivery(sName.getText().toString(), sPhone.getText().toString(), sComp.getText().toString(), sCity.getSelectedItem().toString(), sAdres.getText().toString(),
+                        saveDelivery(sName.getText().toString(), sPhone.getText().toString(), sComp.getText().toString(), sCity.getSelectedItem().toString(), sAdres.getText().toString(),
                                 rName.getText().toString(), rPhone.getText().toString(), rComp.getText().toString(), rCity.getSelectedItem().toString(), rAdres.getText().toString(),
                                 delType.getSelectedItem().toString(), delCount.getText().toString(), delPrice.getText().toString(), paidAmount.getText().toString(), delItemPrice.getText().toString(),
                                 getPaymentRadioGroupValue(), delExpl.getText().toString(), signatureString, userName, getBuyingRadioGroupValue());
+                        // Timeout almamak icin bu servisi buraya aldim.. Eskiden backendte bolchu...
+                        CustomerHelper.saveCustomer(sName.getText().toString(), sPhone.getText().toString(), sComp.getText().toString(), sCity.getSelectedItem().toString(), sAdres.getText().toString(), HomeActivity.token);
 
-
-                         */
                     } catch (Exception e) {
                         btn_saveData.setEnabled(true);
                         e.printStackTrace();
@@ -414,22 +412,7 @@ public class DeliveryEntry extends AppCompatActivity {
 
     }
 
-    private void saveData()
-    {
-        try {
-            saveDelivery(sName.getText().toString(), sPhone.getText().toString(), sComp.getText().toString(), sCity.getSelectedItem().toString(), sAdres.getText().toString(),
-                    rName.getText().toString(), rPhone.getText().toString(), rComp.getText().toString(), rCity.getSelectedItem().toString(), rAdres.getText().toString(),
-                    delType.getSelectedItem().toString(), delCount.getText().toString(), delPrice.getText().toString(), paidAmount.getText().toString(), delItemPrice.getText().toString(),
-                    getPaymentRadioGroupValue(), delExpl.getText().toString(), signatureString, userName, getBuyingRadioGroupValue());
-            // Timeout almamak icin bu servisi buraya aldim.. Eskiden backendte bolchu...
-            CustomerHelper.saveCustomer(sName.getText().toString(), sPhone.getText().toString(), sComp.getText().toString(), sCity.getSelectedItem().toString(), sAdres.getText().toString(), HomeActivity.token);
 
-        } catch (Exception e) {
-            btn_saveData.setEnabled(true);
-            e.printStackTrace();
-        }
-
-    }
 
 
 
@@ -654,7 +637,7 @@ public class DeliveryEntry extends AppCompatActivity {
                             Toast.makeText(DeliveryEntry.this, "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
                         }
                     } else if (error.networkResponse.statusCode == 409) {
-                        Toast.makeText(DeliveryEntry.this, "Мындай посылса системага киргизилген!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(DeliveryEntry.this, "Мындай посылка системага киргизилген!", Toast.LENGTH_LONG).show();
                     } else {
                         MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
                                 DeliveryEntry.this.getString(R.string.dialog_error_title),
@@ -678,97 +661,6 @@ public class DeliveryEntry extends AppCompatActivity {
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             // Adding request to request queue
-            AppController.getInstance().addToRequestQueue(req, tag_string_req);
-        }
-    }
-
-
-
-    private void checkDelivery(final String sName, final String sPhone, final String sComp, final String sCity, final String sAddress,
-                              final String rName, final String rPhone, final String rComp, final String rCity, final String rAddress,
-                              final String delType, final String delCount, final String delCost, final String paidAmount, final String deliCost,
-                              final String paymentType, final String delExpl, final String signature, final String acceptedUser, final String buyingType) throws ParseException {
-
-        if (!NetworkUtil.isNetworkConnected(DeliveryEntry.this)) {
-            MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
-                    getApplicationContext().getString(R.string.dialog_error_title),
-                    getApplicationContext().getString(R.string.check_internet)).show();
-        } else if (NetworkUtil.isTokenExpired()) {
-            MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
-                    getApplicationContext().getString(R.string.dialog_error_title),
-                    getApplicationContext().getString(R.string.relogin)).show();
-        } else {
-            // Tag used to cancel the request
-            String tag_string_req = "req_check_delivery";
-
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("senderName", sName);
-                jsonObject.put("senderPhone", sPhone);
-                jsonObject.put("senderAddress", sAddress);
-                jsonObject.put("senderCity", sCity);
-                jsonObject.put("senderCompany", sComp);
-                jsonObject.put("receiverName", rName);
-                jsonObject.put("receiverPhone", rPhone);
-                jsonObject.put("receiverAddress", rAddress);
-                jsonObject.put("receiverCity", rCity);
-                jsonObject.put("receiverCompany", rComp);
-                jsonObject.put("deliveryType", delType);
-                jsonObject.put("deliveryCount", delCount);
-                jsonObject.put("deliveryCost", delCost);
-                jsonObject.put("paidAmount", paidAmount);
-                jsonObject.put("deliveryiCost", deliCost);
-                jsonObject.put("deliveryExplanation", delExpl);
-                jsonObject.put("signature", signature);
-                jsonObject.put("paymentType", paymentType);
-                jsonObject.put("acceptedPerson", acceptedUser);
-                jsonObject.put("buyType", buyingType);
-                jsonObject.put("assignedSector", "");
-                jsonObject.put("deliveredPerson", "");
-                jsonObject.put("receiver", "");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            JsonObjectRequest req = new JsonObjectRequest(AppConfig.URL_DELIVERY_CHECK, jsonObject,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                                saveData();
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (error instanceof AuthFailureError) {
-                        if (error.networkResponse.statusCode == 403) {
-                            Toast.makeText(DeliveryEntry.this, "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
-                            Intent loginIntent = new Intent(DeliveryEntry.this, LoginActivity.class);
-                            DeliveryEntry.this.startActivity(loginIntent);
-                        } else {
-                            Toast.makeText(DeliveryEntry.this, "Бул операция үчүн уруксатыңыз жок!", Toast.LENGTH_LONG).show();
-                        }
-                    } else if (error.networkResponse.statusCode == 409) {
-                        Toast.makeText(DeliveryEntry.this, "Мындай посылса системага киргизилген!", Toast.LENGTH_LONG).show();
-                    } else {
-                        MyDialog.createSimpleOkErrorDialog(DeliveryEntry.this,
-                                DeliveryEntry.this.getString(R.string.dialog_error_title),
-                                DeliveryEntry.this.getString(R.string.server_error)).show();
-                    }
-                }
-            }) {
-
-                @Override
-                public Map<String, String> getHeaders() {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("Authorization", token);
-                    return headers;
-                }
-
-            };
-            req.setRetryPolicy(new DefaultRetryPolicy(5000,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             AppController.getInstance().addToRequestQueue(req, tag_string_req);
         }
     }

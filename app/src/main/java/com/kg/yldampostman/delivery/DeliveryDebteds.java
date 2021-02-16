@@ -309,7 +309,7 @@ public class DeliveryDebteds extends AppCompatActivity {
                 jsonObject.put("senderCity", senderCity+"%");
                 jsonObject.put("receiverCity", receiverCity+"%");
                 jsonObject.put("belongingUser", "%");
-                jsonObject.put("senderPhone", senderPhone);
+                jsonObject.put("senderPhone", senderPhone+"%");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
