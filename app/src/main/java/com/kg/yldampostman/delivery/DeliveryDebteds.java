@@ -91,6 +91,9 @@ public class DeliveryDebteds extends AppCompatActivity {
         sCity.setAdapter(cityAdapterAll);
         rCity.setAdapter(cityAdapterAll);
 
+        sCity.setSelection(getIndex(sCity, HomeActivity.userCity));
+        sCity.setEnabled(false);
+
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");//dd/MM/yyyy
         Date now = new Date();
         strDate = sdfDate.format(now);
@@ -162,6 +165,18 @@ public class DeliveryDebteds extends AppCompatActivity {
             }
         });
     }
+
+    private int getIndex(Spinner spinner, String myString) {
+
+        int index = 0;
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).equals(myString)) {
+                index = i;
+            }
+        }
+        return index;
+    }
+
 
     public static void populateUserSpinner(Context context, Spinner postmans, ArrayList<User> userList) {
 
