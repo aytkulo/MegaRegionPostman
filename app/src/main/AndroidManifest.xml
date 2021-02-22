@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.kg.yldampostman">
+    package="com.kg.mrpostman">
 
     <permission
         android:name="android.permission.MAPS_RECEIVE"
@@ -16,7 +16,7 @@
         tools:ignore="ScopedStorage" />
 
     <application
-        android:name=".app.AppController"
+        android:name="com.kg.mrpostman.app.AppController"
         android:icon="@drawable/logoo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -24,20 +24,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="m">
-        <activity android:name=".delivery.DeliveryDebteds"
-            android:parentActivityName=".HomeActivity"
+        <activity android:name="com.kg.mrpostman.delivery.DeliveryDebteds"
+            android:parentActivityName="com.kg.mrpostman.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
-        <activity android:name=".users.LoginActivity"
+        <activity android:name="com.kg.mrpostman.users.LoginActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
         <activity
-            android:name=".customer.CorporateSelectionList"
+            android:name="com.kg.mrpostman.customer.CorporateSelectionList"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".HomeActivity"
+            android:name="com.kg.mrpostman.HomeActivity"
             android:label="@string/title_activity_home"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" >
@@ -49,59 +49,54 @@
         </activity>
 
         <activity
-            android:name=".users.UpdateData"
+            android:name="com.kg.mrpostman.users.UpdateData"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".delivery.DeliveryEntry"
+            android:name="com.kg.mrpostman.delivery.DeliveryEntry"
             android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName="com.kg.mrpostman.HomeActivity" />
         <activity
-            android:name=".helper.Signature"
+            android:name="com.kg.mrpostman.helper.Signature"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@style/AppTheme.PopupTheme" />
         <activity
-            android:name=".delivery.DeliveryDeliver"
+            android:name="com.kg.mrpostman.delivery.DeliveryDeliver"
             android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName="com.kg.mrpostman.HomeActivity" />
         <activity
-            android:name=".orders.OrderEntry"
+            android:name="com.kg.mrpostman.orders.OrderEntry"
             android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName="com.kg.mrpostman.HomeActivity" />
         <activity
-            android:name=".orders.OrderList"
+            android:name="com.kg.mrpostman.orders.OrderList"
             android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName="com.kg.mrpostman.HomeActivity" />
         <activity
-            android:name=".orders.OrderListAssigned"
+            android:name="com.kg.mrpostman.orders.OrderListAssigned"
             android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName="com.kg.mrpostman.HomeActivity" />
         <activity
-            android:name=".delivery.DeliveryList"
+            android:name="com.kg.mrpostman.delivery.DeliveryList"
             android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName="com.kg.mrpostman.HomeActivity" />
         <activity
-            android:name=".delivery.DeliveryUpdate"
+            android:name="com.kg.mrpostman.delivery.DeliveryUpdate"
             android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName=".delivery.DeliveryList" />
+            android:parentActivityName="com.kg.mrpostman.delivery.DeliveryList" />
         <activity
-            android:name=".delivery.DeliveryDelete"
+            android:name="com.kg.mrpostman.delivery.DeliveryDelete"
             android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName=".delivery.DeliveryList" />
-        <activity
-            android:name=".delivery.DeliveryAssign"
-            android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName=".delivery.DeliveryList"
-            android:theme="@style/AppTheme.PopupTheme" />
+            android:parentActivityName="com.kg.mrpostman.delivery.DeliveryList" />
 
-        <service android:name=".service.LocServ" />
-        <service android:name=".service.MyFireBaseMessagingService">
+        <service android:name="com.kg.mrpostman.service.LocServ" />
+        <service android:name="com.kg.mrpostman.service.MyFireBaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".service.MyFireBaseIDService">
+        <service android:name="com.kg.mrpostman.service.MyFireBaseIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
@@ -124,7 +119,7 @@
             android:value="AIzaSyBroFIkyOPRYLj4-XCoJ99H-ASaNgEEriI" /> <!-- android:value="AIzaSyAA0GSr8VLEuKL6r0srOhYOH6Ojg4KCsgk" /> -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/dash_preorders_assigned" />
+            android:resource="@drawable/icon_delivery_onway" />
         <!--
          Set color used with incoming notification messages. This is used when no color is set for the incoming
          notification message. See README(https://goo.gl/6BKBk7) for more.
@@ -134,9 +129,9 @@
             android:resource="@color/colorAccent" />
 
         <activity
-            android:name=".delivery.DeliveryObserve"
+            android:name="com.kg.mrpostman.delivery.DeliveryObserve"
             android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName=".delivery.DeliveryList" />
+            android:parentActivityName="com.kg.mrpostman.delivery.DeliveryList" />
     </application>
 
 </manifest>
