@@ -21,7 +21,6 @@ import com.kg.mrpostman.delivery.DeliveryList;
 import com.kg.mrpostman.helper.HelperConstants;
 import com.kg.mrpostman.helper.PostmanHelper;
 import com.kg.mrpostman.helper.SessionManager;
-import com.kg.mrpostman.orders.OrderEntry;
 import com.kg.mrpostman.orders.OrderList;
 import com.kg.mrpostman.orders.OrderListAssigned;
 import com.kg.mrpostman.users.LoginActivity;

@@ -41,8 +41,9 @@ public class DeliveryDelete extends AppCompatActivity {
     private Button btn_delete;
     private EditText sName, sPhone, sComp, sAdres;
     private EditText rName, rPhone, rComp, rAdres;
-    private EditText delCount, delPrice, delItemPrice, delExpl;
+    private EditText delCount, delPrice, delItemPrice, delExpl, differentReceiver, paidAmount;
     private RadioButton rb_rc, rb_sc, rb_sb, rb_rb;
+    private RadioButton rb_bc, rb_bd, rb_bt;
 
     Delivery deliveryData;
     private ProgressDialog pDialog;
@@ -189,6 +190,10 @@ public class DeliveryDelete extends AppCompatActivity {
         rb_sb = findViewById(R.id.rb_sb);
         rb_sc = findViewById(R.id.rb_sc);
 
+        rb_bc = findViewById(R.id.rb_buy_cash);
+        rb_bt = findViewById(R.id.rb_buy_transfer);
+        rb_bd = findViewById(R.id.rb_buy_debt);
+
         sName = findViewById(R.id.senderName);
         sPhone = findViewById(R.id.senderPhone);
         sAdres = findViewById(R.id.senderAddress);
@@ -202,6 +207,9 @@ public class DeliveryDelete extends AppCompatActivity {
         delCount = findViewById(R.id.deliveryCount);
         delPrice = findViewById(R.id.deliveryCost);
         delItemPrice = findViewById(R.id.deliveryItemCost);
+
+        paidAmount = findViewById(R.id.deliveryPaidAmount);
+        differentReceiver = findViewById(R.id.differentReceiver);
 
         btn_delete = findViewById(R.id.btn_delete_delivery);
 
@@ -234,8 +242,21 @@ public class DeliveryDelete extends AppCompatActivity {
         delItemPrice.setText(delivery.deliveryiCost);
 
         delExpl.setText(delivery.deliveryExplanation);
+        paidAmount.setText(delivery.paidAmount);
 
         setRadioGroupValue(delivery.paymentType);
+        setBuyingRadioGroupValue(delivery.buyType);
+    }
+
+    private void setBuyingRadioGroupValue(String selectedValue) {
+
+        if (selectedValue.equalsIgnoreCase("C"))
+            rb_bc.setChecked(true);
+        else if (selectedValue.equalsIgnoreCase("D"))
+            rb_bd.setChecked(true);
+        else if (selectedValue.equalsIgnoreCase("T"))
+            rb_bt.setChecked(true);
+
     }
 
     private void setRadioGroupValue(String selectedValue) {

@@ -33,6 +33,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -362,9 +363,7 @@ public class DeliveryDebteds extends AppCompatActivity {
                                     }
 
                                 } else {
-                                    MyDialog.createSimpleOkErrorDialog(DeliveryDebteds.this,
-                                            getApplicationContext().getString(R.string.dialog_error_title),
-                                            getApplicationContext().getString(R.string.NoData)).show();
+                                    Toast.makeText(DeliveryDebteds.this, getApplicationContext().getString(R.string.NoData), Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
                                 MyDialog.createSimpleOkErrorDialog(DeliveryDebteds.this,

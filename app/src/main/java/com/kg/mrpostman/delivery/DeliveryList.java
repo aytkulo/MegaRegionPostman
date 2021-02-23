@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -84,6 +85,7 @@ public class DeliveryList extends AppCompatActivity {
     private String strDate = "";
     private String payment_type = "%";
     private Dialog dialog = null;
+    private ImageView imageBulk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,7 @@ public class DeliveryList extends AppCompatActivity {
         ed_Address = findViewById(R.id.ed_Address);
         ed_Name = findViewById(R.id.ed_Name);
         ed_Phone = findViewById(R.id.ed_Tel);
+        imageBulk = findViewById(R.id.imageBulk);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -171,11 +174,14 @@ public class DeliveryList extends AppCompatActivity {
                     }
                 }
                 if(check)
+                {
                     listDeliveries(ed_Date.getText().toString(), ed_Address.getText().toString(), ed_Name.getText().toString(), ed_Phone.getText().toString(), payment_type);
+
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            dialog.dismiss();
+
         });
 
 
@@ -307,7 +313,7 @@ public class DeliveryList extends AppCompatActivity {
                     getApplicationContext().getString(R.string.relogin)).show();
         } else {
             String tag_string_req = "req_get_deliveries";
-            pDialog.setMessage("Идет загрузка данных...");
+            pDialog.setMessage("Идет запрос...");
             showDialog();
 
             deliveryList.clear();
@@ -334,7 +340,6 @@ public class DeliveryList extends AppCompatActivity {
 
                         @Override
                         public void onResponse(JSONArray response) {
-                            Log.d(TAG, "Deliveries List Response: " + response);
                             hideDialog();
 
                             try {
@@ -357,8 +362,10 @@ public class DeliveryList extends AppCompatActivity {
                                         DeliveryListAdapter orderListAdapter = new DeliveryListAdapter(deliveryList, DeliveryList.this);
                                         listViewDeliveries.setAdapter(orderListAdapter);
                                     }
-
+                                    imageBulk.setVisibility(View.GONE);
+                                    dialog.dismiss();
                                 } else {
+                                    imageBulk.setVisibility(View.VISIBLE);
                                     Toast.makeText(DeliveryList.this, getApplicationContext().getString(R.string.NoData), Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {

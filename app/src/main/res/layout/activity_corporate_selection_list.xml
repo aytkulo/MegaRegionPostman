@@ -22,7 +22,7 @@
             android:inputType="text"
             android:text=""
             android:hint="Название фирмы"
-            android:background="@color/corporateBackColor"
+            android:background="@color/light_gray"
             android:layout_marginBottom="10dp"/>
 
 

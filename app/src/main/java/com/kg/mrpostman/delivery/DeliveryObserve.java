@@ -131,7 +131,8 @@ public class DeliveryObserve extends AppCompatActivity {
         delCount.setText(delivery.deliveryCount);
         delPrice.setText(delivery.deliveryCost);
         delItemPrice.setText(delivery.deliveryiCost);
-        differentReceiver.setText(delivery.receiver);
+        if(delivery.receiver!=null)
+            differentReceiver.setText(delivery.receiver);
 
         delExpl.setText(delivery.deliveryExplanation);
         paidAmount.setText(delivery.paidAmount);

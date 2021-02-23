@@ -14,7 +14,7 @@
         android:layout_margin="@dimen/card_margin"
         card_view:cardCornerRadius="@dimen/card_album_radius"
         card_view:elevation="5dp"
-        card_view:cardBackgroundColor="@color/light_gray">
+        card_view:cardBackgroundColor="@color/gray">
 
         <TextView
             android:id="@+id/textView37"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="@dimen/card_margin"
-        card_view:cardBackgroundColor="@color/viewBg"
+        card_view:cardBackgroundColor="@color/light_gray"
         card_view:cardCornerRadius="@dimen/card_album_radius"
         card_view:contentPadding="10dp"
         card_view:elevation="5dp">
@@ -169,7 +169,7 @@
         android:layout_margin="@dimen/card_margin"
         card_view:cardCornerRadius="@dimen/card_album_radius"
         card_view:elevation="5dp"
-        card_view:cardBackgroundColor="@color/light_gray">
+        card_view:cardBackgroundColor="@color/gray">
 
         <TextView
             android:id="@+id/textView7"
@@ -184,7 +184,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="@dimen/card_margin"
-        card_view:cardBackgroundColor="@color/viewBg"
+        card_view:cardBackgroundColor="@color/light_gray"
         card_view:cardCornerRadius="@dimen/card_album_radius"
         card_view:contentPadding="10dp"
         card_view:elevation="5dp">
@@ -321,7 +321,7 @@
         android:layout_margin="@dimen/card_margin"
         card_view:cardCornerRadius="@dimen/card_album_radius"
         card_view:elevation="5dp"
-        card_view:cardBackgroundColor="@color/light_gray">
+        card_view:cardBackgroundColor="@color/gray">
 
         <TextView
             android:id="@+id/textView16"
@@ -338,7 +338,7 @@
         card_view:cardCornerRadius="@dimen/card_album_radius"
         card_view:elevation="5dp"
         card_view:contentPadding="10dp"
-        card_view:cardBackgroundColor="@color/viewBg">
+        card_view:cardBackgroundColor="@color/light_gray">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -361,35 +361,40 @@
                     android:id="@+id/spinner_deliveryType"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.72"
                     android:gravity="center_vertical"
                     android:layout_marginTop="0dp"
                     android:background="@color/white"
                     android:clickable="false"
                     android:entries="@array/deliveriTypes"/>
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/textView18"
                     style="@style/InlineLabels"
                     android:layout_width="0dp"
-                    android:layout_weight="0.28"
-                    android:gravity="right"
-                    android:layout_marginRight="10dp"
+                    android:layout_weight="0.3"
+                    android:gravity="left"
                     android:textAlignment="gravity"
                     android:text="@string/DeliveryCount"/>
 
                 <EditText
                     android:id="@+id/deliveryCount"
                     android:layout_width="0dp"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.7"
                     android:inputType="phone"
-                    style="@style/InputTexts"
                     android:enabled="false"
+                    style="@style/InputTexts"
                     android:text="1"/>
 
 
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -406,32 +411,86 @@
                 <EditText
                     android:id="@+id/deliveryCost"
                     android:layout_width="0dp"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.7"
                     style="@style/InputTexts"
-                    android:inputType="phone"
                     android:enabled="false"
-                    android:text="250"/>
+                    android:inputType="phone"
+                    android:text=""/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView20"
+                    android:id="@+id/textView191"
                     style="@style/InlineLabels"
                     android:layout_width="0dp"
-                    android:layout_weight="0.28"
-                    android:gravity="right"
-                    android:layout_marginRight="10dp"
-                    android:textAlignment="gravity"
+                    android:layout_weight="0.3"
+                    android:text="@string/PaidAmount"
+                    />
+
+                <EditText
+                    android:id="@+id/deliveryPaidAmount"
+                    style="@style/InputTexts"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.7"
+                    android:enabled="false"
+                    android:inputType="phone"
+                    android:text="0"/>
+
+            </LinearLayout>
+
+            <RadioGroup
+                android:id="@+id/rg_buying"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/aaaaz"
+                    style="@style/MainLabels"
                     android:text="@string/ItemCost"/>
 
                 <EditText
                     android:id="@+id/deliveryItemCost"
-                    android:layout_width="0dp"
-                    android:layout_weight="0.2"
+                    android:layout_width="match_parent"
                     style="@style/InputTexts"
                     android:inputType="phone"
                     android:enabled="false"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:text="0"/>
 
-            </LinearLayout>
+                <RadioButton
+                    android:id="@+id/rb_buy_cash"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="@string/BuyingCash"
+                    android:enabled="false"
+                    style="@style/InlineLabels"/>
+
+                <RadioButton
+                    android:id="@+id/rb_buy_transfer"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="@string/BuyingTransfer"
+                    android:enabled="false"
+                    style="@style/InlineLabels"/>
+
+                <RadioButton
+                    android:id="@+id/rb_buy_debt"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="@string/BuyingDebt"
+                    android:enabled="false"
+                    style="@style/InlineLabels"/>
+
+            </RadioGroup>
+
 
             <TextView
                 android:id="@+id/textView"

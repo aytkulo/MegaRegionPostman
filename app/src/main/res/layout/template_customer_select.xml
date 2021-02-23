@@ -3,7 +3,7 @@
               xmlns:card_view="http://schemas.android.com/apk/res-auto"
               android:orientation="horizontal" android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/light_blue">
+              android:background="@color/gray">
 
     <androidx.cardview.widget.CardView
             android:id="@+id/card_view_list"
@@ -13,7 +13,7 @@
             android:layout_margin="@dimen/card_margin"
             card_view:cardCornerRadius="@dimen/card_album_radius"
             card_view:elevation="5dp"
-            card_view:cardBackgroundColor="@color/light_blue">
+            card_view:cardBackgroundColor="@color/light_gray">
 
         <LinearLayout
                 android:layout_width="match_parent"

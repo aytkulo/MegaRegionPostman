@@ -11,7 +11,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_margin="@dimen/card_margin"
-            card_view:cardBackgroundColor="@color/light_blue"
+            card_view:cardBackgroundColor="@color/light_gray"
             card_view:cardCornerRadius="@dimen/card_album_radius"
             card_view:contentPadding="10dp"
             card_view:elevation="5dp">

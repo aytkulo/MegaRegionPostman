@@ -13,7 +13,7 @@
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_margin="@dimen/card_margin"
-        card_view:cardBackgroundColor="@color/corporateBackColor"
+        card_view:cardBackgroundColor="@color/gray"
         card_view:cardCornerRadius="@dimen/card_album_radius"
         card_view:elevation="5dp">
 
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="@dimen/card_margin"
-        card_view:cardBackgroundColor="@color/corporateBackColor"
+        card_view:cardBackgroundColor="@color/light_gray"
         card_view:cardCornerRadius="@dimen/card_album_radius"
         card_view:contentPadding="10dp"
         card_view:elevation="5dp">
@@ -168,7 +168,7 @@
         android:layout_margin="@dimen/card_margin"
         card_view:cardCornerRadius="@dimen/card_album_radius"
         card_view:elevation="5dp"
-        card_view:cardBackgroundColor="@color/corporateBackColor">
+        card_view:cardBackgroundColor="@color/gray">
 
         <TextView
             android:id="@+id/textView7"
@@ -185,7 +185,7 @@
         card_view:cardCornerRadius="@dimen/card_album_radius"
         card_view:elevation="5dp"
         card_view:contentPadding="10dp"
-        card_view:cardBackgroundColor="@color/corporateBackColor">
+        card_view:cardBackgroundColor="@color/light_gray">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -316,7 +316,7 @@
         android:layout_margin="@dimen/card_margin"
         card_view:cardCornerRadius="@dimen/card_album_radius"
         card_view:elevation="5dp"
-        card_view:cardBackgroundColor="@color/corporateBackColor">
+        card_view:cardBackgroundColor="@color/light_gray">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -354,7 +354,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="@dimen/card_margin"
-        card_view:cardBackgroundColor="@color/corporateBackColor"
+        card_view:cardBackgroundColor="@color/gray"
         card_view:cardCornerRadius="@dimen/card_album_radius"
         card_view:contentPadding="10dp"
         card_view:elevation="5dp">

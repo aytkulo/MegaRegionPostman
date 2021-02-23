@@ -66,10 +66,6 @@
             android:configChanges="orientation|keyboardHidden"
             android:parentActivityName="com.kg.mrpostman.HomeActivity" />
         <activity
-            android:name="com.kg.mrpostman.orders.OrderEntry"
-            android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName="com.kg.mrpostman.HomeActivity" />
-        <activity
             android:name="com.kg.mrpostman.orders.OrderList"
             android:configChanges="orientation|keyboardHidden"
             android:parentActivityName="com.kg.mrpostman.HomeActivity" />
@@ -90,7 +86,6 @@
             android:configChanges="orientation|keyboardHidden"
             android:parentActivityName="com.kg.mrpostman.delivery.DeliveryList" />
 
-        <service android:name="com.kg.mrpostman.service.LocServ" />
         <service android:name="com.kg.mrpostman.service.MyFireBaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
