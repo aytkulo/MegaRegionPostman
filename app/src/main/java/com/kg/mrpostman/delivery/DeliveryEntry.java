@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -85,7 +86,8 @@ public class DeliveryEntry extends AppCompatActivity {
     ArrayAdapter<String> myAdapterSC;
     ArrayAdapter<String> myAdapterRC;
 
-    private EditText delCount, delPrice, delItemPrice, delExpl, paidAmount;
+    private EditText delCount, delPrice, delItemPrice, delExpl, paidAmount, differentReceiver;
+    private TextView textLabelReceiver;
     private RadioGroup rg_payment, rg_buying;
     private RadioButton rb_payment_senderbank, rb_payment_receiverbank, rb_payment_sendercash;
     private Orders orderData;
@@ -683,6 +685,12 @@ public class DeliveryEntry extends AppCompatActivity {
         delType = findViewById(R.id.spinner_deliveryType);
 
         sCity.setEnabled(false);
+
+        differentReceiver = findViewById(R.id.differentReceiver);
+        textLabelReceiver = findViewById(R.id.textViewReceived);
+
+        textLabelReceiver.setVisibility(View.GONE);
+        differentReceiver.setVisibility(View.GONE);
     }
 
 
