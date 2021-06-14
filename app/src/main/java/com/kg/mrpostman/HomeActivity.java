@@ -21,6 +21,7 @@ import com.kg.mrpostman.delivery.DeliveryList;
 import com.kg.mrpostman.helper.HelperConstants;
 import com.kg.mrpostman.helper.PostmanHelper;
 import com.kg.mrpostman.helper.SessionManager;
+import com.kg.mrpostman.helper.StringData;
 import com.kg.mrpostman.orders.OrderList;
 import com.kg.mrpostman.orders.OrderListAssigned;
 import com.kg.mrpostman.users.LoginActivity;
@@ -237,6 +238,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 userRole = sessionManager.getRole();
 
                 PostmanHelper.getPostmans(userCity,HomeActivity.this, postmanList);
+                StringData.listRegions(HomeActivity.this);
             }
         }
     }
