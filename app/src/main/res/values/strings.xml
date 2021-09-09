@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Мега Экспресс</string>
+    <string name="app_name">Мега Курьер</string>
     <string name="hint_email">Логин</string>
     <string name="hint_password">Пароль</string>
     <string name="hint_new_password">Новый Пароль</string>
