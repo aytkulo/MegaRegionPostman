@@ -111,6 +111,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             PostmanHelper.getPostmans(userCity,HomeActivity.this, postmanList);
             isLoginNeeded();
 
+            StringData.listRegions(HomeActivity.this);
+
         } catch (Exception e) {
             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
             startActivity(intent);
