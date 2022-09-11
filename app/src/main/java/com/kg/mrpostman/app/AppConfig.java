@@ -5,9 +5,11 @@ package com.kg.mrpostman.app;
  */
 public class AppConfig {
 
-   // public static String PURE_URL = "http://10.0.2.2:8080/";
+ //   public static String PURE_URL = "http://10.0.2.2:8080/";
 
     public static String PURE_URL = "http://194.163.181.93:8080/mega-api/";
+
+    public static String IMAGES_URL = "http://194.163.181.93:8080/mega_region_images/";
 
     public static String URL_GET_CITIES = PURE_URL + "sectors/regions";
 
@@ -46,6 +48,9 @@ public class AppConfig {
     public static String URL_CORPORATE_CUSTOMER_UPDATE = PURE_URL + "customers/corporate/update";
 
     public static String URL_CUSTOMER_DELETE = PURE_URL + "customers/delete";
+
+
+    public static String URL_IMAGES_SAVE = PURE_URL + "files/upload/string";
 
 
     public static String URL_GET_USER_PERMISSION = PURE_URL + "users/getpermission";

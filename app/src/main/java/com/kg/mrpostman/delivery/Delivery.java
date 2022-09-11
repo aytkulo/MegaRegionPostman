@@ -54,4 +54,7 @@ public class Delivery implements Serializable {
     public String entryDateOnly;
 
     public String receiver;
+    public String deliveryImage;
 }
+
+

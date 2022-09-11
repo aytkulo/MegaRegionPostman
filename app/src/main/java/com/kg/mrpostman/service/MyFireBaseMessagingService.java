@@ -7,8 +7,7 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
+
 import com.kg.mrpostman.app.AppConfig;
 import com.kg.mrpostman.app.NotificationUtils;
 import com.kg.mrpostman.orders.OrderListAssigned;
@@ -18,7 +17,7 @@ import org.json.JSONObject;
 
 /**
  * Created by Aytkul Omurzakov on 7/14/2017.
- */
+
 public class MyFireBaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = MyFireBaseMessagingService.class.getSimpleName();
 
@@ -116,21 +115,18 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    /**
-     * Showing notification with text only
-     */
+
     private void showNotificationMessage(Context context, String title, String message, String timeStamp, Intent intent) {
         notificationUtils = new NotificationUtils(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         notificationUtils.showNotificationMessage(title, message, timeStamp, intent);
     }
 
-    /**
-     * Showing notification with text and image
-     */
+
     private void showNotificationMessageWithBigImage(Context context, String title, String message, String timeStamp, Intent intent, String imageUrl) {
         notificationUtils = new NotificationUtils(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         notificationUtils.showNotificationMessage(title, message, timeStamp, intent, imageUrl);
     }
 }
+*/

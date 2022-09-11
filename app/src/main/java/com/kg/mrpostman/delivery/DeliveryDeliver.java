@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -23,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.bumptech.glide.Glide;
 import com.kg.mrpostman.HomeActivity;
 import com.kg.mrpostman.R;
 import com.kg.mrpostman.app.AppConfig;
@@ -57,17 +59,17 @@ public class DeliveryDeliver extends AppCompatActivity {
     private RadioButton rb_bc, rb_bd, rb_bt;
 
     private EditText differentReceiver;
-    private LinearLayout mContent;
     private Delivery deliveryData;
     private String currentUser;
-    private String usersCity;
     private String token;
+
+    private Button btn_takePhoto;
+    private ImageView imageDelivery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_deliver);
-        mContent = findViewById(R.id.linearLayout);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
@@ -76,7 +78,6 @@ public class DeliveryDeliver extends AppCompatActivity {
         initializeItems();
         disableItems();
 
-        usersCity = HomeActivity.userCity;
         currentUser = HomeActivity.userLogin;
         token = HomeActivity.token;
 
@@ -241,6 +242,9 @@ public class DeliveryDeliver extends AppCompatActivity {
 
         setRadioGroupValue(delivery.paymentType);
         setBuyingRadioGroupValue(delivery.buyType);
+
+        if (delivery.deliveryImage != null && delivery.deliveryImage.length() > 1)
+            Glide.with(DeliveryDeliver.this).load(AppConfig.IMAGES_URL + delivery.deliveryImage).into(imageDelivery);
     }
 
     private int getIndex(Spinner spinner, String myString) {
@@ -256,6 +260,12 @@ public class DeliveryDeliver extends AppCompatActivity {
     }
 
     public void initializeItems() {
+
+        btn_takePhoto = findViewById(R.id.btn_take_photo);
+        btn_takePhoto.setVisibility(View.GONE);
+
+        imageDelivery = findViewById(R.id.imageDelivery);
+
         rg_payment = findViewById(R.id.rg_payment);
         rb_rb = findViewById(R.id.rb_rb);
         rb_rc = findViewById(R.id.rb_rc);
