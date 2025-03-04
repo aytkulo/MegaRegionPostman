@@ -97,6 +97,14 @@ public class StringData {
         spinnerArray.add("Чолпоната");
         spinnerArray.add("Токтогул");
         spinnerArray.add("Балыкчы");
+        spinnerArray.add("Кара-Суу");
+        spinnerArray.add("Токмок");
+        spinnerArray.add("Кара-Балта");
+        spinnerArray.add("Кочкор");
+        spinnerArray.add("Жумгал");
+        spinnerArray.add("Казарман");
+        spinnerArray.add("Бөкөнбай");
+        spinnerArray.add("Каракуль (Ж-А)");
         return spinnerArray;
     }
 

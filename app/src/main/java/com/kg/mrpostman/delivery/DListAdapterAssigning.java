@@ -16,11 +16,11 @@ import java.util.List;
  * Created by ASUS on 7/4/2017.
  */
 
-class DeliveryListAdapter extends BaseAdapter {
+class DListAdapterAssigning extends BaseAdapter {
     private Context context;
     private List<Delivery> valueList;
 
-    DeliveryListAdapter(List<Delivery> listValue, Context context) {
+    DListAdapterAssigning(List<Delivery> listValue, Context context) {
         this.context = context;
         this.valueList = listValue;
     }
@@ -47,7 +47,7 @@ class DeliveryListAdapter extends BaseAdapter {
             viewItem = new DeliveryViewItem();
             LayoutInflater layoutInfiater = (LayoutInflater) this.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             //LayoutInflater layoutInfiater = LayoutInflater.from(context);
-            convertView = layoutInfiater.inflate(R.layout.template_delivery_list_o, null);
+            convertView = layoutInfiater.inflate(R.layout.template_delivery_list, null);
 
             viewItem.txtNumber = (TextView) convertView.findViewById(R.id.txt_number);
             viewItem.txtSenderAddress = (TextView) convertView.findViewById(R.id.txtSenderAddress);
@@ -60,7 +60,7 @@ class DeliveryListAdapter extends BaseAdapter {
 
 
             viewItem.ed_id =  convertView.findViewById(R.id.ed_id);
-
+/*
             viewItem.ed_sCity =  convertView.findViewById(R.id.ed_sCity);
             viewItem.ed_sPhone =  convertView.findViewById(R.id.ed_sPhone);
             viewItem.ed_sCompany =  convertView.findViewById(R.id.ed_sCompany);
@@ -78,7 +78,7 @@ class DeliveryListAdapter extends BaseAdapter {
             viewItem.ed_payment =  convertView.findViewById(R.id.ed_payment);
             viewItem.ed_dExpl =  convertView.findViewById(R.id.ed_diExpl);
 
-            viewItem.ed_paidAmount =  convertView.findViewById(R.id.ed_paidAmount);
+            viewItem.ed_paidAmount =  convertView.findViewById(R.id.ed_paidAmount);*/
 
             viewItem.delivery_icon =  convertView.findViewById(R.id.order_icon);
             //     viewItem.btn_Deliver = (Button) convertView.findViewById(R.id.btn_ls_Deliver);
@@ -108,11 +108,7 @@ class DeliveryListAdapter extends BaseAdapter {
             delI.rFullAddress = delI.rFullAddress + ", " + delI.receiverCompany;
 
 
-        if (valueList.get(position).status.equalsIgnoreCase("1")) {
-            viewItem.delivery_icon.setImageResource(R.drawable.icon_delivered_40);
-        } else {
-            viewItem.delivery_icon.setImageResource(R.drawable.icon_delivery_onway);
-        }
+
         String payment = valueList.get(position).acceptedPerson + ", "
                 + valueList.get(position).deliveryCount + "-" + valueList.get(position).deliveryType.substring(0, 3) + ", "
                 + (Integer.parseInt(valueList.get(position).deliveryCost) - Integer.parseInt(valueList.get(position).paidAmount));
@@ -134,82 +130,26 @@ class DeliveryListAdapter extends BaseAdapter {
         if (Integer.valueOf(delI.deliveryiCost) > 0)
             payment = payment + ", " + delI.deliveryiCost;
 
-        viewItem.txtAcceptedPostman.setText(payment + " (" + delI.entryDateText.substring(5, 10) + ", "+delI.entryDateText.substring(11, 16)+")");
+        viewItem.txtAcceptedPostman.setText(payment);
         viewItem.txtSenderAddress.setText(delI.sFullAddress);
         viewItem.txtSenderName.setText(delI.sFullName);
         viewItem.txtReceiverAddress.setText(delI.rFullAddress);
         viewItem.txtReceiverName.setText(delI.rFullName);
 
+     //   viewItem.txtDeliveredPostman.setText(deliveredPaid);
+        viewItem.txtNumber.setText(valueList.get(position).number + ") "+delI.entryDateText.substring(0, 10) + ", "+delI.entryDateText.substring(11, 16));
+   //     viewItem.ed_id.setText(valueList.get(position).deliveryId);
 
 
-
-
-        String deliveredPaid = "";
-        if (valueList.get(position).deliveredDateText != null && valueList.get(position).deliveredDateText.length() > 1) {
-            deliveredPaid = valueList.get(position).deliveredPerson;
-            deliveredPaid = deliveredPaid + " (" + valueList.get(position).deliveredDateText.substring(5, 10) + ", " + valueList.get(position).deliveredDateText.substring(11, 16) + ")";
-        }
-
-        if (valueList.get(position).costPaidDateText != null && valueList.get(position).costPaidDateText.length() > 1) {
-            deliveredPaid = deliveredPaid + ", " + valueList.get(position).costPaidUser;
-            deliveredPaid = deliveredPaid + " (" + valueList.get(position).costPaidDateText.substring(5, 10) + ", " + valueList.get(position).costPaidDateText.substring(11, 16) + ")";
-        }
-
-        viewItem.txtDeliveredPostman.setText(deliveredPaid);
-
-        viewItem.txtNumber.setText(valueList.get(position).number + ".");
+        viewItem.txtAssignedPostman.setText(valueList.get(position).deliveryExplanation);
+        viewItem.txtDeliveredPostman.setText(valueList.get(position).assignedSector);
 /*
-        viewItem.ed_id.setText(valueList.get(position).deliveryId);
+        if (!valueList.get(position).assignedSector.equalsIgnoreCase("null") && valueList.get(position).assignedSector.length() > 0)
+            viewItem.txtDeliveredPostman.setText("Посылка назначена: " + valueList.get(position).assignedSector);
 
-        viewItem.ed_sCity.setText(valueList.get(position).senderCity);
-        viewItem.ed_sPhone.setText(valueList.get(position).senderPhone);
-        viewItem.ed_sCompany.setText(valueList.get(position).senderCompany);
-        viewItem.ed_sAddress.setText(valueList.get(position).senderAddress);
-        viewItem.ed_sName.setText(valueList.get(position).senderName);
+ */
 
-        viewItem.ed_rCity.setText(valueList.get(position).receiverCity);
-        viewItem.ed_rPhone.setText(valueList.get(position).receiverPhone);
-        viewItem.ed_rCompany.setText(valueList.get(position).receiverCompany);
-        viewItem.ed_rAddress.setText(valueList.get(position).receiverAddress);
-        viewItem.ed_rName.setText(valueList.get(position).receiverName);
-
-        viewItem.ed_dType.setText(valueList.get(position).deliveryType);
-        viewItem.ed_dCost.setText(valueList.get(position).deliveryCost);
-        viewItem.ed_dCount.setText(valueList.get(position).deliveryCount);
-        viewItem.ed_diCost.setText(valueList.get(position).deliveryiCost);
-        viewItem.ed_payment.setText(valueList.get(position).paymentType);
-        viewItem.ed_dExpl.setText(valueList.get(position).deliveryExplanation);
-*/
-        String s = valueList.get(position).assignedSector;
-        if (!s.equalsIgnoreCase("null") && s.length() > 0)
-            viewItem.txtAssignedPostman.setText("(" + valueList.get(position).assignedSector + ") "+valueList.get(position).deliveryExplanation);
-        else
-            viewItem.txtAssignedPostman.setText(valueList.get(position).deliveryExplanation);
-        viewItem.ed_paidAmount.setText(valueList.get(position).paidAmount);
-
-        /*
-        viewItem.btn_Deliver.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Delivery delivery = valueList.get(pos);
-                Intent intentDelivery = new Intent(context, DeliveryDeliver.class);
-                intentDelivery.putExtra("delivery", delivery);
-                context.startActivity(intentDelivery);
-            }
-        });
-
-        viewItem.btn_Update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Delivery delivery = valueList.get(pos);
-                Intent intentDelivery = new Intent(context, DeliveryUpdate.class);
-                intentDelivery.putExtra("delivery", delivery);
-                context.startActivity(intentDelivery);
-            }
-        });
-        */
+//        viewItem.ed_paidAmount.setText(valueList.get(position).paidAmount);
 
         return convertView;
     }

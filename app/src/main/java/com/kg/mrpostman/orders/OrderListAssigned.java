@@ -16,7 +16,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -48,7 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OrderListAssigned extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class OrderListAssigned extends AppCompatActivity {
 
     private static final String TAG = OrderList.class.getSimpleName();
     private ArrayList<String> sectorList = new ArrayList<>();
@@ -420,14 +419,5 @@ public class OrderListAssigned extends AppCompatActivity implements SwipeRefresh
             pDialog.dismiss();
     }
 
-    @Override
-    public void onRefresh() {
-        try {
-            listOrders(ed_Date1.getText().toString(), ed_Date2.getText().toString(), sp_Sector.getSelectedItem().toString(), sp_Origin.getSelectedItem().toString(), phone.getText().toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-    }
 
 }

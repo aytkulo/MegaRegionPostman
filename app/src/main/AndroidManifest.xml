@@ -5,7 +5,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -15,20 +14,21 @@
     <application
         android:name="com.kg.mrpostman.app.AppController"
         android:icon="@drawable/logo"
-        android:requestLegacyExternalStorage="true"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/logo"
-        android:usesCleartextTraffic="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        >
-        <activity android:name="com.kg.mrpostman.delivery.DeliveryDebteds"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name="com.kg.mrpostman.delivery.DeliveryDebteds"
             android:parentActivityName="com.kg.mrpostman.HomeActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"/>
-        <activity android:name="com.kg.mrpostman.users.LoginActivity"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name="com.kg.mrpostman.users.LoginActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"/>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name="com.kg.mrpostman.customer.CorporateSelectionList"
             android:screenOrientation="portrait"
@@ -36,17 +36,16 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name="com.kg.mrpostman.HomeActivity"
+            android:exported="true"
             android:label="@string/title_activity_home"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="true">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.kg.mrpostman.users.UpdateData"
             android:configChanges="orientation|keyboardHidden"
@@ -56,6 +55,10 @@
             android:name="com.kg.mrpostman.delivery.DeliveryEntry"
             android:configChanges="orientation|keyboardHidden"
             android:parentActivityName="com.kg.mrpostman.HomeActivity" />
+        <activity
+            android:name="com.kg.mrpostman.delivery.DeliveryListForAssigning"
+            android:configChanges="orientation|keyboardHidden"/>
+
         <activity
             android:name="com.kg.mrpostman.helper.Signature"
             android:configChanges="orientation|keyboardHidden"
@@ -84,15 +87,18 @@
             android:name="com.kg.mrpostman.delivery.DeliveryDelete"
             android:configChanges="orientation|keyboardHidden"
             android:parentActivityName="com.kg.mrpostman.delivery.DeliveryList" />
-
-
-
         <activity
             android:name="com.kg.mrpostman.delivery.DeliveryObserve"
-            android:configChanges="orientation|keyboardHidden"
-            android:parentActivityName="com.kg.mrpostman.delivery.DeliveryList" />
-
-
+            android:configChanges="orientation|keyboardHidden"/>
+        <activity
+            android:name="com.kg.mrpostman.delivery.DeliveryAssign"
+            android:configChanges="orientation|keyboardHidden"/>
+        <activity
+            android:name="com.kg.mrpostman.delivery.DeliveryListAssigned"
+            android:configChanges="orientation|keyboardHidden"/>
+        <activity
+            android:name="com.kg.mrpostman.delivery.DeliveryListEditing"
+            android:configChanges="orientation|keyboardHidden"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -104,7 +110,6 @@
                 android:resource="@xml/provider_paths"
                 tools:replace="android:resource" />
         </provider>
-
     </application>
 
 </manifest>

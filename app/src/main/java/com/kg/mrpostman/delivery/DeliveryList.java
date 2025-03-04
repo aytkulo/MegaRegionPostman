@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -162,15 +161,13 @@ public class DeliveryList extends AppCompatActivity {
             listViewDeliveries.setAdapter(null);
             try {
                 boolean check = true;
-                if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_LIST))
-                {
-                    if (ed_Phone.length() < 6 ) {
-                        if(!postmans.getSelectedItem().toString().equalsIgnoreCase(HomeActivity.userLogin)) {
-                            ed_Phone.setBackground(getShape(Color.MAGENTA));
-                            check = false;
-                        }else {
-                            ed_Phone.setBackgroundColor(Color.WHITE);
-                        }
+
+                if (ed_Phone.length() < 4) {
+                    if (!postmans.getSelectedItem().toString().equalsIgnoreCase(HomeActivity.userLogin)) {
+                        ed_Phone.setBackground(getShape(Color.MAGENTA));
+                        check = false;
+                    } else {
+                        ed_Phone.setBackgroundColor(Color.WHITE);
                     }
                 }
                 if(check)
@@ -198,30 +195,9 @@ public class DeliveryList extends AppCompatActivity {
         listViewDeliveries.setOnItemClickListener((parent, view, position, id) -> {
 
             delivery = (Delivery) parent.getItemAtPosition(position);
-            if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELIVER)) {
-                Intent intentDelivery = new Intent(DeliveryList.this, DeliveryDeliver.class);
-                intentDelivery.putExtra("delivery", delivery);
-                startActivityForResult(intentDelivery, 100);
-            } else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_UPDATE)) {
-                Intent intentDelivery = new Intent(DeliveryList.this, DeliveryUpdate.class);
-
-                if (!delivery.entryDate.substring(0, 10).equalsIgnoreCase(strDate)) {
-                    Toast.makeText(getApplicationContext(),
-                            "Бүгүндөн башка күндөгү посылканы өзгөртө албайсыз! " +
-                                    "Башка күндү өзгөртүү керек болсо, админ менен сүйлөшүңүз.", Toast.LENGTH_LONG).show();
-                }
-                intentDelivery.putExtra("delivery", delivery);
-                startActivityForResult(intentDelivery, 200);
-
-            } else if (operationType.equalsIgnoreCase(HelperConstants.DELIVERY_DELETE)) {
-                Intent intentDelivery = new Intent(DeliveryList.this, DeliveryDelete.class);
-                intentDelivery.putExtra("delivery", delivery);
-                startActivityForResult(intentDelivery, 600);
-            } else {
                 Intent intentDelivery = new Intent(DeliveryList.this, DeliveryObserve.class);
                 intentDelivery.putExtra("delivery", delivery);
-                startActivityForResult(intentDelivery, 4);
-            }
+                startActivityForResult(intentDelivery, 200);
 
         });
 
@@ -322,7 +298,7 @@ public class DeliveryList extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("entryDate", entryDate);
-                jsonObject.put("status", status);
+                    jsonObject.put("status", status);
                 jsonObject.put("receiverCity", receiverCity + "%");
                 jsonObject.put("senderCity", senderCity + "%");
                 jsonObject.put("assignedSector", assignedPostman + "%");

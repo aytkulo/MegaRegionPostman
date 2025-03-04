@@ -358,7 +358,7 @@ public class DeliveryDebteds extends AppCompatActivity {
                                     }
 
                                     if (deliveryList.size() > 0) {
-                                        DeliveryListAdapter orderListAdapter = new DeliveryListAdapter(deliveryList, DeliveryDebteds.this);
+                                        DListAdapterAssigning orderListAdapter = new DListAdapterAssigning(deliveryList, DeliveryDebteds.this);
                                         listViewDeliveries.setAdapter(orderListAdapter);
                                     }
 

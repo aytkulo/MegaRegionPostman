@@ -111,13 +111,14 @@ public class LoginActivity extends Activity {
                                 String city = response.getString("UserCity");
                                 String name = response.getString("UserName");
                                 String tillDate = response.getString("TillDate");
-                                String sector = response.getString("Sector");
 
                                 session.setUser(token, role, city, login, name, tillDate);
-                                session.setSector(sector);
 
                                 HomeActivity.token = token;
+                                HomeActivity.userCity = city;
+                                HomeActivity.userLogin = login;
                                 HomeActivity.apiDate = tillDate;
+                                HomeActivity.userRole = role;
 
                                 Intent intent = new Intent();
                                 setResult(RESULT_OK, intent);

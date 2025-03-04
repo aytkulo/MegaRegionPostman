@@ -24,6 +24,11 @@
         app:srcCompat="@drawable/icons_filter" />
 
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
+
     <ListView
         android:id="@+id/listViewDeliveries"
         android:layout_width="fill_parent"
@@ -32,5 +37,8 @@
         android:dividerHeight="5dp"
         android:listSelector="@drawable/list_selector"
         android:layout_marginTop="10dp"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

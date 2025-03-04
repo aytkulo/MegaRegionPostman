@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Мега Курьер</string>
+    <string name="app_name">Alma Express</string>
     <string name="hint_email">Логин</string>
     <string name="hint_password">Пароль</string>
     <string name="hint_new_password">Новый Пароль</string>
@@ -56,6 +56,7 @@
     <string name="TakeReceiversSignature">Подпись получателя</string>
     <string name="SaveDeliveryInformation">Сохранить данные об отправке</string>
     <string name="DeliverDelivery">Доставить</string>
+    <string name="DeliverDeliveryBarcode">Доставить \nчерез баркод</string>
     <string name="DeliverUpdate">Изменить данные</string>
     <string name="AssignedPostman">Ответственный курьер</string>
     <string name="AssignedSector">Участ.+Инфо</string>
@@ -117,7 +118,7 @@
     <string name="AcceptDelivery">Получение</string>
     <string name="AssignedOrders">ПОЛУЧИТЬ ЗАКАЗ</string>
     <string name="DeliveryDelivery">Доставка</string>
-    <string name="AssignDelivery">Бөлүштүрүү</string>
+    <string name="AssignDelivery">Присвоить</string>
     <string name="UpdateDelivery">Изменить</string>
     <string name="DeliveryMainList">Список</string>
 
@@ -188,7 +189,6 @@
     <string name="FillTheReceiverData">Вы должны указать имя подучителя!</string>
 
 
-
     <string-array name="roles">
         <item>ADMIN</item>
         <item>POSTMAN</item>
@@ -219,7 +219,7 @@
 
     </string-array>
 
-    <string name="title_activity_home">Мега Курьер</string>
+    <string name="title_activity_home">ALMA Курьер</string>
 
     <string name="google_maps_key">AIzaSyAA0GSr8VLEuKL6r0srOhYOH6Ojg4KCsgk</string>
 
@@ -228,7 +228,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_show_location">Map</string>
-    <string name="DeliveryAssign"/>
+    <string name="DeliveryAssign" />
 
     <string name="OK">OK</string>
 

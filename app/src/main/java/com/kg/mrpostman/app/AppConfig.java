@@ -7,17 +7,28 @@ public class AppConfig {
 
  //   public static String PURE_URL = "http://10.0.2.2:8080/";
 
-    public static String PURE_URL = "http://194.163.181.93:8080/mega-api/";
+    public static String PURE_URL = "http://198.7.115.169:8080/alma-api/";
 
-    public static String IMAGES_URL = "http://194.163.181.93:8080/mega_region_images/";
+    public static String IMAGES_URL = "http://198.7.115.169:8080/alma_images/";
 
-    public static String URL_GET_CITIES = PURE_URL + "sectors/regions";
+
+
+    public static String URL_PARCEL_LIST_FOR_ASSIGNING = PURE_URL + "parcel/list/for/assigning";
+    public static String URL_PARCEL_LIST_ASSIGNED = PURE_URL + "parcel/list/postman/assigned";
+    public static String URL_PARCEL_LIST_ACCEPTED = PURE_URL + "parcel/list/postman/accepted";
+
+
+    public static String URL_PARCEL_ASSIGN = PURE_URL + "parcel/assign";
+
+    public static String URL_GET_CITIES = PURE_URL + "reports/regions";
 
     public static String URL_DELIVERY_CHECK = PURE_URL + "delivery/check";
 
     public static String URL_DELIVERY_ENTRY = PURE_URL + "delivery/save";
 
     public static String URL_DELIVERY_GET = PURE_URL + "delivery/get";
+
+    public static String URL_DELIVERY_GET_BYINTID = PURE_URL + "delivery/get/id";
 
     public static String URL_DELIVERY_LIST = PURE_URL + "delivery/list";
 

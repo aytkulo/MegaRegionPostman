@@ -18,6 +18,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.kg.mrpostman.delivery.DeliveryDebteds;
 import com.kg.mrpostman.delivery.DeliveryEntry;
 import com.kg.mrpostman.delivery.DeliveryList;
+import com.kg.mrpostman.delivery.DeliveryListAssigned;
+import com.kg.mrpostman.delivery.DeliveryListEditing;
+import com.kg.mrpostman.delivery.DeliveryListForAssigning;
 import com.kg.mrpostman.helper.HelperConstants;
 import com.kg.mrpostman.helper.PostmanHelper;
 import com.kg.mrpostman.helper.SessionManager;
@@ -36,7 +39,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private NavigationView navigationView;
     private SessionManager sessionManager;
-    private CardView cardNewDelivery, cardUpdateDelivery, cardDeliverDelivery, cardDeliveryList;
+    private CardView cardNewDelivery, cardUpdateDelivery, cardDeliverDelivery,  cardDeliveryList;
  //   private ImageView imageShare, imageProfile;
     public static String token, apiDate;
 
@@ -86,8 +89,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
             cardDeliverDelivery.setOnClickListener(view -> {
-                Intent intent = new Intent(HomeActivity.this, DeliveryList.class);
-                intent.putExtra(HelperConstants.DELIVERY_OPERATION, HelperConstants.DELIVERY_DELIVER);
+                Intent intent = new Intent(HomeActivity.this, DeliveryListAssigned.class);
+             //   intent.putExtra(HelperConstants.DELIVERY_OPERATION, HelperConstants.DELIVERY_DELIVER);
                 startActivity(intent);
             });
 
@@ -97,16 +100,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             });
 
             cardUpdateDelivery.setOnClickListener(view -> {
-                Intent intent = new Intent(HomeActivity.this, DeliveryList.class);
+                Intent intent = new Intent(HomeActivity.this, DeliveryListEditing.class);
                 intent.putExtra(HelperConstants.DELIVERY_OPERATION, HelperConstants.DELIVERY_UPDATE);
                 startActivity(intent);
             });
 
             cardDeliveryList.setOnClickListener(view -> {
-                Intent intent = new Intent(HomeActivity.this, DeliveryList.class);
-                intent.putExtra(HelperConstants.DELIVERY_OPERATION, HelperConstants.DELIVERY_LIST);
+                Intent intent = new Intent(HomeActivity.this, DeliveryListForAssigning.class);
+                intent.putExtra(HelperConstants.DELIVERY_OPERATION, HelperConstants.DELIVERY_ASSIGN);
                 startActivity(intent);
             });
+
 
             PostmanHelper.getPostmans(userCity,HomeActivity.this, postmanList);
             isLoginNeeded();
@@ -193,7 +197,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(HomeActivity.this, OrderListAssigned.class);
             startActivity(intent);
 
-        }  else if (id == R.id.nav_delivery_debt) {
+        }  else if (id == R.id.nav_delivery_list) {
+
+            Intent intent = new Intent(HomeActivity.this, DeliveryList.class);
+            intent.putExtra(HelperConstants.DELIVERY_OPERATION, HelperConstants.DELIVERY_LIST);
+            startActivity(intent);
+
+        }
+        else if (id == R.id.nav_delivery_debt) {
 
             Intent intent = new Intent(HomeActivity.this, DeliveryDebteds.class);
             startActivity(intent);

@@ -39,7 +39,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -58,7 +57,6 @@ import com.kg.mrpostman.customer.CorporateSelectionList;
 import com.kg.mrpostman.customer.CustomerHelper;
 import com.kg.mrpostman.helper.CustomJsonArrayRequest;
 import com.kg.mrpostman.helper.HelperConstants;
-import com.kg.mrpostman.helper.Signature;
 import com.kg.mrpostman.helper.StringData;
 import com.kg.mrpostman.orders.Orders;
 import com.kg.mrpostman.users.LoginActivity;
@@ -625,6 +623,10 @@ public class DeliveryEntry extends AppCompatActivity {
                                 imageNameString = response.getString("fileName");
                                 imageDelivery.setImageBitmap(bitmap);
                                 deliveryImageNote.setText("Фото успешно выгружен.");
+                            }
+                            else
+                            {
+                                deliveryImageNote.setText("Не удалось выгрузить фото .");
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
